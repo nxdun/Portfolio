@@ -31,17 +31,19 @@ const FancyDivider = styled.div`
 // Styled component for the AppBar with blur effect and gradient background
 const AnimatedAppBar = styled(AppBar)`
   
-  backdrop-filter: blur(10px);
+  background: rgba(30, 30, 30, 0.6) !important;
+  backdrop-filter: blur(20px);
   box-shadow: none;
   z-index: 1;
-  margin: 10px 20px ;
+  margin: 20px; // auto for horizontal centering
   border-radius: 15px;
-  padding: 10px; //set vertical size
-  width: calc(100% - 500px);
-  max-width: 1200px;
+  padding: 10px; // set vertical size
+  width: calc(100% - 40px) !important; // Adjusting width to account for margins
   transition: all 0.3s ease-in-out;
- 
+  max-width: 97vw; // Ensuring it doesn't exceed viewport width
 `;
+
+
 
 // Styled component for the navigation links
 const NavLink = styled(Link)`
