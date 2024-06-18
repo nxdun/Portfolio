@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,6 +15,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Box from '@mui/material/Box';
+import Switch from '@mui/material/Switch';
+import { ThemeContext } from './ThemeContext';
 import styled from 'styled-components';
 
 const FancyDivider = styled.div`
@@ -25,6 +27,7 @@ const FancyDivider = styled.div`
 `;
 
 const Navbar = () => {
+  const { mode, toggleTheme } = useContext(ThemeContext);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -56,27 +59,29 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" style={{ backgroundColor: '#090302' }}>
+      <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1, color: '#C8BFC7' }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             My Portfolio
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-            <Typography variant="body1" component={Link} to="/" style={{ color: '#C8BFC7', textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/" style={{ textDecoration: 'none', padding: '0 8px' }}>
               Home
             </Typography>
             <FancyDivider />
-            <Typography variant="body1" component={Link} to="/about" style={{ color: '#C8BFC7', textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/about" style={{ textDecoration: 'none', padding: '0 8px' }}>
               About
             </Typography>
             <FancyDivider />
-            <Typography variant="body1" component={Link} to="/projects" style={{ color: '#C8BFC7', textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/projects" style={{ textDecoration: 'none', padding: '0 8px' }}>
               Projects
             </Typography>
             <FancyDivider />
-            <Typography variant="body1" component={Link} to="/contact" style={{ color: '#C8BFC7', textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/contact" style={{ textDecoration: 'none', padding: '0 8px' }}>
               Contact
             </Typography>
+            <FancyDivider />
+            <Switch checked={mode === 'dark'} onChange={toggleTheme} />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton color="inherit" aria-label="open drawer" edge="end" onClick={handleDrawerToggle}>

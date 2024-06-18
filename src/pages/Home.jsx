@@ -1,15 +1,17 @@
-import React from 'react';
+
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useSpring, animated } from '@react-spring/web';
+import { useTheme } from '@mui/material/styles';
 
-function Home() {
+const Home = () => {
+  const theme = useTheme();
   const backgroundAnimation = useSpring({
-    backgroundColor: '#090302',
-    color: '#C8BFC7',
-    from: { backgroundColor: '#C8BFC7', color: '#090302' },
-    config: { duration: 500 }
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
+    from: { backgroundColor: theme.palette.background.default, color: theme.palette.text.primary },
+    config: { duration: 500 },
   });
 
   return (
@@ -31,6 +33,6 @@ function Home() {
       </Container>
     </animated.div>
   );
-}
+};
 
 export default Home;
