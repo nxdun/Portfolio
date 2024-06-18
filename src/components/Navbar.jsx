@@ -65,19 +65,19 @@ const Navbar = () => {
             My Portfolio
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-            <Typography variant="body1" component={Link} to="/" style={{ textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/" style={{ textDecoration: 'none', padding: '0 8px', color: 'inherit' }}>
               Home
             </Typography>
             <FancyDivider />
-            <Typography variant="body1" component={Link} to="/about" style={{ textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/about" style={{ textDecoration: 'none', padding: '0 8px', color: 'inherit' }}>
               About
             </Typography>
             <FancyDivider />
-            <Typography variant="body1" component={Link} to="/projects" style={{ textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/projects" style={{ textDecoration: 'none', padding: '0 8px', color: 'inherit' }}>
               Projects
             </Typography>
             <FancyDivider />
-            <Typography variant="body1" component={Link} to="/contact" style={{ textDecoration: 'none', padding: '0 8px' }}>
+            <Typography variant="body1" component={Link} to="/contact" style={{ textDecoration: 'none', padding: '0 8px', color: 'inherit' }}>
               Contact
             </Typography>
             <FancyDivider />
