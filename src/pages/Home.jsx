@@ -1,4 +1,3 @@
-
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -7,6 +6,7 @@ import { useTheme } from '@mui/material/styles';
 
 const Home = () => {
   const theme = useTheme();
+
   const backgroundAnimation = useSpring({
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,

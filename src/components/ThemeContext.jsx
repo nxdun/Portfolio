@@ -7,39 +7,44 @@ const lightTheme = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#090302',
+      main: '#2C7A7B', // Teal
     },
     secondary: {
-      main: '#C8BFC7',
+      main: '#FF6F61', // Coral
     },
     background: {
-      default: '#C8BFC7',
-      paper: '#ffffff',
+      default: '#FAFAFA', // Light Grey
+      paper: '#FFFFFF', // White
     },
     text: {
-      primary: '#090302',
+      primary: '#333333', // Dark Grey
+      secondary: '#666666', // Medium Grey
     },
   },
 };
+
+
 
 const darkTheme = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#C8BFC7',
+      main: '#90E0EF',
     },
     secondary: {
-      main: '#090302',
+      main: '#0077B6',
     },
     background: {
-      default: '#090302',
-      paper: '#333333',
+      default: '#121212',
+      paper: '#1E1E1E',
     },
     text: {
-      primary: '#C8BFC7',
+      primary: '#E0E0E0',
+      secondary: '#B0B0B0',
     },
   },
 };
+
 
 export const ThemeProvider = ({ children }) => {
   const [mode, setMode] = useState('dark');
