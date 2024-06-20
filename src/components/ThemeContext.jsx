@@ -1,3 +1,5 @@
+
+
 import { createContext, useState, useMemo } from 'react';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
@@ -29,10 +31,10 @@ const darkTheme = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#90E0EF',
+      main: '#90E0EF', // Light Teal
     },
     secondary: {
-      main: '#0077B6',
+      main: '#0077B6', // 
     },
     background: {
       default: '#121212',

@@ -1,37 +1,37 @@
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { useSpring, animated } from '@react-spring/web';
-import { useTheme } from '@mui/material/styles';
+//main homepage component
+
+import { useContext } from "react";
+import styled from "styled-components";
+import { ThemeContext } from "../components/ThemeContext";
+import tealmodeSvgInverse from "../assets/waveInversedHomepage.svg";
+import tealmodeSvgInverse2 from "../assets/waveInversedHomepage2.svg";
+import { Box } from "@mui/material";
 
 const Home = () => {
-  const theme = useTheme();
+  const { mode } = useContext(ThemeContext);
 
-  const backgroundAnimation = useSpring({
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.text.primary,
-    from: { backgroundColor: theme.palette.background.default, color: theme.palette.text.primary },
-    config: { duration: 500 },
-  });
+  const Background = styled.div`
+    width: 100%;
+    height: 38vh;
+    background-image: url(${tealmodeSvgInverse});
+    background-position: center;
+    background-size: cover;
+  `;
+
+  const Background2 = styled.div`
+    width: 100%;
+    height: 38vh;
+    background-image: url(${tealmodeSvgInverse2});
+    background-position: center;
+    background-size: cover;
+    margin-top: -10px; /* Adjust this value to control the overlap or gap */
+  `;
 
   return (
-    <animated.div style={{ ...backgroundAnimation, minHeight: '100vh', padding: '64px 0' }}>
-      <Container>
-        <Box sx={{ py: 8, px: { xs: 2, sm: 3, md: 5 }, textAlign: 'center' }}>
-          <Typography variant="h3" component="h1" gutterBottom>
-            Welcome to My Portfolio
-          </Typography>
-          <Typography variant="h5" component="h2" gutterBottom>
-            Hi, Im John Doe
-          </Typography>
-          <Box sx={{ my: 4, mx: 'auto', maxWidth: 600 }}>
-            <Typography variant="body1" gutterBottom>
-              I am a software developer specializing in web and mobile application development.
-            </Typography>
-          </Box>
-        </Box>
-      </Container>
-    </animated.div>
+    <Box>
+      <Background mode={mode} />
+      <Background2 mode={mode} />
+    </Box>
   );
 };
 

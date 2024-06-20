@@ -18,6 +18,7 @@ import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { ThemeContext } from './ThemeContext';
 import styled from 'styled-components';
+import tealmodeSvg from '../assets/waveNavbarTealMode.svg';
 
 const FancyDivider = styled.div`
   height: 40px;
@@ -27,7 +28,6 @@ const FancyDivider = styled.div`
 `;
 //svg images
 const darkmodeSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDMyMCI+PHBhdGggZmlsbD0iIzJDN0E3QiIgZmlsbC1vcGFjaXR5PSIxLjIiIGQ9Ik0wLDE2MEwyNCwxNjUuM0M0OCwxNzEsOTYsMTgxLDE0NCwxODYuN0MxOTIsMTkyLDI0MCwxOTIsMjg4LDE5Ny4zQzMzNiwyMDMsMzg0LDIxMyw0MzIsMTkyQzQ4MCwxNzEsNTI4LDExNyw1NzYsOTAuN0M2MjQsNjQsNjcyLDY0LDcyMCw4NS4zQzc2OCwxMDcsODE2LDE0OSw4NjQsMTQ5LjNDOTEyLDE0OSw5NjAsMTA3LDEwMDgsMTI4QzEwNTYsMTQ5LDExMDQsMjM1LDExNTIsMjQ1LjNDMTIwMCwyNTYsMTI0OCwxOTIsMTI5NiwxNTQuN0MxMzQ0LDExNywxMzkyLDEwNywxNDE2LDEwMS4zTDE0NDAsOTZMMTQ0MCwwTDE0MTYsMEMxMzkyLDAsMTM0NCwwLDEyOTYsMEMxMjQ4LDAsMTIwMCwwLDExNTIsMEMxMTA0LDAsMTA1NiwwLDEwMDgsMEM5NjAsMCw5MTIsMCw4NjQsMEM4MTYsMCw3NjgsMCw3MjAsMEM2NzIsMCw2MjQsMCw1NzYsMEM1MjgsMCw0ODAsMCw0MzIsMEMzODQsMCwzMzYsMCwyODgsMEMyNDAsMCwxOTIsMCwxNDQsMEM5NiwwLDQ4LDAsMjQsMEwwLDBaIj48L3BhdGg+PC9zdmc+' 
-const lightmodeSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDMyMCI+PHBhdGggZmlsbD0iIzI3MzAzNiIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNMCwxNjBMMjYuNywxNTQuN0M1My4zLDE0OSwxMDcsMTM5LDE2MCwxNjBDMjEzLjMsMTgxLDI2NywyMzUsMzIwLDI1MC43QzM3My4zLDI2Nyw0MjcsMjQ1LDQ4MCwyNTAuN0M1MzMuMywyNTYsNTg3LDI4OCw2NDAsMjY2LjdDNjkzLjMsMjQ1LDc0NywxNzEsODAwLDE1NC43Qzg1My4zLDEzOSw5MDcsMTgxLDk2MCwyMDhDMTAxMy4zLDIzNSwxMDY3LDI0NSwxMTIwLDIxOC43QzExNzMuMywxOTIsMTIyNywxMjgsMTI4MCwxMzMuM0MxMzMzLjMsMTM5LDEzODcsMjEzLDE0MTMsMjUwLjdMMTQ0MCwyODhMMTQ0MCwwTDE0MTMuMywwQzEzODYuNywwLDEzMzMsMCwxMjgwLDBDMTIyNi43LDAsMTE3MywwLDExMjAsMEMxMDY2LjcsMCwxMDEzLDAsOTYwLDBDOTA2LjcsMCw4NTMsMCw4MDAsMEM3NDYuNywwLDY5MywwLDY0MCwwQzU4Ni43LDAsNTMzLDAsNDgwLDBDNDI2LjcsMCwzNzMsMCwzMjAsMEMyNjYuNywwLDIxMywwLDE2MCwwQzEwNi43LDAsNTMsMCwyNywwTDAsMFoiPjwvcGF0aD48L3N2Zz4=' 
 
 const Background = styled.div`
   position: fixed;
@@ -37,8 +37,8 @@ const Background = styled.div`
   height: 40%;
   z-index: -1;
   background: url(${({ mode }) => mode === 'dark' 
-    ?lightmodeSvg 
-    :darkmodeSvg });
+    ? darkmodeSvg
+    :tealmodeSvg });
   background-position: center;
   background-size: cover;
 `;
