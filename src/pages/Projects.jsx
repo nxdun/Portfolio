@@ -68,6 +68,18 @@ const projectsData = [
   {
     title: "Project 3",
     description: "Description of project 3..."
+  },
+  {
+    title: "Project 4",
+    description: "Description of project 4..."
+  },
+  {
+    title: "Project 5",
+    description: "Description of project 5..."
+  },
+  {
+    title: "Project 6",
+    description: "Description of project 6..."
   }
 ];
 
