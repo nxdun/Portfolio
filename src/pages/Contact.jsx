@@ -5,9 +5,9 @@ import Skeleton from "@mui/material/Skeleton";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
 import TextField from "@mui/material/TextField";
-import tealmodeSvgInverse from "../assets/pinkwaveInversedHomepage.svg";
-import tealmodeSvgInverse2 from "../assets/pinkwaveInversedHomepage2.svg";
-import tealmodeSvgInverse3 from "../assets/pinkwaveInversedHomepage3.svg";
+import tealmodeSvgInverse from "../assets/yellowwaveInversedHomepage.svg";
+import tealmodeSvgInverse2 from "../assets/yellowwaveInversedHomepage2.svg";
+import tealmodeSvgInverse3 from "../assets/yellowwaveInversedHomepage3.svg";
 
 const Background = styled.div`
   width: 100%;
@@ -62,7 +62,7 @@ function Contact() {
   return (
     <ContainerWrapper>
       <Background />
-      <Box  sx={{ my: 4, height: "auto", backgroundColor: "#7b2c5b", padding: "7% !important", margin: "0 !important" }}>
+      <Box  sx={{ my: 4, height: "auto", backgroundColor: "#fcba03", padding: "7% !important", margin: "0 !important" }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Contact Me
         </Typography>
