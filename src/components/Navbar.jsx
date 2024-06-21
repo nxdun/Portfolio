@@ -96,20 +96,8 @@ const Navbar = () => {
             >
               Home
             </Typography>
-            <FancyDivider />
-            <Typography 
-              variant="body1" 
-              component={location.pathname === '/about' ? 'span' : Link} 
-              to="/about" 
-              style={{ 
-                textDecoration: 'none', 
-                padding: '0 8px', 
-                color: location.pathname === '/about' ? 'grey' : 'inherit',
-                pointerEvents: location.pathname === '/about' ? 'none' : 'auto'
-              }}
-            >
-              About
-            </Typography>
+
+            
             <FancyDivider />
             <Typography 
               variant="body1" 

@@ -13,7 +13,7 @@ const Home = () => {
     background-position: center;
     background-size: cover;
     margin-top: -10px;
-  `; 
+  `;
 
   const Background2 = styled.div`
     width: 100%;
@@ -34,22 +34,22 @@ const Home = () => {
   `;
 
   const ContainerWrapper = styled(Container)`
-  && {
-    width: 100vw; /* Full viewport width */
-    max-width: 100vw; /* Full viewport width */
-    padding: 0 !important;
-    margin: 0 !important;
-    height: 100vh;
-    overflow-y: auto;
-  }
+    && {
+      width: 100vw; /* Full viewport width */
+      max-width: 100vw; /* Full viewport width */
+      padding: 0 !important;
+      margin: 0 !important;
+      height: 100vh;
+      overflow-y: auto;
+    }
 
-  /* Hide scrollbar but allow scrolling */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
-  }
-`;
+    /* Hide scrollbar but allow scrolling */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
+  `;
 
   return (
     <ContainerWrapper>
@@ -57,7 +57,6 @@ const Home = () => {
       <HomeIntro />
       <Background2 />
       <Background3 />
- 
     </ContainerWrapper>
   );
 };
