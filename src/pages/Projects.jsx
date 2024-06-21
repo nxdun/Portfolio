@@ -37,7 +37,6 @@ const Background3 = styled.div`
   position: relative;
   z-index: -1;
 `;
-
 const ContainerWrapper = styled(Container)`
   && {
     width: 100vw; /* Full viewport width */
@@ -56,48 +55,45 @@ const ContainerWrapper = styled(Container)`
   }
 `;
 
+// Project data
+const projectsData = [
+  {
+    title: "Project 1",
+    description: "Description of project 1..."
+  },
+  {
+    title: "Project 2",
+    description: "Description of project 2..."
+  },
+  {
+    title: "Project 3",
+    description: "Description of project 3..."
+  }
+];
+
 function Projects() {
   return (
     <ContainerWrapper>
       <Background />
-        <Box sx={{ my: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            My Projects
-          </Typography>
-          <Grid container spacing={4}>
-            <Grid item xs={12} sm={6} md={4}>
+      <Box sx={{ my: 4, height: "auto", backgroundColor: "#7b2c5b", padding: "7% !important", margin: "0 !important" }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          My Projects
+        </Typography>
+        <Grid container spacing={4}>
+          {projectsData.map((project, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
               <Skeleton variant="rectangular" width="100%" height={200} />
               <Typography variant="h6" gutterBottom>
-                Project 1
+                {project.title}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                Description of project 1...
+                {project.description}
               </Typography>
               <Skeleton variant="text" width="80%" />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Skeleton variant="rectangular" width="100%" height={200} />
-              <Typography variant="h6" gutterBottom>
-                Project 2
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                Description of project 2...
-              </Typography>
-              <Skeleton variant="text" width="80%" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Skeleton variant="rectangular" width="100%" height={200} />
-              <Typography variant="h6" gutterBottom>
-                Project 3
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                Description of project 3...
-              </Typography>
-              <Skeleton variant="text" width="80%" />
-            </Grid>
-          </Grid>
-        </Box>
-
+          ))}
+        </Grid>
+      </Box>
       <Background2 />
       <Background3 />
     </ContainerWrapper>
