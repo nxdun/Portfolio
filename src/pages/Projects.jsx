@@ -15,7 +15,7 @@ const Background = styled.div`
   background-position: center;
   background-size: cover;
   position: relative;
-  z-index: -1;
+  z-index: -4;
 `;
 
 const Background2 = styled.div`
@@ -25,7 +25,7 @@ const Background2 = styled.div`
   background-position: center;
   background-size: cover;
   position: relative;
-  z-index: -1;
+  z-index: -4;
 `;
 
 const Background3 = styled.div`
@@ -35,7 +35,7 @@ const Background3 = styled.div`
   background-position: center;
   background-size: cover;
   position: relative;
-  z-index: -1;
+  z-index: -4;
 `;
 const ContainerWrapper = styled(Container)`
   && {

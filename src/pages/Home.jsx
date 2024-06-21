@@ -13,6 +13,7 @@ const Home = () => {
     background-position: center;
     background-size: cover;
     margin-top: -10px;
+    z-index: -1;
   `;
 
   const Background2 = styled.div`
