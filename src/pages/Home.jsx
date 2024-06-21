@@ -38,7 +38,8 @@ const Home = () => {
       <HomeIntro />
       <Background2 />
       <Background3 />
-      nuu
+      <HomeIntro />
+
     </div>
   );
 };
