@@ -1,11 +1,9 @@
-import {
-  //  useContext,
-    useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
-// import { ThemeContext } from "../ThemeContext";
 import { useTheme } from "@mui/material/styles";
 import { Box, Typography, Grid, Button, Link } from "@mui/material";
 import { useSpring, animated, useTransition } from "@react-spring/web";
+import CircleSvg from "../../assets/home-circle.svg";
 
 const professions = [
   "Software Developer",
@@ -15,7 +13,6 @@ const professions = [
 ];
 
 const HomeIntro = () => {
-  // const { mode } = useContext(ThemeContext);
   const theme = useTheme();
 
   const [professionIndex, setProfessionIndex] = useState(0);
@@ -26,16 +23,6 @@ const HomeIntro = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-
-  const circleAnimations = useSpring({
-    loop: true,
-    from: { transform: "scale(1)", background: theme.palette.primary.main },
-    to: [
-      { transform: "scale(1.2)", background: theme.palette.secondary.main },
-      { transform: "scale(1)", background: theme.palette.primary.main },
-    ],
-    config: { duration: 4000 },
-  });
 
   const textAnimation = useSpring({
     from: { opacity: 0, transform: "translateY(-20px)" },
@@ -50,31 +37,26 @@ const HomeIntro = () => {
     config: { duration: 500 },
   });
 
-  const Circle = styled(animated.div)`
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: ${theme.palette.background.paper};
-    box-shadow: inset 9px 9px 16px #bebebe, inset -9px -9px 16px #ffffff;
+  const StyledCircleSvg = styled.img`
+    width: 200px; 
+    height: 200px; 
     transition: transform 0.3s, box-shadow 0.3s;
     &:hover {
       transform: scale(1.05);
-      box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
   `;
 
-  const NeumorphismButton = styled(Button)`
+  const StyledButton = styled(Button)`
     border-radius: 16px;
     background: ${theme.palette.background.paper};
     box-shadow: inset 9px 9px 16px #bebebe, inset -9px -9px 16px #ffffff;
     color: ${theme.palette.text.primary};
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
     &:hover {
       transform: scale(1.05);
       box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+      background-color: ${theme.palette.primary.light};
     }
   `;
 
@@ -107,11 +89,7 @@ const HomeIntro = () => {
             alignItems: "center",
           }}
         >
-          <Circle style={circleAnimations}>
-            <Typography variant="h6" color="primary">
-              N.L
-            </Typography>
-          </Circle>
+          <StyledCircleSvg src={CircleSvg} alt="Circle Graphic" />
         </Box>
 
         <Box
@@ -160,38 +138,38 @@ const HomeIntro = () => {
           alignItems: "center",
         }}
       >
-        <NeumorphismButton
+        <StyledButton
           variant="contained"
           component={Link}
           href="https://github.com"
           target="_blank"
         >
           GitHub
-        </NeumorphismButton>
-        <NeumorphismButton
+        </StyledButton>
+        <StyledButton
           variant="contained"
           component={Link}
           href="https://www.linkedin.com"
           target="_blank"
         >
           LinkedIn
-        </NeumorphismButton>
-        <NeumorphismButton
+        </StyledButton>
+        <StyledButton
           variant="contained"
           component={Link}
           href="https://www.instagram.com"
           target="_blank"
         >
           Instagram
-        </NeumorphismButton>
-        <NeumorphismButton
+        </StyledButton>
+        <StyledButton
           variant="contained"
           component={Link}
           href="/path/to/cv.pdf"
           download
         >
           Download CV
-        </NeumorphismButton>
+        </StyledButton>
       </Grid>
     </Box>
   );
