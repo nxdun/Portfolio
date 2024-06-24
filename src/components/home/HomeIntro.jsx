@@ -38,25 +38,29 @@ const HomeIntro = () => {
   });
 
   const StyledCircleSvg = styled.img`
-    width: 200px; 
-    height: 200px; 
+    width: 200px; /* Adjusted size */
+    height: 200px; /* Adjusted size */
     transition: transform 0.3s, box-shadow 0.3s;
     &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transform: scale(1.1);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
     }
   `;
 
   const StyledButton = styled(Button)`
     border-radius: 16px;
     background: ${theme.palette.background.paper};
-    box-shadow: inset 9px 9px 16px #bebebe, inset -9px -9px 16px #ffffff;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3), -5px -5px 15px rgba(255, 255, 255, 0.8);
     color: ${theme.palette.text.primary};
     transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
     &:hover {
-      transform: scale(1.05);
-      box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5), -10px -10px 20px rgba(255, 255, 255, 1);
       background-color: ${theme.palette.primary.light};
+    }
+    &:active {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.4), -7px -7px 15px rgba(255, 255, 255, 0.9);
     }
   `;
 
