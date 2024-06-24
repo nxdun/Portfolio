@@ -6,6 +6,8 @@ import tealmodeSvgInverse3 from "../assets/waveInversedHomepage3.svg";
 import Container from "@mui/material/Container";
 
 const Home = () => {
+  //for now green bg svg are commented out
+
   const Background = styled.div`
     width: 100%;
     height: 38vh;
@@ -54,10 +56,10 @@ const Home = () => {
 
   return (
     <ContainerWrapper>
-      <Background />
+      {/* <Background /> */}
       <HomeIntro />
-      <Background2 />
-      <Background3 />
+      {/* <Background2 /> */}
+      {/* <Background3 /> */}
     </ContainerWrapper>
   );
 };

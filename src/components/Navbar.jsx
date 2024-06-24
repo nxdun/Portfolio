@@ -1,5 +1,6 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSpring, animated } from '@react-spring/web';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -27,7 +28,7 @@ const FancyDivider = styled.div`
   margin: 0 16px;
 `;
 
-const darkmodeSvg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDMyMCI+PHBhdGggZmlsbD0iIzJDN0E3QiIgZmlsbC1vcGFjaXR5PSIxLjIiIGQ9Ik0wLDE2MEwyNCwxNjUuM0M0OCwxNzEsOTYsMTgxLDE0NCwxODYuN0MxOTIsMTkyLDI0MCwxOTIsMjg4LDE5Ny4zQzMzNiwyMDMsMzg0LDIxMyw0MzIsMTkyQzQ4MCwxNzEsNTI4LDExNyw1NzYsOTAuN0M2MjQsNjQsNjcyLDY0LDcyMCw4NS4zQzc2OCwxMDcsODE2LDE0OSw4NjQsMTQ5LjNDOTEyLDE0OSw5NjAsMTA3LDEwMDgsMTI4QzEwNTYsMTQ5LDExMDQsMjM1LDExNTIsMjQ1LjNDMTIwMCwyNTYsMTI0OCwxOTIsMTI5NiwxNTQuN0MxMzQ0LDExNywxMzkyLDEwNywxNDE2LDEwMS4zTDE0NDAsOTZMMTQ0MCwwTDE0MTYsMEMxMzkyLDAsMTM0NCwwLDEyOTYsMEMxMjQ4LDAsMTIwMCwwLDExNTIsMEMxMTA0LDAsMTA1NiwwLDEwMDgsMEM5NjAsMCw5MTIsMCw4NjQsMEM4MTYsMCw3NjgsMCw3MjAsMEM2NzIsMCw2MjQsMCw1NzYsMEM1MjgsMCw0ODAsMCw0MzIsMEMzODQsMCwzMzYsMCwyODgsMEMyNDAsMCwxOTIsMCwxNDQsMEM5NiwwLDQ4LDAsMjQsMEwwLDBaIj48L3BhdGg+PC9zdmc+';
+const darkmodeSvg = 'data:image/svg+xml;base64,...';
 
 const Background = styled.div`
   position: fixed;
@@ -38,7 +39,7 @@ const Background = styled.div`
   z-index: -1;
   background: url(${({ mode }) => mode === 'dark' 
     ? darkmodeSvg
-    :tealmodeSvg });
+    : tealmodeSvg });
   background-position: center;
   background-size: cover;
 `;
@@ -47,10 +48,26 @@ const Navbar = () => {
   const { mode, toggleTheme } = useContext(ThemeContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
+  const [visible, setVisible] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const handleScroll = () => {
+    const currentScrollPos = window.pageYOffset;
+    const visible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
+    setVisible(visible);
+    setPrevScrollPos(currentScrollPos);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [prevScrollPos]);
 
   const drawer = (
     <Box sx={{ width: 250 }}>
@@ -75,67 +92,71 @@ const Navbar = () => {
     </Box>
   );
 
+  const navbarAnimation = useSpring({
+    transform: visible ? 'translateY(0)' : 'translateY(-100%)',
+  });
+
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', zIndex: 1 }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            My Portfolio
-          </Typography>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-            <Typography 
-              variant="body1" 
-              component={location.pathname === '/' ? 'span' : Link} 
-              to="/" 
-              style={{ 
-                textDecoration: 'none', 
-                padding: '0 8px', 
-                color: location.pathname === '/' ? 'grey' : 'inherit',
-                pointerEvents: location.pathname === '/' ? 'none' : 'auto'
-              }}
-            >
-              Home
+      <animated.div style={navbarAnimation}>
+        <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', zIndex: 1 }}>
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              My Portfolio
             </Typography>
-
-            
-            <FancyDivider />
-            <Typography 
-              variant="body1" 
-              component={location.pathname === '/projects' ? 'span' : Link} 
-              to="/projects" 
-              style={{ 
-                textDecoration: 'none', 
-                padding: '0 8px', 
-                color: location.pathname === '/projects' ? 'grey' : 'inherit',
-                pointerEvents: location.pathname === '/projects' ? 'none' : 'auto'
-              }}
-            >
-              Projects
-            </Typography>
-            <FancyDivider />
-            <Typography 
-              variant="body1" 
-              component={location.pathname === '/contact' ? 'span' : Link} 
-              to="/contact" 
-              style={{ 
-                textDecoration: 'none', 
-                padding: '0 8px', 
-                color: location.pathname === '/contact' ? 'grey' : 'inherit',
-                pointerEvents: location.pathname === '/contact' ? 'none' : 'auto'
-              }}
-            >
-              Contact
-            </Typography>
-            <FancyDivider />
-            <Switch checked={mode === 'dark'} onChange={toggleTheme} />
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton color="inherit" aria-label="open drawer" edge="end" onClick={handleDrawerToggle}>
-              <MenuIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              <Typography 
+                variant="body1" 
+                component={location.pathname === '/' ? 'span' : Link} 
+                to="/" 
+                style={{ 
+                  textDecoration: 'none', 
+                  padding: '0 8px', 
+                  color: location.pathname === '/' ? 'grey' : 'inherit',
+                  pointerEvents: location.pathname === '/' ? 'none' : 'auto'
+                }}
+              >
+                Home
+              </Typography>
+              <FancyDivider />
+              <Typography 
+                variant="body1" 
+                component={location.pathname === '/projects' ? 'span' : Link} 
+                to="/projects" 
+                style={{ 
+                  textDecoration: 'none', 
+                  padding: '0 8px', 
+                  color: location.pathname === '/projects' ? 'grey' : 'inherit',
+                  pointerEvents: location.pathname === '/projects' ? 'none' : 'auto'
+                }}
+              >
+                Projects
+              </Typography>
+              <FancyDivider />
+              <Typography 
+                variant="body1" 
+                component={location.pathname === '/contact' ? 'span' : Link} 
+                to="/contact" 
+                style={{ 
+                  textDecoration: 'none', 
+                  padding: '0 8px', 
+                  color: location.pathname === '/contact' ? 'grey' : 'inherit',
+                  pointerEvents: location.pathname === '/contact' ? 'none' : 'auto'
+                }}
+              >
+                Contact
+              </Typography>
+              <FancyDivider />
+              <Switch checked={mode === 'dark'} onChange={toggleTheme} />
+            </Box>
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              <IconButton color="inherit" aria-label="open drawer" edge="end" onClick={handleDrawerToggle}>
+                <MenuIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </animated.div>
       <Background mode={mode} />
       <Drawer
         variant="temporary"
