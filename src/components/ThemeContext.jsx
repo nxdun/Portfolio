@@ -5,14 +5,15 @@ import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/st
 import PropTypes from 'prop-types';
 export const ThemeContext = createContext();
 
-const lightTheme = {
+
+const neonDreamLightTheme = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#2C7A7B', // Teal
+      main: '#00f6ff', // Neon Blue
     },
     secondary: {
-      main: '#FF6F61', // Coral
+      main: '#bf00ff', // Electric Purple
     },
     background: {
       default: '#FAFAFA', // Light Grey
@@ -22,27 +23,43 @@ const lightTheme = {
       primary: '#333333', // Dark Grey
       secondary: '#666666', // Medium Grey
     },
+    accent: {
+      main: '#ff0066', // Hot Pink
+    },
+    highlight: {
+      main: '#00ff66', // Lime Green
+    },
+    dark: {
+      main: '#232323', // Dark Slate
+    },
   },
 };
 
-
-
-const darkTheme = {
+const neonDreamDarkTheme = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#90E0EF', // Light Teal
+      main: '#00f6ff', // Neon Blue
     },
     secondary: {
-      main: '#0077B6', // 
+      main: '#bf00ff', // Electric Purple
     },
     background: {
-      default: '#121212',
-      paper: '#1E1E1E',
+      default: '#121212', // Dark Background
+      paper: '#1E1E1E', // Darker Background
     },
     text: {
-      primary: '#E0E0E0',
-      secondary: '#B0B0B0',
+      primary: '#E0E0E0', // Light Grey
+      secondary: '#B0B0B0', // Medium Grey
+    },
+    accent: {
+      main: '#ff0066', // Hot Pink
+    },
+    highlight: {
+      main: '#00ff66', // Lime Green
+    },
+    dark: {
+      main: '#232323', // Dark Slate
     },
   },
 };
@@ -51,7 +68,7 @@ const darkTheme = {
 export const ThemeProvider = ({ children }) => {
   const [mode, setMode] = useState('dark');
 
-  const theme = useMemo(() => createTheme(mode === 'light' ? lightTheme : darkTheme), [mode]);
+  const theme = useMemo(() => createTheme(mode === 'light' ? neonDreamLightTheme : neonDreamDarkTheme), [mode]);
 
   const toggleTheme = () => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));

@@ -1,11 +1,11 @@
 import { Box, Skeleton } from "@mui/material";
 
-const HomeIntro = () => {
+const ProjectHighlight = () => {
 
   return (
     <Box
       sx={{
-        height: "85vh",
+        height: "100vh",
         // backgroundColor: "#2c7b5b",
         display: "flex",
         flexDirection: "column",
@@ -14,9 +14,9 @@ const HomeIntro = () => {
         padding: 4,
       }}
     >
-     <Skeleton variant="rectangular" width={"100%"} height={"100vh"} style={{ backgroundColor: "grey" }} />
+     <Skeleton variant="rectangular" width={"100%"} height={"100vh"} style={{ backgroundColor: "blue" }} />
     </Box>
   );
 };
 
-export default HomeIntro;
+export default ProjectHighlight;

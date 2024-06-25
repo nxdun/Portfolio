@@ -7,4 +7,7 @@ body, html, #root {
   box-sizing: border-box;
 }
 
-/* You can also include any global styles here */
+/* Set the background color */
+body {
+  background-color: #FAFAFA;
+}

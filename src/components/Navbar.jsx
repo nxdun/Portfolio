@@ -19,7 +19,6 @@ import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { ThemeContext } from './ThemeContext';
 import styled from 'styled-components';
-import tealmodeSvg from '../assets/waveNavbarTealMode.svg';
 
 const FancyDivider = styled.div`
   height: 40px;
@@ -28,20 +27,25 @@ const FancyDivider = styled.div`
   margin: 0 16px;
 `;
 
-const darkmodeSvg = 'data:image/svg+xml;base64,...';
+
 
 const Background = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 40%;
   z-index: -1;
-  background: url(${({ mode }) => mode === 'dark' 
-    ? darkmodeSvg
-    : tealmodeSvg });
-  background-position: center;
-  background-size: cover;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  // Add any additional styles you want for light/dark mode
+  ${({ mode }) => mode === 'dark' && `
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  `}
 `;
 
 const Navbar = () => {
@@ -67,7 +71,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [prevScrollPos]);
+  });
 
   const drawer = (
     <Box sx={{ width: 250 }}>
