@@ -1,12 +1,14 @@
 import { Box, Skeleton } from "@mui/material";
-
+import BgImg from "../../assets/main-bg.jpg";
 const HomeIntro = () => {
 
   return (
     <Box
       sx={{
         height: "85vh",
-        // backgroundColor: "#2c7b5b",
+        backgroundImage: `url(${BgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

@@ -1,10 +1,14 @@
-//theme switching
+// theme switching
 
 import { createContext, useState, useMemo } from 'react';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 export const ThemeContext = createContext();
 
+//Inter font
+const commonTypography = {
+  fontFamily: 'Inter, sans-serif',
+};
 
 const neonDreamLightTheme = {
   palette: {
@@ -33,6 +37,7 @@ const neonDreamLightTheme = {
       main: '#232323', // Dark Slate
     },
   },
+  typography: commonTypography,
 };
 
 const neonDreamDarkTheme = {
@@ -62,8 +67,8 @@ const neonDreamDarkTheme = {
       main: '#232323', // Dark Slate
     },
   },
+  typography: commonTypography,
 };
-
 
 export const ThemeProvider = ({ children }) => {
   const [mode, setMode] = useState('dark');
@@ -82,7 +87,8 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
-//validate props
+
+// Validate props
 ThemeProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
