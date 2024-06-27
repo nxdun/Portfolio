@@ -1,11 +1,10 @@
-// theme switching
-
+// ThemeContext.jsx
 import { createContext, useState, useMemo } from 'react';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+
 export const ThemeContext = createContext();
 
-//Inter font
 const commonTypography = {
   fontFamily: 'Inter, sans-serif',
 };
@@ -13,29 +12,19 @@ const commonTypography = {
 const neonDreamLightTheme = {
   palette: {
     mode: 'light',
-    primary: {
-      main: '#00f6ff', // Neon Blue
-    },
-    secondary: {
-      main: '#bf00ff', // Electric Purple
-    },
+    primary: { main: '#00f6ff' },
+    secondary: { main: '#bf00ff' },
     background: {
-      default: '#FAFAFA', // Light Grey
-      paper: '#FFFFFF', // White
+      default: '#FAFAFA',
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#333333', // Dark Grey
-      secondary: '#666666', // Medium Grey
+      primary: '#333333',
+      secondary: '#666666',
     },
-    accent: {
-      main: '#ff0066', // Hot Pink
-    },
-    highlight: {
-      main: '#00ff66', // Lime Green
-    },
-    dark: {
-      main: '#232323', // Dark Slate
-    },
+    accent: { main: '#ff0066' },
+    highlight: { main: '#00ff66' },
+    dark: { main: '#232323' },
   },
   typography: commonTypography,
 };
@@ -43,29 +32,19 @@ const neonDreamLightTheme = {
 const neonDreamDarkTheme = {
   palette: {
     mode: 'dark',
-    primary: {
-      main: '#00f6ff', // Neon Blue
-    },
-    secondary: {
-      main: '#bf00ff', // Electric Purple
-    },
+    primary: { main: '#00f6ff' },
+    secondary: { main: '#bf00ff' },
     background: {
-      default: '#121212', // Dark Background
-      paper: '#1E1E1E', // Darker Background
+      default: '#121212',
+      paper: '#1E1E1E',
     },
     text: {
-      primary: '#E0E0E0', // Light Grey
-      secondary: '#B0B0B0', // Medium Grey
+      primary: '#E0E0E0',
+      secondary: '#B0B0B0',
     },
-    accent: {
-      main: '#ff0066', // Hot Pink
-    },
-    highlight: {
-      main: '#00ff66', // Lime Green
-    },
-    dark: {
-      main: '#232323', // Dark Slate
-    },
+    accent: { main: '#ff0066' },
+    highlight: { main: '#00ff66' },
+    dark: { main: '#232323' },
   },
   typography: commonTypography,
 };
@@ -88,7 +67,6 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-// Validate props
 ThemeProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

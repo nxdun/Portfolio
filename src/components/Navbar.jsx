@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSpring, animated } from '@react-spring/web';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -19,7 +18,9 @@ import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch';
 import { ThemeContext } from './ThemeContext';
 import styled from 'styled-components';
+import { useTheme } from '@mui/material/styles';
 
+// Styled component for the divider
 const FancyDivider = styled.div`
   height: 40px;
   width: 2px;
@@ -27,40 +28,90 @@ const FancyDivider = styled.div`
   margin: 0 16px;
 `;
 
-
-
-const Background = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background: rgba(255, 255, 255, 0.1);
+// Styled component for the AppBar with blur effect and gradient background
+const AnimatedAppBar = styled(AppBar)`
+  
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+  z-index: 1;
+  margin: 10px 20px ;
+  border-radius: 15px;
+  padding: 10px; //set vertical size
+  width: calc(100% - 500px);
+  max-width: 1200px;
+  transition: all 0.3s ease-in-out;
+ 
+`;
 
-  // Add any additional styles you want for light/dark mode
-  ${({ mode }) => mode === 'dark' && `
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  `}
+// Styled component for the navigation links
+const NavLink = styled(Link)`
+  text-decoration: none;
+  padding: 0 8px;
+  color: inherit;
+  position: relative;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.palette.accent.main};
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: ${({ theme }) => theme.palette.accent.main};
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+  }
+
+  &:hover:after {
+    width: 100%;
+  }
+`;
+
+// Styled component for the drawer content
+const DrawerContent = styled(List)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  animation: fadeIn 0.5s ease-in-out;
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+`;
+
+// Styled component for the animated switch
+const AnimatedSwitch = styled(Switch)`
+  && {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &&:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const Navbar = () => {
+  const theme = useTheme();
   const { mode, toggleTheme } = useContext(ThemeContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
+  const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
   const [visible, setVisible] = useState(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  // Handle scroll event to show/hide navbar based on scroll position
   const handleScroll = () => {
-    const currentScrollPos = window.pageYOffset;
+    const currentScrollPos = window.scrollY;
     const visible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
     setVisible(visible);
     setPrevScrollPos(currentScrollPos);
@@ -73,100 +124,66 @@ const Navbar = () => {
     };
   });
 
+  // Drawer component with navigation links
   const drawer = (
-    <Box sx={{ width: 250 }}>
-      <List>
-        <ListItem button component={Link} to="/" onClick={handleDrawerToggle} disabled={location.pathname === '/'}>
-          <ListItemIcon><HomeIcon /></ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItem>
-        <ListItem button component={Link} to="/about" onClick={handleDrawerToggle} disabled={location.pathname === '/about'}>
-          <ListItemIcon><InfoIcon /></ListItemIcon>
-          <ListItemText primary="About" />
-        </ListItem>
-        <ListItem button component={Link} to="/projects" onClick={handleDrawerToggle} disabled={location.pathname === '/projects'}>
-          <ListItemIcon><WorkIcon /></ListItemIcon>
-          <ListItemText primary="Projects" />
-        </ListItem>
-        <ListItem button component={Link} to="/contact" onClick={handleDrawerToggle} disabled={location.pathname === '/contact'}>
-          <ListItemIcon><ContactMailIcon /></ListItemIcon>
-          <ListItemText primary="Contact" />
-        </ListItem>
-      </List>
-    </Box>
+    <DrawerContent>
+      <ListItem button component={Link} to="/" onClick={handleDrawerToggle} disabled={location.pathname === '/'}>
+        <ListItemIcon><HomeIcon /></ListItemIcon>
+        <ListItemText primary="Home" />
+      </ListItem>
+      <ListItem button component={Link} to="/about" onClick={handleDrawerToggle} disabled={location.pathname === '/about'}>
+        <ListItemIcon><InfoIcon /></ListItemIcon>
+        <ListItemText primary="About" />
+      </ListItem>
+      <ListItem button component={Link} to="/projects" onClick={handleDrawerToggle} disabled={location.pathname === '/projects'}>
+        <ListItemIcon><WorkIcon /></ListItemIcon>
+        <ListItemText primary="Projects" />
+      </ListItem>
+      <ListItem button component={Link} to="/contact" onClick={handleDrawerToggle} disabled={location.pathname === '/contact'}>
+        <ListItemIcon><ContactMailIcon /></ListItemIcon>
+        <ListItemText primary="Contact" />
+      </ListItem>
+    </DrawerContent>
   );
-
-  const navbarAnimation = useSpring({
-    transform: visible ? 'translateY(0)' : 'translateY(-100%)',
-  });
 
   return (
     <>
-      <animated.div style={navbarAnimation}>
-        <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', zIndex: 1 }}>
-          <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              My Portfolio
-            </Typography>
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-              <Typography 
-                variant="body1" 
-                component={location.pathname === '/' ? 'span' : Link} 
-                to="/" 
-                style={{ 
-                  textDecoration: 'none', 
-                  padding: '0 8px', 
-                  color: location.pathname === '/' ? 'grey' : 'inherit',
-                  pointerEvents: location.pathname === '/' ? 'none' : 'auto'
-                }}
-              >
-                Home
-              </Typography>
-              <FancyDivider />
-              <Typography 
-                variant="body1" 
-                component={location.pathname === '/projects' ? 'span' : Link} 
-                to="/projects" 
-                style={{ 
-                  textDecoration: 'none', 
-                  padding: '0 8px', 
-                  color: location.pathname === '/projects' ? 'grey' : 'inherit',
-                  pointerEvents: location.pathname === '/projects' ? 'none' : 'auto'
-                }}
-              >
-                Projects
-              </Typography>
-              <FancyDivider />
-              <Typography 
-                variant="body1" 
-                component={location.pathname === '/contact' ? 'span' : Link} 
-                to="/contact" 
-                style={{ 
-                  textDecoration: 'none', 
-                  padding: '0 8px', 
-                  color: location.pathname === '/contact' ? 'grey' : 'inherit',
-                  pointerEvents: location.pathname === '/contact' ? 'none' : 'auto'
-                }}
-              >
-                Contact
-              </Typography>
-              <FancyDivider />
-              <Switch checked={mode === 'dark'} onChange={toggleTheme} />
-            </Box>
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              <IconButton color="inherit" aria-label="open drawer" edge="end" onClick={handleDrawerToggle}>
-                <MenuIcon />
-              </IconButton>
-            </Box>
-          </Toolbar>
-        </AppBar>
-      </animated.div>
-      <Background mode={mode} />
+      <AnimatedAppBar
+        position="fixed"
+        theme={theme}
+        style={{ transform: visible ? 'translateY(0)' : 'translateY(-100%)',  }}
+      >
+        <Toolbar sx={{ paddingLeft: '16px', paddingRight: '16px', justifyContent: 'space-between' }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
+            My Portfolio
+          </Typography>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <NavLink to="/" theme={theme}>
+              Home
+            </NavLink>
+            <FancyDivider />
+            <NavLink to="/projects" theme={theme}>
+              Projects
+            </NavLink>
+            <FancyDivider />
+            <NavLink to="/contact" theme={theme}>
+              Contact
+            </NavLink>
+            <FancyDivider />
+            <AnimatedSwitch checked={mode === 'dark'} onChange={toggleTheme} />
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <IconButton color="inherit" aria-label="open drawer" edge="end" onClick={handleDrawerToggle}>
+              <MenuIcon />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AnimatedAppBar>
       <Drawer
         variant="temporary"
         open={mobileOpen}
         onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }} // Better open performance on mobile
+        ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: 'block', md: 'none' },
           '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 250 },
