@@ -5,7 +5,7 @@ const HomeIntro = () => {
   return (
     <Box
       sx={{
-        height: "85vh",
+        height: "130vh",
         backgroundImage: `url(${BgImg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",

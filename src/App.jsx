@@ -19,7 +19,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <div style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
         {transitions((props, item) => (
           <animated.div style={{ ...props, position: 'absolute', width: '100%' }}>
             <Routes location={item}>
