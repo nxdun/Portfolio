@@ -28,7 +28,7 @@ const Home = () => {
   return (
     <ContainerWrapper>
       <HomeIntro />
-      <ProjectHighlight/>
+      {/* <ProjectHighlight/> */}
     </ContainerWrapper>
   );
 };
