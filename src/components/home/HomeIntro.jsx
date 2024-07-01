@@ -5,17 +5,19 @@ import { useTheme, styled } from '@mui/material/styles';
 
 const AnimatedButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
-  borderColor: theme.palette.text.primary,
+  borderColor: 'transparent', // Remove button border
   position: "absolute",
   bottom: "30px",
   left: "50%",
   transform: "translateX(-50%)",
   padding: "10px 20px",
   fontSize: "1.2rem",
-  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  fontWeight: 'bold', // Make text bold
+  transition: "transform 0.3s ease, color 0.3s ease", // Add transition for color change
   '&:hover': {
     transform: "translateX(-50%) scale(1.1)",
-    boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.3)"
+    color: theme.palette.highlight.main, // Change text color on hover
+    textDecoration: 'none', // Remove underline on hover
   },
   [theme.breakpoints.down('sm')]: {
     padding: "8px 16px",
@@ -120,8 +122,8 @@ const HomeIntro = () => {
           marginLeft: { xs: "0", sm: "20px" },
           fontWeight: 'bold',
           textAlign: { xs: "center", sm: "left" }, // Center on small screens
-          perspective: "1000px", // Enable 3D perspective
-          padding: "20px", // Add reasonable padding
+          perspective: "1000px", // Enable 3D perspective ;o]
+          padding: "20px", // Add reasonable padding :]
         }}
       >
         <Box
@@ -132,7 +134,7 @@ const HomeIntro = () => {
             transformStyle: 'preserve-3d',
             transform: `rotateX(${index * -90}deg)`,
             transition: 'transform 2s',
-            borderRadius: '8px',
+            border: `none`,
             backgroundColor: 'transparent',
             padding: "10px", // Adjust padding inside the 3D box
             boxSizing: 'border-box',
@@ -151,6 +153,8 @@ const HomeIntro = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 transform: `rotateX(${i * 90}deg) translateZ(40px)`,
+                borderRadius: '30px',
+                border: {xs:`2px solid ${theme.palette.secondary.main}`, sm:`4px solid ${theme.palette.secondary.main}`}, // Add border to each text item
               }}
             >
               <Typography
@@ -158,9 +162,9 @@ const HomeIntro = () => {
                 sx={{
                   color: theme.palette.text.primary,
                   textAlign: "center", // Center the text
-                  fontSize: { xs: "1.5rem", sm: "2rem" },
+                  fontSize: { xs: "1.2rem", sm: "2rem" },
                   whiteSpace: "nowrap",
-                  paddingRight: {xs:"40px"},
+                  marginRight:"20px",
                 }}
               >
                 I am a {text}
@@ -175,6 +179,21 @@ const HomeIntro = () => {
           ➤
         </Box>
       </AnimatedButton>
+      <Box
+        sx={{
+          position: "absolute",
+          right: { xs: "10px", sm: "20px", md: "30px" },
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: { xs: "100px", sm: "150px", md: "200px" },
+          height: { xs: "100px", sm: "150px", md: "200px" },
+          backgroundColor: theme.palette.background.default, // Adjust the color for transparency effect
+          borderRadius: "50%",
+          border: `2px solid ${theme.palette.highlight.main}`, // Border color
+          opacity: 0.6, // Adjust the opacity for transparency
+          display: { xs: "none", sm: "block" } // Hide on small screens
+        }}
+      />
     </Box>
   );
 };
