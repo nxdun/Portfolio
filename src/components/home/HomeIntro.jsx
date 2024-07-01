@@ -52,13 +52,13 @@ const HomeIntro = () => {
         position: "relative"
       }}
     >
-      <Typography variant="h2" sx={{ color: theme.palette.primary.main, textAlign: "left", marginBottom: "20px" }}>
-        <span style={{ color: theme.palette.accent.main, fontSize: "5rem" }}>N</span>adun
+     <Typography variant="h2" sx={{ color: theme.palette.text.primary, fontSize: "4rem", textAlign: "left", marginBottom: "-9px", marginLeft:"16px", fontWeight: 'bold' }}>
+        <span style={{ color: theme.palette.highlight.main, fontSize: "5rem", textAlign: "left", marginBottom: "2px", marginLeft:"20px", fontWeight: 'bold' }}>N</span>adun
       </Typography>
-      <Typography variant="h2" sx={{ color: theme.palette.secondary.main, textAlign: "left", marginBottom: "20px" }}>
+      <Typography variant="h2" sx={{color: theme.palette.text.primary, fontSize: "3rem", textAlign: "left", marginBottom: "20px", marginLeft:"38px", fontWeight: 'bold' }}>
         Lakshan
       </Typography>
-      <Box sx={{ marginBottom: "20px", minHeight: "60px" }}>
+      <Box sx={{ marginBottom: "20px", minHeight: "60px", marginLeft:"20px", fontWeight: 'bold' }}>
         {alternateTexts.map((text, i) => (
           <Fade in={i === index} timeout={1000} key={i}>
             <Box
@@ -71,7 +71,7 @@ const HomeIntro = () => {
                 display: i === index ? 'block' : 'none',
               }}
             >
-              <Typography variant="h5" sx={{ color: theme.palette.text.primary, textAlign: "left" }}>
+              <Typography variant="h2" sx={{ color: theme.palette.text.primary, textAlign: "left", marginLeft:"20px", fontSize: "2rem" }}>
                 I am a {text}
               </Typography>
             </Box>
