@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Fade } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import BgImg from "../../assets/main-bg.jpg";
 import { useState, useEffect } from 'react';
 import { useTheme, styled } from '@mui/material/styles';
@@ -45,38 +45,128 @@ const HomeIntro = () => {
         backgroundPosition: "center",
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start",
+        alignItems: { xs: "center", sm: "flex-start" }, // Center on small screens
         justifyContent: "center",
         color: theme.palette.text.primary,
-        paddingLeft: "20px",
-        position: "relative"
+        paddingLeft: { xs: 2, sm: 4 },
+        paddingRight: { xs: 2, sm: 4 },
+        position: "relative",
       }}
     >
-     <Typography variant="h2" sx={{ color: theme.palette.text.primary, fontSize: "4rem", textAlign: "left", marginBottom: "-9px", marginLeft:"16px", fontWeight: 'bold' }}>
-        <span style={{ color: theme.palette.highlight.main, fontSize: "5rem", textAlign: "left", marginBottom: "2px", marginLeft:"20px", fontWeight: 'bold' }}>N</span>adun
-      </Typography>
-      <Typography variant="h2" sx={{color: theme.palette.text.primary, fontSize: "3rem", textAlign: "left", marginBottom: "20px", marginLeft:"38px", fontWeight: 'bold' }}>
-        Lakshan
-      </Typography>
-      <Box sx={{ marginBottom: "20px", minHeight: "60px", marginLeft:"20px", fontWeight: 'bold' }}>
-        {alternateTexts.map((text, i) => (
-          <Fade in={i === index} timeout={1000} key={i}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "baseline", // Align text along the baseline
+          textAlign: { xs: "center", sm: "left" },
+          marginLeft: { xs: "0", sm: "90px" },
+          marginBottom: { xs: "0", sm: "-20px" },
+        }}
+      >
+        <Typography
+          variant="h2"
+          sx={{
+            color: theme.palette.highlight.main,
+            fontSize: { xs: "4rem", sm: "5rem", md: "6rem" },
+            fontWeight: 'bold',
+          }}
+        >
+          N
+        </Typography>
+        <Typography
+          variant="h2"
+          sx={{
+            color: theme.palette.text.primary,
+            fontSize: { xs: "2.5rem", sm: "3rem", md: "4rem" },
+            fontWeight: 'bold',
+          }}
+        >
+          adun
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "baseline", // Align text along the baseline
+          textAlign: { xs: "center", sm: "left" },
+          marginLeft: { xs: "00", sm: "89px" },
+        }}
+      >
+        <Typography
+          variant="h2"
+          sx={{
+            color: theme.palette.highlight.main,
+            fontSize: { xs: "4rem", sm: "5rem", md: "6rem" },
+            fontWeight: 'bold',
+          }}
+        >
+          L
+        </Typography>
+        <Typography
+          variant="h2"
+          sx={{
+            color: theme.palette.text.primary,
+            fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+            fontWeight: 'bold',
+            marginLeft: { xs: "0", sm: "5px" }, // Adjust margin as needed
+          }}
+        >
+          akshan
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          marginBottom: { xs: "10px", sm: "20px" },
+          minHeight: { xs: "80px", sm: "100px" },
+          marginLeft: { xs: "0", sm: "20px" },
+          fontWeight: 'bold',
+          textAlign: { xs: "center", sm: "left" }, // Center on small screens
+          perspective: "1000px", // Enable 3D perspective
+          padding: "20px", // Add reasonable padding
+        }}
+      >
+        <Box
+          sx={{
+            position: 'relative',
+            width: { xs: '250px', sm: '450px' },
+            height: { xs: '80px', sm: '100px' },
+            transformStyle: 'preserve-3d',
+            transform: `rotateX(${index * -90}deg)`,
+            transition: 'transform 2s',
+            borderRadius: '8px',
+            backgroundColor: 'transparent',
+            padding: "10px", // Adjust padding inside the 3D box
+            boxSizing: 'border-box',
+          }}
+        >
+          {alternateTexts.map((text, i) => (
             <Box
+              key={i}
               sx={{
-                position: i === index ? 'relative' : 'absolute',
-                top: 0,
-                left: 0,
+                paddingLeft: '20px',
+                position: 'absolute',
                 width: '100%',
                 height: '100%',
-                display: i === index ? 'block' : 'none',
+                backfaceVisibility: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: `rotateX(${i * 90}deg) translateZ(40px)`,
               }}
             >
-              <Typography variant="h2" sx={{ color: theme.palette.text.primary, textAlign: "left", marginLeft:"20px", fontSize: "2rem" }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  color: theme.palette.text.primary,
+                  textAlign: "center", // Center the text
+                  fontSize: { xs: "1.5rem", sm: "2rem" },
+                  whiteSpace: "nowrap",
+                }}
+              >
                 I am a {text}
               </Typography>
             </Box>
-          </Fade>
-        ))}
+          ))}
+        </Box>
       </Box>
       <AnimatedButton variant="outlined">
         Show My Work

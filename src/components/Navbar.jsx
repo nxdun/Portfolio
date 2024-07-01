@@ -157,7 +157,7 @@ const Navbar = () => {
       >
         <Toolbar sx={{ paddingLeft: '16px', paddingRight: '16px', justifyContent: 'space-between' }}>
           <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
-            My Portfolio
+            Nuu{"'s"} Portfolio
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <NavLink to="/" theme={theme}>
