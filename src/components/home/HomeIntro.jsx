@@ -136,7 +136,7 @@ const HomeIntro = () => {
             transition: 'transform 2s',
             border: `none`,
             backgroundColor: 'transparent',
-            padding: "10px", // Adjust padding inside the 3D box
+            marginTop: "50px", // Adjust padding inside the 3D box
             boxSizing: 'border-box',
           }}
         >
