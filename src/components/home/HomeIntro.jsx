@@ -88,7 +88,7 @@ const HomeIntro = () => {
           display: "flex",
           alignItems: "baseline", // Align text along the baseline
           textAlign: { xs: "center", sm: "left" },
-          marginLeft: { xs: "00", sm: "89px" },
+          marginLeft: { xs: "10", sm: "89px" },
         }}
       >
         <Typography
@@ -160,6 +160,7 @@ const HomeIntro = () => {
                   textAlign: "center", // Center the text
                   fontSize: { xs: "1.5rem", sm: "2rem" },
                   whiteSpace: "nowrap",
+                  paddingRight: {xs:"40px"},
                 }}
               >
                 I am a {text}
