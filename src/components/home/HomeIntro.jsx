@@ -2,6 +2,7 @@ import { Box, Typography, Button } from "@mui/material";
 import BgImg from "../../assets/main-bg.jpg";
 import { useState, useEffect } from 'react';
 import { useTheme, styled } from '@mui/material/styles';
+import ParticlesComp from "../animated/Particles";
 
 const AnimatedButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -55,6 +56,7 @@ const HomeIntro = () => {
         position: "relative",
       }}
     >
+      <ParticlesComp />
       <Box
         sx={{
           display: "flex",
@@ -154,6 +156,8 @@ const HomeIntro = () => {
                 justifyContent: 'center',
                 transform: `rotateX(${i * 90}deg) translateZ(40px)`,
                 borderRadius: '30px',
+                //transperant background blur
+                backdropFilter: 'blur(2px)',
                 border: {xs:`2px solid ${theme.palette.secondary.main}`, sm:`4px solid ${theme.palette.secondary.main}`}, // Add border to each text item
               }}
             >
@@ -173,7 +177,9 @@ const HomeIntro = () => {
           ))}
         </Box>
       </Box>
-      <AnimatedButton variant="outlined">
+      <AnimatedButton variant="outlined" sx= {{
+        
+      }}>
         Show My Work
         <Box component="span" sx={{ marginLeft: "10px", transform: "rotate(90deg)" }}>
           ➤
