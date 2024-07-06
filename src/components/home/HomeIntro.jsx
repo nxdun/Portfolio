@@ -2,7 +2,7 @@ import { Box, Typography, Button } from "@mui/material";
 import BgImg from "../../assets/main-bg.jpg";
 import { useState, useEffect } from 'react';
 import { useTheme, styled } from '@mui/material/styles';
-import ParticlesComp from "../animated/Particles";
+// import ParticlesComp from "../animated/Particles";
 
 const AnimatedButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -56,7 +56,7 @@ const HomeIntro = () => {
         position: "relative",
       }}
     >
-      <ParticlesComp />
+      {/* <ParticlesComp /> */}
       <Box
         sx={{
           display: "flex",
@@ -66,6 +66,16 @@ const HomeIntro = () => {
           marginBottom: { xs: "0", sm: "-20px" },
         }}
       >
+        <Typography 
+          variant="h3"
+          sx={{
+            color: theme.palette.text.primary,
+            fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" },
+
+          }}
+          >
+            Hii
+          </Typography>
         <Typography
           variant="h2"
           sx={{
