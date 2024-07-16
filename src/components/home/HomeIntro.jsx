@@ -2,7 +2,7 @@ import { Box, Typography, Button } from "@mui/material";
 import BgImg from "../../assets/main-bg.jpg";
 import { useState, useEffect } from 'react';
 import { useTheme, styled } from '@mui/material/styles';
-// import ParticlesComp from "../animated/Particles";
+// import ParticlesComp from "../animated/Particles";gfdhi
 
 const AnimatedButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,

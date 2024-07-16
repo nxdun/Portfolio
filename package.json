@@ -15,15 +15,17 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
-    "@react-spring/web": "^9.7.3",
-    "@tsparticles/react": "^3.0.0",
-    "@tsparticles/slim": "^3.5.0",
+    "@react-three/fiber": "^8.16.8",
+    "@types/three": "^0.166.0",
+    "framer-motion": "^11.3.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",
     "rough-notation": "^0.5.1",
-    "styled-components": "^6.1.11"
+    "shadergradient": "^1.2.14",
+    "styled-components": "^6.1.11",
+    "three": "^0.166.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
