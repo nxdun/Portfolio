@@ -1,10 +1,11 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
+import { Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 // import About from './pages/About';
-import Projects from './pages/Projects';
-import Contact from './pages/Contact';
+import Projects from "./pages/Projects";
+import Contact from "./pages/Contact";
+
 
 function App() {
   const location = useLocation();
@@ -25,33 +26,36 @@ function App() {
   };
 
   const pageTransition = {
-    type: 'spring',
+    type: "spring",
     stiffness: 200,
     damping: 20,
   };
 
   return (
     <>
-      <Navbar />
-      <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route
-              path="/"
-              element={
-                <motion.div
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                  style={{ position: 'absolute', width: '100%' }}
-                >
-                  <Home />
-                </motion.div>
-              }
-            />
-            {/* <Route
+      
+       <Navbar />
+        <div
+          style={{ position: "relative", height: "100vh", overflow: "hidden" }}
+        >
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route
+                path="/"
+                element={
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    style={{ position: "absolute", width: "100%" }}
+                  >
+                    <Home />
+                  </motion.div>
+                }
+              />
+              {/* <Route
               path="/about"
               element={
                 <motion.div
@@ -66,39 +70,39 @@ function App() {
                 </motion.div>
               }
             /> */}
-            <Route
-              path="/projects"
-              element={
-                <motion.div
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                  style={{ position: 'absolute', width: '100%' }}
-                >
-                  <Projects />
-                </motion.div>
-              }
-            />
-            <Route
-              path="/contact"
-              element={
-                <motion.div
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                  style={{ position: 'absolute', width: '100%' }}
-                >
-                  <Contact />
-                </motion.div>
-              }
-            />
-          </Routes>
-        </AnimatePresence>
-      </div>
+              <Route
+                path="/projects"
+                element={
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    style={{ position: "absolute", width: "100%" }}
+                  >
+                    <Projects />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    style={{ position: "absolute", width: "100%" }}
+                  >
+                    <Contact />
+                  </motion.div>
+                }
+              />
+            </Routes>
+          </AnimatePresence>
+        </div>
     </>
   );
 }

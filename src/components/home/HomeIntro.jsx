@@ -1,7 +1,11 @@
 import { Box, Typography, Button } from "@mui/material";
-import BgImg from "../../assets/main-bg.jpg";
 import { useState, useEffect } from 'react';
 import { useTheme, styled } from '@mui/material/styles';
+
+import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
+import * as reactSpring from "@react-spring/three";
+import * as drei from "@react-three/drei";
+import * as fiber from "@react-three/fiber";
 // import ParticlesComp from "../animated/Particles";gfdhi
 
 const AnimatedButton = styled(Button)(({ theme }) => ({
@@ -43,7 +47,6 @@ const HomeIntro = () => {
     <Box
       sx={{
         height: "100vh",
-        backgroundImage: `url(${BgImg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         display: "flex",
@@ -196,20 +199,18 @@ const HomeIntro = () => {
         </Box>
       </AnimatedButton>
       <Box
-        sx={{
-          position: "absolute",
-          right: { xs: "10px", sm: "20px", md: "30px" },
-          top: "50%",
-          transform: "translateY(-50%)",
-          width: { xs: "100px", sm: "150px", md: "200px" },
-          height: { xs: "100px", sm: "150px", md: "200px" },
-          backgroundColor: theme.palette.background.default, // Adjust the color for transparency effect
-          borderRadius: "50%",
-          border: `2px solid ${theme.palette.highlight.main}`, // Border color
-          opacity: 0.6, // Adjust the opacity for transparency
-          display: { xs: "none", sm: "block" } // Hide on small screens
-        }}
-      />
+  sx={{
+    border: "1px solid blue",
+    width: "15vh",
+    height: "15vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginLeft: "auto",
+    position:"fixed"
+  }}
+>
+</Box>
     </Box>
   );
 };
