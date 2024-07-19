@@ -1,6 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
-import { useState, useEffect } from 'react';
-import { useTheme, styled } from '@mui/material/styles';
+import { useState, useEffect } from "react";
+import { useTheme, styled } from "@mui/material/styles";
 
 import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
 import * as reactSpring from "@react-spring/three";
@@ -10,28 +10,32 @@ import * as fiber from "@react-three/fiber";
 
 const AnimatedButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
-  borderColor: 'transparent', // Remove button border
+  borderColor: "transparent", // Remove button border
   position: "absolute",
   bottom: "30px",
   left: "50%",
   transform: "translateX(-50%)",
   padding: "10px 20px",
   fontSize: "1.2rem",
-  fontWeight: 'bold', // Make text bold
+  fontWeight: "bold", // Make text bold
   transition: "transform 0.3s ease, color 0.3s ease", // Add transition for color change
-  '&:hover': {
+  "&:hover": {
     transform: "translateX(-50%) scale(1.1)",
     color: theme.palette.highlight.main, // Change text color on hover
-    textDecoration: 'none', // Remove underline on hover
+    textDecoration: "none", // Remove underline on hover
   },
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     padding: "8px 16px",
     fontSize: "1rem",
-  }
+  },
 }));
 
 const HomeIntro = () => {
-  const alternateTexts = ["Software Engineer", "Software Developer", "Fullstack Developer"];
+  const alternateTexts = [
+    "Software Engineer",
+    "Software Developer",
+    "Fullstack Developer",
+  ];
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -69,22 +73,21 @@ const HomeIntro = () => {
           marginBottom: { xs: "0", sm: "-20px" },
         }}
       >
-        <Typography 
+        <Typography
           variant="h3"
           sx={{
             color: theme.palette.text.primary,
             fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" },
-
           }}
-          >
-            Hii
-          </Typography>
+        >
+          Hii
+        </Typography>
         <Typography
           variant="h2"
           sx={{
             color: theme.palette.highlight.main,
             fontSize: { xs: "4rem", sm: "5rem", md: "6rem" },
-            fontWeight: 'bold',
+            fontWeight: "bold",
           }}
         >
           N
@@ -94,7 +97,7 @@ const HomeIntro = () => {
           sx={{
             color: theme.palette.text.primary,
             fontSize: { xs: "2.5rem", sm: "3rem", md: "4rem" },
-            fontWeight: 'bold',
+            fontWeight: "bold",
           }}
         >
           adun
@@ -113,7 +116,7 @@ const HomeIntro = () => {
           sx={{
             color: theme.palette.highlight.main,
             fontSize: { xs: "4rem", sm: "5rem", md: "6rem" },
-            fontWeight: 'bold',
+            fontWeight: "bold",
           }}
         >
           L
@@ -123,7 +126,7 @@ const HomeIntro = () => {
           sx={{
             color: theme.palette.text.primary,
             fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-            fontWeight: 'bold',
+            fontWeight: "bold",
             marginLeft: { xs: "0", sm: "5px" }, // Adjust margin as needed
           }}
         >
@@ -135,7 +138,7 @@ const HomeIntro = () => {
           marginBottom: { xs: "10px", sm: "20px" },
           minHeight: { xs: "80px", sm: "100px" },
           marginLeft: { xs: "0", sm: "20px" },
-          fontWeight: 'bold',
+          fontWeight: "bold",
           textAlign: { xs: "center", sm: "left" }, // Center on small screens
           perspective: "1000px", // Enable 3D perspective ;o]
           padding: "20px", // Add reasonable padding :]
@@ -143,35 +146,38 @@ const HomeIntro = () => {
       >
         <Box
           sx={{
-            position: 'relative',
-            width: { xs: '250px', sm: '450px' },
-            height: { xs: '80px', sm: '100px' },
-            transformStyle: 'preserve-3d',
+            position: "relative",
+            width: { xs: "250px", sm: "450px" },
+            height: { xs: "80px", sm: "100px" },
+            transformStyle: "preserve-3d",
             transform: `rotateX(${index * -90}deg)`,
-            transition: 'transform 2s',
+            transition: "transform 2s",
             border: `none`,
-            backgroundColor: 'transparent',
+            backgroundColor: "transparent",
             marginTop: "50px", // Adjust padding inside the 3D box
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
           }}
         >
           {alternateTexts.map((text, i) => (
             <Box
               key={i}
               sx={{
-                paddingLeft: '20px',
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                backfaceVisibility: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                paddingLeft: "20px",
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                backfaceVisibility: "hidden",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 transform: `rotateX(${i * 90}deg) translateZ(40px)`,
-                borderRadius: '30px',
+                borderRadius: "30px",
                 //transperant background blur
-                backdropFilter: 'blur(2px)',
-                border: {xs:`2px solid ${theme.palette.secondary.main}`, sm:`4px solid ${theme.palette.secondary.main}`}, // Add border to each text item
+                backdropFilter: "blur(2px)",
+                border: {
+                  xs: `2px solid ${theme.palette.secondary.main}`,
+                  sm: `4px solid ${theme.palette.secondary.main}`,
+                }, // Add border to each text item
               }}
             >
               <Typography
@@ -181,7 +187,7 @@ const HomeIntro = () => {
                   textAlign: "center", // Center the text
                   fontSize: { xs: "1.2rem", sm: "2rem" },
                   whiteSpace: "nowrap",
-                  marginRight:"20px",
+                  marginRight: "20px",
                 }}
               >
                 I am a {text}
@@ -190,27 +196,27 @@ const HomeIntro = () => {
           ))}
         </Box>
       </Box>
-      <AnimatedButton variant="outlined" sx= {{
-        
-      }}>
+      <AnimatedButton variant="outlined" sx={{}}>
         Show My Work
-        <Box component="span" sx={{ marginLeft: "10px", transform: "rotate(90deg)" }}>
+        <Box
+          component="span"
+          sx={{ marginLeft: "10px", transform: "rotate(90deg)" }}
+        >
           ➤
         </Box>
       </AnimatedButton>
       <Box
-  sx={{
-    border: "1px solid blue",
-    width: "15vh",
-    height: "15vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    marginLeft: "auto",
-    position:"fixed"
-  }}
->
-</Box>
+        sx={{
+          border: "1px solid blue",
+          width: "15vh",
+          height: "15vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          marginLeft: "auto",
+          position: "fixed",
+        }}
+      >Hi</Box>
     </Box>
   );
 };
