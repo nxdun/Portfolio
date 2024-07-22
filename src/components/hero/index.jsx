@@ -1,0 +1,1 @@
+//hero page index 
