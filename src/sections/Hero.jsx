@@ -41,15 +41,15 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="body-font text-gray-400">
+    <section className="body-font text-gray-400 w-full h-full">
       <div className="container mx-auto flex flex-col items-center px-5 py-10 md:flex-row md:py-24">
         <div className="mb-12 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
-          <h1 className="title-font mb-4 text-4xl font-extrabold text-yellow-300 sm:text-5xl lg:text-6xl">
+          <h1 className="title-font mb-4 whitespace-nowrap text-2xl font-extrabold text-yellow-300 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
             Welcome to My Portfolio
           </h1>
-          <h2 className="title-font mb-4 text-xl font-medium text-white sm:text-2xl lg:text-3xl">
+          <h2 className="title-font mb-4 text-lg font-medium text-white sm:text-xl md:text-2xl lg:text-3xl">
             I'm{" "}
-            <span id="highlight" className="text-3xl sm:text-3xl lg:text-5xl">
+            <span id="highlight" className="text-lg sm:text-xl md:text-2xl lg:text-3xl">
               Software Engineer Intern
             </span>
           </h2>
