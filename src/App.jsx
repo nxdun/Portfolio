@@ -4,13 +4,15 @@ import * as reactSpring from "@react-spring/three";
 import * as drei from "@react-three/drei";
 import * as fiber from "@react-three/fiber";
 import {  useScroll, useTransform } from "framer-motion";
+import '@fontsource/roboto';
+
 
 export default function App() {
   const { scrollY } = useScroll();
   const scale = useTransform(scrollY, [0, 500], [1, 3]); // Adjust the scale range if needed
 
   return (
-    <main className="flex flex-col min-h-screen relative overflow-hidden">
+    <main className="flex flex-col min-h-screen relative overflow-hidden font-sans">
       <ShaderGradientCanvas
         importedFiber={{ ...fiber, ...drei, ...reactSpring }}
         style={{

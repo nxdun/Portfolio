@@ -49,7 +49,7 @@ export const Hero = () => {
             </button>
           </div>
         </div>
-        <div className="w-100 md:w-1/2 lg:w-full lg:max-w-lg">
+        <div className="w-100 md:w-1/2 lg:w-full lg:max-w-lg ">
           <Canvas
             dpr={[1, 2]}
             shadows
