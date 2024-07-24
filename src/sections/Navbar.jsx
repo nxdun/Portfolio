@@ -1,5 +1,5 @@
 export const Navbar = () => (
-  <header className="text-gray-400 bg-opacity-30 backdrop-blur-lg body-font relative p-4 rounded-lg">
+  <header className="text-gray-400 backdrop-blur-md body-font relative p-4 m-2  rounded-lg ring-2 ring-[#0a0a0a]">
     <div className="container mx-auto flex flex-wrap flex-col md:flex-row items-center">
       <a className="flex title-font font-medium items-center text-white mb-4 md:mb-0">
         <svg
@@ -17,7 +17,7 @@ export const Navbar = () => (
         <span className="ml-3 text-xl">Nadun Lakshan</span>
       </a>
       <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-        <a href="#home" className="mr-5 hover:text-white">Home</a>
+        <a href="#home" className="mr-5 hover:text-grey" disabled>Home</a>
         <a href="#projects" className="mr-5 hover:text-white">Projects</a>
         <a href="#contact" className="mr-5 hover:text-white">Contact</a>
       </nav>
