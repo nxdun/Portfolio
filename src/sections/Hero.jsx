@@ -1,9 +1,9 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
 import { useRef, useEffect, useState } from "react";
-import { AnimationMixer } from 'three';
-import { annotate } from 'rough-notation';
-import { motion } from 'framer-motion';
+import { AnimationMixer } from "three";
+import { annotate } from "rough-notation";
+import { motion } from "framer-motion";
 import Heroo from "../assets/optimal-hero.glb";
 
 function Model(props) {
@@ -29,10 +29,10 @@ export const Hero = () => {
   const [annotation, setAnnotation] = useState(null);
 
   useEffect(() => {
-    const element = document.querySelector('#highlight');
+    const element = document.querySelector("#highlight");
     const newAnnotation = annotate(element, {
-      type: 'highlight',
-      color: '#8B0000',
+      type: "highlight",
+      color: "#8B0000",
       animationDuration: 1000,
     });
     setTimeout(() => {
@@ -56,18 +56,18 @@ export const Hero = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.5, // Faster duration for each item to animate
-        delay: 0.5 // Faster delay before the item starts animating
-      }
+        delay: 0.5, // Faster delay before the item starts animating
+      },
     },
   };
 
   return (
-    <section className="body-font text-gray-400 w-full h-full">
+    <section className="body-font h-full w-full text-gray-400">
       <div className="container mx-auto flex flex-col items-center px-5 py-10 md:flex-row md:py-24">
         <motion.div
           className="mb-12 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24"
@@ -86,7 +86,10 @@ export const Hero = () => {
             variants={itemVariants}
           >
             I'm{" "}
-            <span id="highlight" className="text-lg sm:text-xl md:text-2xl lg:text-3xl">
+            <span
+              id="highlight"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl"
+            >
               Software Engineer Intern
             </span>
           </motion.h2>
@@ -99,24 +102,17 @@ export const Hero = () => {
             impactful projects and gain industry experience.
           </motion.p>
           <motion.div
-            className="flex flex-col items-center space-y-4 md:flex-row md:space-y-0 md:space-x-4"
+            className="flex flex-col items-center space-y-4 md:flex-row md:space-x-4 md:space-y-0"
             variants={itemVariants}
           >
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              className="inline-flex w-full justify-center rounded border-0 bg-indigo-500 px-6 py-2 text-lg text-white hover:bg-indigo-600 focus:outline-none md:w-auto"
-            >
-              Contact Me
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              className="inline-flex w-full justify-center rounded border-0 bg-gray-800 px-6 py-2 text-lg text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none md:w-auto"
-            >
-              My Resume
-            </motion.button>
+            <button class="hover:animate-gradient-xy relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700">
+              MY PROJECTS
+            </button>
+
+            
           </motion.div>
         </motion.div>
-        <motion.div 
+        <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -126,7 +122,11 @@ export const Hero = () => {
             dpr={[1, 2]}
             shadows
             camera={{ fov: 50 }}
-            style={{ height: "60vh", backgroundColor: "transparent", width: "100%" }}
+            style={{
+              height: "60vh",
+              backgroundColor: "transparent",
+              width: "100%",
+            }}
           >
             <PresentationControls
               speed={1.5}
