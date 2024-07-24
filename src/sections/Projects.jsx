@@ -146,10 +146,10 @@ export const Projects = () => {
               onClick={() => setSelectedProject(project)}
             >
               <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden bg-opacity-30 backdrop-blur-lg">
-              <div class="relative lg:h-48 md:h-36 cursor-pointer overflow-hidden rounded-3xl text-2xl font-bold">
-                  <div class="peer absolute z-10 h-full w-full"></div>
-                  <div class="absolute -left-16 -top-32 h-44 w-32 rounded-full bg-purple-300 transition-all duration-500 peer-hover:-left-16 peer-hover:-top-20 peer-hover:h-[140%] peer-hover:w-[140%]"></div>
-                  <div class="absolute -bottom-32 -right-16 flex h-44 w-36 items-end justify-end rounded-full bg-purple-300 text-center text-xl transition-all duration-500 peer-hover:bottom-0 peer-hover:right-0 peer-hover:h-full peer-hover:w-full peer-hover:items-center peer-hover:justify-center peer-hover:rounded-b-none">
+              <div className="relative lg:h-48 md:h-36 cursor-pointer overflow-hidden rounded-3xl text-2xl font-bold">
+                  <div className="peer absolute z-10 h-full w-full"></div>
+                  <div className="absolute -left-16 -top-32 h-44 w-32 rounded-full bg-purple-300 transition-all duration-500 peer-hover:-left-16 peer-hover:-top-20 peer-hover:h-[140%] peer-hover:w-[140%]"></div>
+                  <div className="absolute -bottom-32 -right-16 flex h-44 w-36 items-end justify-end rounded-full bg-purple-300 text-center text-xl transition-all duration-500 peer-hover:bottom-0 peer-hover:right-0 peer-hover:h-full peer-hover:w-full peer-hover:items-center peer-hover:justify-center peer-hover:rounded-b-none">
                   <motion.img 
                 alt="project" 
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
@@ -157,7 +157,7 @@ export const Projects = () => {
                 whileHover={{ scale: 1.1 }}
               />
                   </div>
-                  <div class="flex h-full w-full items-center justify-center uppercase">
+                  <div className="flex h-full w-full items-center justify-center uppercase">
                   <motion.img 
                 alt="project" 
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
