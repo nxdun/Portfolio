@@ -146,7 +146,7 @@ export const Projects = () => {
               onClick={() => setSelectedProject(project)}
             >
               <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden bg-opacity-30 backdrop-blur-lg">
-              <div className="relative lg:h-48 md:h-36 cursor-pointer overflow-hidden rounded-3xl text-2xl font-bold">
+              <div className="relative lg:h-48 md:h-36 cursor-pointer overflow-hidden rounded-xl text-2xl font-bold">
                   <div className="peer absolute z-10 h-full w-full"></div>
                   <div className="absolute -left-16 -top-32 h-44 w-32 rounded-full bg-purple-300 transition-all duration-500 peer-hover:-left-16 peer-hover:-top-20 peer-hover:h-[140%] peer-hover:w-[140%]"></div>
                   <div className="absolute -bottom-32 -right-16 flex h-44 w-36 items-end justify-end rounded-full bg-purple-300 text-center text-xl transition-all duration-500 peer-hover:bottom-0 peer-hover:right-0 peer-hover:h-full peer-hover:w-full peer-hover:items-center peer-hover:justify-center peer-hover:rounded-b-none">
@@ -171,7 +171,7 @@ export const Projects = () => {
                   <h1 className="title-font text-lg font-medium text-white mb-3">{project.short_desc}</h1>
                   <p className="leading-relaxed mb-3">{project.full_desc}</p>
                   <div className="flex items-center flex-wrap">
-                    <a href={project.github_url} className="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0">View on GitHub
+                    <a href={project.github_url} target = "_blank" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 group bg-gray-900 hover:bg-gray-950 transition-all duration-200 ease-in-out hover:ring-2 hover:ring-offset-2 hover:ring-gray-900">View on GitHub
                       <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-4 h-4 ml-2" viewBox="0 0 24 24">
                         <path d="M5 12h14M12 5l7 7-7 7"></path>
                       </svg>
