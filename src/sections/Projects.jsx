@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { annotate } from 'rough-notation';
 const projectData = [
   {
     project_name: "NASA - Spacia",
@@ -71,10 +70,6 @@ const popupVariants = {
 };
 
 const Popup = ({ project, onClose }) => {
-  useEffect(() => {
-    const hashtagElements = document.querySelectorAll('.hashtag');
-    hashtagElements.forEach(el => annotate(el, { type: 'highlight', color: 'yellow', multiline: true }).show());
-  }, [project]);
 
   return (
     <motion.div
