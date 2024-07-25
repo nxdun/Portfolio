@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
 import { AnimationMixer } from "three";
-import { annotate } from "rough-notation";
 import { motion, AnimatePresence } from "framer-motion";
 import Heroo from "../assets/optimal-hero.glb";
 
@@ -26,21 +25,7 @@ function Model(props) {
 }
 
 export const Hero = () => {
-  const [annotation, setAnnotation] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const element = document.querySelector("#highlight");
-    const newAnnotation = annotate(element, {
-      type: "highlight",
-      color: "#8B0000",
-      animationDuration: 1000,
-    });
-    setTimeout(() => {
-      newAnnotation.show();
-    }, 2000);
-    setAnnotation(newAnnotation);
-  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -111,12 +96,15 @@ export const Hero = () => {
             variants={itemVariants}
           >
             I'm{" "}
-            <span
+            <motion.span
               id="highlight"
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl"
+              initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+              animate={{ backgroundColor: ["rgba(0, 0, 0, 0)", "#FFD700", "rgba(0, 0, 0, 0)"] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
             >
               Software Engineer Intern
-            </span>
+            </motion.span>
           </motion.h2>
           <motion.p
             className="mb-8 mt-4 leading-relaxed"

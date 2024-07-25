@@ -8,7 +8,7 @@ export const Footer = () => (
           <span className="ml-3 text-xl">Nadun Lakshan</span>
         </a>
         <p className="text-sm text-gray-500 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2024 Nadun Lakshan —
-          <a href="https://twitter.com" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">@nadun</a>
+          <a href="https://twitter.com" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">V 1.0.0-beta</a>
         </p>
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
               <a
