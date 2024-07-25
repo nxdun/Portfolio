@@ -7,9 +7,15 @@ export const Footer = () => (
           </svg>
           <span className="ml-3 text-xl">Nadun Lakshan</span>
         </a>
-        <p className="text-sm text-gray-500 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2024 Nadun Lakshan —
-          <a href="https://twitter.com" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">V 1.0.0-beta</a>
-        </p>
+        <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+          <p className="text-sm text-gray-400 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2024 Nadun Lakshan<br/>
+          <a href="#" className="text-gray-400 " target="_blank" rel="noopener noreferrer">ver -</a> <a href="#" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">1.0.1-public</a>.</p>
+        </span>
+        <br/>
+        <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+          <p className="text-sm text-gray-500 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">This site is protected by reCAPTCHA and the Google<br/><a href="#" className="text-gray-400 " target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="https://policies.google.com/terms" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">Terms of Service</a>.</p>
+        </span>
+        <div className="flex-grow sm:flex sm:justify-center mt-4 sm:mt-0"></div>
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
               <a
                 target="_blank"
