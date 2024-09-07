@@ -34,8 +34,7 @@ export const Contact = () => {
 
     try {
       // Verify CAPTCHA
-      const server = import.meta.env.VITE_SERVER_URL;
-      const response = await fetch(server, {
+      const response = await fetch("http://localhost:3000/v1/auth/capcheck", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +140,7 @@ export const Contact = () => {
               <div className="w-full p-1 flex flex-col items-center">
   <div className="mx-3 my-3">
     <ReCAPTCHA
-      sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+      sitekey="6LcWGxgqAAAAAI9_p_sU5TMSE7qUnPffVhtQ1e6z"
       onChange={handleCaptchaChange}
       onExpired={handleCaptchaExpired}
       data-testid="recaptcha"
