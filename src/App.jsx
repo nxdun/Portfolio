@@ -15,7 +15,7 @@ export default function App() {
   return (
     <main className="flex flex-col min-h-screen relative overflow-hidden font-sans">
       <ShaderGradientCanvas
-        importedFiber={{ ...fiber, ...drei, ...reactSpring }}
+        importedfiber={{ ...fiber, ...drei, ...reactSpring }}
         style={{
           position: "fixed",
           top: 0,

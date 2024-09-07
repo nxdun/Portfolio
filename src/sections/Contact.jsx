@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -34,7 +34,7 @@ export const Contact = () => {
 
     try {
       // Verify CAPTCHA
-      const response = await fetch("http://localhost:3000/v1/auth/capcheck", {
+      const response = await fetch(import.meta.env.VITE_AUTH_BACKEND, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +140,8 @@ export const Contact = () => {
               <div className="w-full p-1 flex flex-col items-center">
   <div className="mx-3 my-3">
     <ReCAPTCHA
-      sitekey="6LcWGxgqAAAAAI9_p_sU5TMSE7qUnPffVhtQ1e6z"
+    // removed captcha dummy key
+      sitekey={import.meta.env.VITE_CID}
       onChange={handleCaptchaChange}
       onExpired={handleCaptchaExpired}
       data-testid="recaptcha"
@@ -170,9 +171,7 @@ export const Contact = () => {
                     >
                       <path
                         d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
+                  
                       ></path>
                     </svg>
                     <p className="text-xs font-semibold">
@@ -194,9 +193,7 @@ export const Contact = () => {
                     >
                       <path
                         d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
+                     
                       ></path>
                     </svg>
                     <p className="text-xs font-semibold">
@@ -218,9 +215,7 @@ export const Contact = () => {
                     >
                       <path
                         d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
+                      
                       ></path>
                     </svg>
                     <p className="text-xs font-semibold">
@@ -242,9 +237,7 @@ export const Contact = () => {
                     >
                       <path
                         d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
+                    
                       ></path>
                     </svg>
                     <p className="text-xs font-semibold">

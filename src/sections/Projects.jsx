@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import PropTypes from 'prop-types';
 const projectData = [
   {
     project_name: "NASA - Spacia",
@@ -8,16 +10,16 @@ const projectData = [
     tags: ["React", "Express", "Netlify", "Heroku"],
     github_url: "https://github.com/nxdun/NASA-Spacia",
     time_period: "April 2024 - May 2024",
-    photos: ["https://dummyimage.com/600x360/000/fff", "https://dummyimage.com/600x360/111/fff"]
+    photos: ["https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg", "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg"]
   },
   {
     project_name: "Study-Forge Learning System",
-    short_desc: "User Interface: Designed and implemented a fully responsive and attractive user interface using React.",
+    short_desc: "Microservice: UI and Backend Services with Containerization and Orchestration",
     full_desc: "Backend Services: Built and maintained high-performance and secure backend services using Express, Flask, and Spring Boot. Containerization and Orchestration: Utilized Docker and Kubernetes for efficient container orchestration.",
     tags: ["React", "Express", "Flask", "Spring Boot", "Docker", "Kubernetes"],
     github_url: "https://github.com/nxdun/lms-microservice",
     time_period: "March 2024 - May 2024",
-    photos: ["https://dummyimage.com/600x360/222/fff", "https://dummyimage.com/600x360/333/fff"]
+    photos: ["https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-1.png", "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-2.png"]
   },
   {
     project_name: "Chatte - P2P and Global Messenger",
@@ -26,7 +28,7 @@ const projectData = [
     tags: ["Java", "Apache Felix", "Socket Programming", "Eclipse IDE"],
     github_url: "https://github.com/nxdun/OSGI.chatte",
     time_period: "February 2024 - March 2024",
-    photos: ["https://dummyimage.com/600x360/444/fff", "https://dummyimage.com/600x360/555/fff"]
+    photos: ["https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-1.jpg", "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-2.jpg"]
   },
   {
     project_name: "Movie Theatre Management System",
@@ -35,7 +37,7 @@ const projectData = [
     tags: ["React.js", "MongoDB", "RESTful API", "Figma"],
     github_url: "https://github.com/nxdun/Movie-theatre-management-system",
     time_period: "July 2023 - October 2023",
-    photos: ["https://dummyimage.com/600x360/666/fff", "https://dummyimage.com/600x360/777/fff"]
+    photos: ["https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-2.bak.jpg", "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-1.bak.jpg"]
   },
   {
     project_name: "Garment And Textile Management System",
@@ -44,7 +46,7 @@ const projectData = [
     tags: ["JSP Servlets", "SQL", "PHP", "Apache Tomcat"],
     github_url: "https://github.com/nxdun",
     time_period: "January 2023 - March 2023",
-    photos: ["https://dummyimage.com/600x360/888/fff", "https://dummyimage.com/600x360/999/fff"]
+    photos: ["https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png", "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png"]
   }
 ];
 const cardVariants = {
@@ -148,7 +150,7 @@ export const Projects = () => {
                   <motion.img 
                 alt="project" 
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
-                src="https://dummyimage.com/600x360"
+                src={project.photos[0]}
                 whileHover={{ scale: 1.1 }}
               />
                   </div>
@@ -156,7 +158,7 @@ export const Projects = () => {
                   <motion.img 
                 alt="project" 
                 className="lg:h-48 md:h-36 w-full object-cover object-center"
-                src="https://dummyimage.com/600x360"
+                src={project.photos[1]}
                 whileHover={{ scale: 1.1 }}
               />
                   </div>
@@ -184,4 +186,9 @@ export const Projects = () => {
       </AnimatePresence>
     </section>
   );
+};
+
+//props validation
+Projects.propTypes = {
+  projectData: PropTypes.array,
 };
