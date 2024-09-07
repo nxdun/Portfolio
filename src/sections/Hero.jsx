@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable react/no-unknown-property */
+import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
 import { AnimationMixer } from "three";
@@ -95,7 +96,7 @@ export const Hero = () => {
             className="title-font mb-4 text-lg font-medium text-white sm:text-xl md:text-2xl lg:text-3xl"
             variants={itemVariants}
           >
-            I'm{" "}
+            I am{" "}
             <motion.span
               id="highlight"
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl"

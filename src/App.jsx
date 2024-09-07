@@ -10,7 +10,7 @@ import '@fontsource/roboto';
 
 export default function App() {
   const { scrollY } = useScroll();
-  const scale = useTransform(scrollY, [0, 500], [1, 3]); // Adjust the scale range if needed
+  const scale = useTransform(scrollY, [0, 500], [1, 3]); 
 
   return (
     <main className="flex flex-col min-h-screen relative overflow-hidden font-sans">
@@ -24,7 +24,7 @@ export default function App() {
           height: "100vh",
           zIndex: -1,
           transform: `scale(${scale})`,
-          transformOrigin: "center center", // Ensure scaling is centered
+          transformOrigin: "center center", 
         }}
       >
         <ShaderGradient
