@@ -56,12 +56,8 @@ export const Hero = () => {
   const buttonVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay: 0.5,
-      },
+      opacity: 1, y: 0,
+      transition: { duration: 0.5, delay: 0.5 },
     },
     exit: { opacity: 0, y: 50, transition: { duration: 0.5 } },
   };
@@ -75,6 +71,11 @@ export const Hero = () => {
       }
       setIsVisible(true);
     }, 800);
+  };
+
+  const handleDownloadClick = () => {
+    // Add your CV download logic here
+    console.log("Download CV");
   };
 
   return (
@@ -121,16 +122,28 @@ export const Hero = () => {
           >
             <AnimatePresence>
               {isVisible && (
-                <motion.button
-                  className="hover:animate-gradient-xy relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700"
-                  onClick={handleProjectsClick}
-                  variants={buttonVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  MY PROJECTS
-                </motion.button>
+                <>
+                  <motion.button
+                    className="hover:animate-gradient-xy relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700"
+                    onClick={handleProjectsClick}
+                    variants={buttonVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    MY PROJECTS
+                  </motion.button>
+                  <motion.button
+                    className="relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] border-2 border-violet-500 text-[14px] font-bold text-violet-500 hover:bg-white hover:bg-opacity-10 hover:backdrop-blur-lg before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:blur-md before:bg-gradient-to-r before:from-violet-500 before:via-sky-500 before:to-pink-500 before:bg-[length:400%] hover:bg-[length:100%] before:hover:blur-xl"
+                    onClick={handleDownloadClick}
+                    variants={buttonVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    DOWNLOAD CV
+                  </motion.button>
+                </>
               )}
             </AnimatePresence>
           </motion.div>
