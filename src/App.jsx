@@ -5,7 +5,7 @@ import * as drei from "@react-three/drei";
 import * as fiber from "@react-three/fiber";
 import {  useScroll, useTransform } from "framer-motion";
 import BackToTop from "./components/BackToTop.jsx";
-import '@fontsource/roboto';
+import '@fontsource/roboto'; //TODO: chane roboto font to a good one
 
 
 export default function App() {
