@@ -56,7 +56,8 @@ export const Hero = () => {
   const buttonVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
-      opacity: 1, y: 0,
+      opacity: 1,
+      y: 0,
       transition: { duration: 0.5, delay: 0.5 },
     },
     exit: { opacity: 0, y: 50, transition: { duration: 0.5 } },
@@ -74,9 +75,12 @@ export const Hero = () => {
   };
 
   const handleDownloadClick = () => {
-    // Add your CV download logic here
-    console.log("Download CV");
+    window.open(
+      "https://drive.google.com/file/d/1WI22ssaevfDukkjg_61s4UaxKPfDH1is/view?usp=drive_link",
+      "_blank"
+    );
   };
+  
 
   return (
     <section className="body-font h-full w-full text-gray-400">
@@ -102,7 +106,13 @@ export const Hero = () => {
               id="highlight"
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl"
               initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
-              animate={{ backgroundColor: ["rgba(0, 0, 0, 0)", "#FFD700", "rgba(0, 0, 0, 0)"] }}
+              animate={{
+                backgroundColor: [
+                  "rgba(0, 0, 0, 0)",
+                  "#FFD700",
+                  "rgba(0, 0, 0, 0)",
+                ],
+              }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               Software Engineer Intern
@@ -117,36 +127,52 @@ export const Hero = () => {
             impactful projects and gain industry experience.
           </motion.p>
           <motion.div
-            className="flex flex-col items-center space-y-4 md:flex-row md:space-x-4 md:space-y-0"
-            variants={itemVariants}
-          >
-            <AnimatePresence>
-              {isVisible && (
-                <>
-                  <motion.button
-                    className="hover:animate-gradient-xy relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700"
-                    onClick={handleProjectsClick}
-                    variants={buttonVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    MY PROJECTS
-                  </motion.button>
-                  <motion.button
-                    className="relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] border-2 border-violet-500 text-[14px] font-bold text-violet-500 hover:bg-white hover:bg-opacity-10 hover:backdrop-blur-lg before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:blur-md before:bg-gradient-to-r before:from-violet-500 before:via-sky-500 before:to-pink-500 before:bg-[length:400%] hover:bg-[length:100%] before:hover:blur-xl"
-                    onClick={handleDownloadClick}
-                    variants={buttonVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    DOWNLOAD CV
-                  </motion.button>
-                </>
-              )}
-            </AnimatePresence>
-          </motion.div>
+  className="flex flex-col items-center space-y-4 md:flex-row md:space-x-4 md:space-y-0"
+  variants={itemVariants}
+>
+  <AnimatePresence>
+    {isVisible && (
+      <>
+        <motion.button
+          className="hover:animate-gradient-xy relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700"
+          onClick={handleProjectsClick}
+          variants={buttonVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          MY PROJECTS
+        </motion.button>
+        <motion.button
+  className="flex w-[180px] cursor-pointer items-center justify-between rounded-full bg-transparent border-2 border-transparent bg-clip-padding px-4 py-3 font-mono tracking-wider text-white shadow-2xl duration-500 hover:scale-105 hover:bg-transparent hover:border-violet-500 hover:border-gradient-to-r hover:from-violet-500 hover:via-sky-500 hover:to-pink-500"
+  onClick={handleDownloadClick}
+  variants={buttonVariants}
+  initial="hidden"
+  animate="visible"
+  exit="exit"
+>
+  Download Resume
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="currentColor"
+    className="h-5 w-5 animate-bounce"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
+    />
+  </svg>
+</motion.button>
+
+      </>
+    )}
+  </AnimatePresence>
+</motion.div>
+
         </motion.div>
         <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
