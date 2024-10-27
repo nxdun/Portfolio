@@ -76,7 +76,7 @@ export const Hero = () => {
 
   const handleDownloadClick = () => {
     window.open(
-      "https://drive.google.com/file/d/1WI22ssaevfDukkjg_61s4UaxKPfDH1is/view?usp=drive_link",
+      "https://drive.google.com/file/d/1jWOOgDv0Tiw1gk9UcmsUjUVdZKgyVHgt/view?usp=sharing",
       "_blank"
     );
   };
