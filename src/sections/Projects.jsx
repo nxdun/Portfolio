@@ -84,8 +84,8 @@ const projectData = [
     ],
   },
   {
-    project_name: "CodeWizard Microservice Project",
-    short_desc: "Automated Code Analysis and Project Management",
+    project_name: "CodeWizard - Microservice Based Project",
+    short_desc: "Automated Code Analysis, Flow Chart Generation and Project Management",
     full_desc:
       "Microservices Architecture, Task Management, Real-Time Feedback, Graphical Code Visualization, Issue Tracking, and Code Quality Optimization for multi-language projects. Developed with Agile methodology and optimized for efficient project management.",
     tags: [
