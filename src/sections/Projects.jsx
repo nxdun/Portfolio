@@ -22,10 +22,7 @@ const cardVariants = {
   },
 };
 
-
-const SearchBar = ({ onSearch, isLoading }) => {
-  const [query, setQuery] = useState("");
-
+const SearchBar = ({ onSearch, query, setQuery }) => {
   const handleSearch = () => {
     onSearch(query);
   };
@@ -34,25 +31,29 @@ const SearchBar = ({ onSearch, isLoading }) => {
     if (e.key === "Enter") {
       handleSearch();
     }
+
+    if (e.key === "Escape") {
+      setQuery("");
+      onSearch("");
+    }
   };
 
   return (
-    <div className="flex w-full items-center justify-end gap-2 rounded-lg bg-gray-800 bg-opacity-30 px-4 py-2 shadow-lg backdrop-blur-lg sm:w-auto">
+    <div className="flex w-full flex-col sm:flex-row items-center justify-between gap-2 rounded-lg bg-gray-800 bg-opacity-30 px-4 py-2 shadow-lg backdrop-blur-lg">
       <input
         type="text"
-        placeholder="Ctrl + K to search..."
+        placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="flex-1 bg-transparent text-sm text-white focus:outline-none sm:text-base"
+        className="w-full bg-transparent text-sm text-white focus:outline-none sm:text-base"
       />
       <button
         onClick={handleSearch}
-        className="rounded bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-700"
+        className=" outline-1 outline-dashed text-nowrap text-sm rounded bg-grey-600 px-3 py-1 text-white hover:bg-indigo-700"
       >
-        Search
+       ENTER 
       </button>
-      {isLoading && <LoadingSpinner />}
     </div>
   );
 };
@@ -75,7 +76,7 @@ const SortDropdown = ({ onSort }) => {
       <select
         value={selectedTag}
         onChange={handleSort}
-        className="rounded bg-gray-800 bg-opacity-30 px-4 py-2 text-white shadow-lg backdrop-blur-lg focus:outline-none"
+        className="w-full rounded bg-gray-800 bg-opacity-30 px-4 py-3 text-white shadow-lg backdrop-blur-lg focus:outline-none"
       >
         <option value="">Sort by Tags</option>
         {uniqueTags.map((tag, index) => (
@@ -93,16 +94,17 @@ export const Projects = () => {
   const [filteredProjects, setFilteredProjects] = useState(projectData);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
   const projectsPerPage = 6;
 
-  const handleSearch = (query) => {
+  const handleSearch = (searchQuery) => {
     setIsLoading(true);
     setTimeout(() => {
       const filtered = projectData.filter((project) =>
         [project.project_name, project.short_desc, project.full_desc, ...project.tags]
           .join(" ")
           .toLowerCase()
-          .includes(query.toLowerCase())
+          .includes(searchQuery.toLowerCase())
       );
       setFilteredProjects(filtered);
       setCurrentPage(1);
@@ -130,6 +132,12 @@ export const Projects = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const resetSearch = () => {
+    setFilteredProjects(projectData);
+    setCurrentPage(1);
+    setQuery("");
+  };
+
   return (
     <section className="body-font py-24 text-gray-400" id="projects">
       <div className="container mx-auto px-5">
@@ -142,82 +150,107 @@ export const Projects = () => {
             on the images to learn more.
           </p>
         </div>
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <SortDropdown onSort={handleSort} />
-          <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+          <SearchBar onSearch={handleSearch} query={query} setQuery={setQuery} />
         </div>
-        <div className="-m-4 flex flex-wrap">
-          {currentProjects.length > 0 ? (
-            currentProjects.map((project, index) => (
-              <motion.div
-                key={index}
-                className="cursor-pointer p-4 sm:w-1/2 lg:w-1/3"
-                initial="offscreen"
-                whileInView="onscreen"
-                viewport={{ once: true, amount: 0.8 }}
-                variants={cardVariants}
-                onClick={() => setSelectedProject(project)}
-              >
-                <div className="h-full overflow-hidden rounded-lg border-2 border-gray-800 bg-opacity-30 backdrop-blur-lg">
-                  <motion.img
-                    alt="project"
-                    className="w-full object-cover object-center md:h-36 lg:h-48"
-                    src={project.photos[0]}
-                    whileHover={{ scale: 1.1 }}
-                  />
-                  <div className="p-6">
-                    <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-indigo-400">
-                      {project.project_name}
-                    </h2>
-                    <h1 className="title-font mb-3 text-lg font-medium text-white">
-                      {project.short_desc}
-                    </h1>
-                    <div className="flex flex-wrap items-center">
-                      <a
-                        href={project.github_url}
-                        target="_blank"
-                        className="inline-flex items-center text-indigo-400 hover:text-indigo-600"
-                      >
-                        View on GitHub
-                        <svg
-                          fill="none"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          className="ml-2 h-4 w-4"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                      </a>
-                      <span className="ml-auto text-sm text-gray-500">
-                        {project.time_period}
-                      </span>
+        {isLoading ? (
+          <div className="flex justify-center">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <>
+            <div className="-m-4 flex flex-wrap">
+              {currentProjects.length > 0 ? (
+                currentProjects.map((project, index) => (
+                  <motion.div
+                    key={index}
+                    className="cursor-pointer p-4 sm:w-1/2 lg:w-1/3"
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    viewport={{ once: true, amount: 0.8 }}
+                    variants={cardVariants}
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    <div className="h-full overflow-hidden rounded-lg border-2 border-gray-800 bg-opacity-30 backdrop-blur-lg">
+                      <motion.img
+                        alt="project"
+                        className="w-full object-cover object-center md:h-36 lg:h-48"
+                        src={project.photos[0]}
+                        whileHover={{ scale: 1.1 }}
+                      />
+                      <div className="p-6">
+                        <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-indigo-400">
+                          {project.project_name}
+                        </h2>
+                        <h1 className="title-font mb-3 text-lg font-medium text-white">
+                          {project.short_desc}
+                        </h1>
+                        <div className="flex flex-wrap items-center">
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            className="inline-flex items-center text-indigo-400 hover:text-indigo-600"
+                          >
+                            View on GitHub
+                            <svg
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              className="ml-2 h-4 w-4"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M5 12h14M12 5l7 7-7 7"></path>
+                            </svg>
+                          </a>
+                          <span className="ml-auto text-sm text-gray-500">
+                            {project.time_period}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="w-full mt-7 text-center text-white">
+                  Nothing Here ;/
+                  <br />
+                  <br />
+                  <span className=" text-sm text-gray-400">
+                    Go Back
+                  </span><br />
+                  <button
+                    onClick={resetSearch}
+                    className=""
+                  >
+                    <label className="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" defaultValue className="sr-only peer" />
+      <div className="peer ring-0 bg-transperant rounded-full outline-none duration-300 after:duration-500 w-12 h-12 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-['✖️'] after:rounded-full after:absolute after:outline-none after:h-10 after:w-10 after:bg-gray-50 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-hover:after:scale-75 peer-checked:after:content-['✔️'] after:-rotate-180 peer-checked:after:rotate-0">
+      </div>
+    </label>
+                  </button>
                 </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="w-full text-center text-gray-500">No search results found.</div>
-          )}
-        </div>
-        <div className="mt-4 flex justify-center">
-          {Array.from({ length: Math.ceil(filteredProjects.length / projectsPerPage) }, (_, i) => i + 1).map((number) => (
-            <button
-              key={number}
-              onClick={() => paginate(number)}
-              className={`mx-1 px-3 py-1 text-sm rounded ${
-                currentPage === number
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-800 text-gray-400"
-              }`}
-            >
-              {number}
-            </button>
-          ))}
-        </div>
+              )}
+            </div>
+            <div className="mt-4 flex justify-center">
+              {Array.from({ length: Math.ceil(filteredProjects.length / projectsPerPage) }, (_, i) => i + 1).map((number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`mx-1 px-3 py-1 text-sm rounded ${
+                    currentPage === number
+                      ? "bg-indigo-600 text-white"
+                      : "bg-gray-800 text-gray-400"
+                  }`}
+                >
+                  {number}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <AnimatePresence>
         {selectedProject && (
@@ -231,7 +264,6 @@ export const Projects = () => {
   );
 };
 
-//props validation
 Projects.propTypes = {
   projectData: PropTypes.array,
 };
