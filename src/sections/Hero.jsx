@@ -3,7 +3,9 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
 import { AnimationMixer } from "three";
 import { motion, AnimatePresence } from "framer-motion";
-import Heroo from "../assets/optimal-hero.glb";
+import Heroo from "../assets/optimal-hero.glb"; // Your GLTF model
+import Button from "../components/BotButton"; // The Hovering Chat Bot Button
+import ChatBot from "../sections/ChatBot"; // The ChatBot Component
 
 function Model(props) {
   const { scene, animations } = useGLTF(Heroo);
@@ -32,6 +34,7 @@ function Model(props) {
 export const Hero = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [dynamicText, setDynamicText] = useState("Student");
+  const [isChatBotOpen, setIsChatBotOpen] = useState(false); // State to track ChatBot visibility
 
   const words = useMemo(() => ["Student", "Developer", "Programmer"], []);
 
@@ -115,6 +118,16 @@ export const Hero = () => {
     );
   };
 
+  // Toggle ChatBot visibility
+  const toggleChatBot = () => {
+    setIsChatBotOpen(!isChatBotOpen);
+  };
+
+  // Close ChatBot
+  const closeChatBot = () => {
+    setIsChatBotOpen(false);
+  };
+
   return (
     <section className="body-font h-full w-full text-gray-400">
       <div className="container mx-auto flex flex-col items-center px-5 py-10 md:flex-row md:py-24">
@@ -190,6 +203,7 @@ export const Hero = () => {
             </AnimatePresence>
           </motion.div>
         </motion.div>
+
         <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
@@ -222,6 +236,25 @@ export const Hero = () => {
           </Canvas>
         </motion.div>
       </div>
+
+      {/* Sticky AI ChatBot Button */}
+      <div onClick={toggleChatBot} className="fixed bottom-6 right-8 z-50">
+        <Button />
+      </div>
+
+      {/* ChatBot Component with visibility toggle */}
+      <AnimatePresence>
+        {isChatBotOpen && (
+          <motion.div
+            className="fixed bottom-32 right-0 w-80 rounded-lg shadow-lg z-50"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 50 }}
+            exit={{ opacity: 0, y: 50 }}
+          >
+            <ChatBot closeMe={closeChatBot} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

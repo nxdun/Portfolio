@@ -29,7 +29,7 @@ export default function BackToTop() {
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ duration: 0.5 }}
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="fixed bottom-4 right-4 text-white p-1 rounded-full shadow-lg bg-indigo-600 hover:bg-indigo-300"
+                    className="z-20 fixed bottom-7 right-32 text-white p-1 rounded-full shadow-lg bg-indigo-600 hover:bg-indigo-300"
                 >
                     <svg fill="#000000" version="1.1" id="arrowUP" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
                         width="50px" height="50px" viewBox="0 0 416.979 416.979"
