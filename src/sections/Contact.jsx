@@ -25,6 +25,14 @@ export const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //verify form data exists
+    if (!formData.name || !formData.email || !formData.message) {
+      setStatus("NoFormData");
+      return;
+    }
+
+    //verify captcha exists
     if (!captcha) {
       setStatus("CaptchaError");
       return;
@@ -33,6 +41,7 @@ export const Contact = () => {
     setStatus("Sending...");
 
     try {
+
       // Verify CAPTCHA
       const response = await fetch(import.meta.env.VITE_AUTH_BACKEND, {
         method: "POST",
@@ -197,7 +206,7 @@ export const Contact = () => {
                       ></path>
                     </svg>
                     <p className="text-xs font-semibold">
-                      Success - Everything went smoothly!
+                      😊 Success - I will get back to you soon!
                     </p>
                   </div>
                 )}

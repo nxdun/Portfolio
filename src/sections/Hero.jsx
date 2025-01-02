@@ -125,19 +125,19 @@ export const Hero = () => {
           variants={containerVariants}
         >
           <motion.h1
-            className="title-font mb-4 whitespace-nowrap text-2xl font-extrabold text-yellow-300 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+            className="title-font mb-4 whitespace-nowrap text-3xl font-extrabold text-yellow-300 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
             variants={itemVariants}
           >
             Welcome to My Portfolio
           </motion.h1>
           <motion.h2
-            className="title-font mb-4 text-lg font-medium text-white sm:text-xl md:text-2xl lg:text-3xl"
+            className="title-font mb-4 text-xl font-medium text-white sm:text-2xl md:text-3xl lg:text-4xl"
             variants={itemVariants}
           >
-            I am <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl">{dynamicText}</span>
+            I am <span className="text-xl text-purple-400 sm:text-2xl md:text-3xl lg:text-4xl">{dynamicText}</span>
           </motion.h2>
           <motion.p
-            className="mb-8 mt-4 leading-relaxed"
+            className="mb-8 mt-4 leading-relaxed text-base lg:text-lg xl:text-xl"
             variants={itemVariants}
           >
             Passionate software engineering student with hands-on experience in
@@ -162,7 +162,7 @@ export const Hero = () => {
                     MY PROJECTS
                   </motion.button>
                   <motion.button
-                    className="flex w-[180px] cursor-pointer items-center justify-between rounded-full bg-transparent border-2 border-transparent bg-clip-padding px-4 py-3 font-mono tracking-wider text-white shadow-2xl duration-500 hover:scale-105 hover:bg-transparent hover:border-violet-500 hover:border-gradient-to-r hover:from-violet-500 hover:via-sky-500 hover:to-pink-500"
+                    className="flex w-48 cursor-pointer items-center justify-center rounded-full border border-gradient-to-r from-violet-500 via-sky-500 to-pink-500 px-4 py-2 font-mono text-sm tracking-wide text-white shadow-lg transition-transform transform hover:scale-105"
                     onClick={handleDownloadClick}
                     variants={buttonVariants}
                     initial="hidden"
@@ -176,7 +176,7 @@ export const Hero = () => {
                       viewBox="0 0 24 24"
                       strokeWidth={2}
                       stroke="currentColor"
-                      className="h-5 w-5 animate-bounce"
+                      className="h-5 w-5 ml-2 animate-bounce"
                     >
                       <path
                         strokeLinecap="round"
@@ -201,7 +201,7 @@ export const Hero = () => {
             shadows
             camera={{ fov: 50 }}
             style={{
-              height: "60vh",
+              height: "70vh",
               backgroundColor: "transparent",
               width: "100%",
             }}
