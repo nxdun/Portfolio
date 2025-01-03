@@ -10,70 +10,103 @@ const groq = new Groq({
 
 const fetchBotResponse = async (userMessage) => {
   try {
-    console.log("Sending request to Groq API with message:", userMessage);
-
     const response = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
-          content:
-            import.meta.env.VITE_MODEL_SYSTEM_INSTRUCTIONS ||
-            "System instructions not set",
+          content: import.meta.env.VITE_MODEL_SYSTEM_INSTRUCTIONS || "System instructions not set",
         },
-        {
-          role: "user",
-          content: userMessage,
-        },
+        { role: "user", content: userMessage },
       ],
       model: "llama-3.3-70b-versatile",
     });
-
-    console.log("Response from Groq API:", response);
-
-    const botReply =
-      response.choices[0]?.message?.content ||
-      "Sorry, I couldn't understand that.";
-    console.log("Bot reply:", botReply);
-
-    return botReply;
+    return response.choices[0]?.message?.content || "Sorry, I couldn't understand that.";
   } catch (error) {
     console.error("Error fetching bot response:", error);
     return "Sorry, there was an error processing your request.";
   }
 };
 
-const renderMessageContent = (text) => {
-  const urlRegex = /(https?:\/\/(www\.)?(github\.com|nadun\.me|ik\.imagekit\.io|raw\.githubusercontent\.com)\S*)/gi;
-
-  return text.split(urlRegex).map((part, index) => {
-    if (urlRegex.test(part)) {
-      if (
-        part.startsWith("https://ik.imagekit.io") ||
-        part.startsWith("https://raw.githubusercontent.com")
-      ) {
-        return (
-          <img
-            key={index}
-            src={part}
-            alt="Rendered content"
-            className="max-w-full rounded-lg"
-          />
-        );
-      }
-      return (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline"
-        >
-          {part}
-        </a>
-      );
+const parseMarkdownContent = (text) => {
+  const urlBlocks = [];
+  const cleanText = text.replace(
+    /\$\$\$ "([^"]+)": "([^"]+)" \$\$\$/g,
+    (_, label, url) => {
+      urlBlocks.push({ label, url });
+      return `__URL_${urlBlocks.length - 1}__`;
     }
-    return <ReactMarkdown key={index}>{part}</ReactMarkdown>;
-  });
+  );
+
+  return {
+    sections: cleanText.split(/(?=###)/g),
+    urlBlocks
+  };
+};
+
+const isImageUrl = url => (
+  url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
+  url.includes('ik.imagekit.io') ||
+  url.includes('raw.githubusercontent.com')
+);
+
+const renderMessageContent = (text) => {
+  const { sections, urlBlocks } = parseMarkdownContent(text);
+
+  const renderUrlBlock = (blockIndex) => {
+    const { label, url } = urlBlocks[blockIndex];
+    const cleanUrl = url.startsWith('http') ? url : `https://${url}`;
+
+    return isImageUrl(url) ? (
+      <div key={`img-${blockIndex}`} className="my-4">
+        <img
+          src={cleanUrl}
+          alt={label}
+          className="rounded-lg max-w-full"
+          loading="lazy"
+          onError={(e) => e.target.style.display = 'none'}
+        />
+        <p className="mt-1 text-sm text-gray-400">{label}</p>
+      </div>
+    ) : (
+      <a
+        key={`link-${blockIndex}`}
+        href={cleanUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="my-1 inline-block break-words text-blue-500 underline"
+      >
+        {label}
+      </a>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      {sections.map((section, sIndex) => (
+        <div key={`section-${sIndex}`} className="mb-4">
+          {section.split(/(__URL_\d+__)/).map((part, pIndex) => {
+            const urlMatch = part.match(/__URL_(\d+)__/);
+            return urlMatch ? 
+              renderUrlBlock(parseInt(urlMatch[1])) : 
+              part && (
+                <ReactMarkdown
+                  key={`md-${pIndex}`}
+                  components={{
+                    h3: ({children}) => <h3 className="mb-3 text-lg font-semibold">{children}</h3>,
+                    p: ({children}) => <p className="mb-3 leading-relaxed">{children}</p>,
+                    ul: ({children}) => <ul className="mb-3 space-y-1 list-disc pl-6">{children}</ul>,
+                    ol: ({children}) => <ol className="mb-3 space-y-1 list-decimal pl-6">{children}</ol>,
+                    li: ({children}) => <li className="mb-1">{children}</li>,
+                  }}
+                >
+                  {part.trim()}
+                </ReactMarkdown>
+              );
+          })}
+        </div>
+      ))}
+    </div>
+  );
 };
 
 const ChatBot = ({ closeMe }) => {
@@ -96,22 +129,15 @@ const ChatBot = ({ closeMe }) => {
   };
 
   const handleSendMessage = async () => {
-    if (!userInput.trim()) return;
+    const trimmedInput = userInput.trim();
+    if (!trimmedInput) return;
 
-    const sanitizedInput = userInput.trim();
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { user: "user", text: sanitizedInput, icon: "👤" },
-    ]);
+    setMessages(prev => [...prev, { user: "user", text: trimmedInput, icon: "👤" }]);
     setUserInput("");
     setIsTyping(true);
 
-    const botReply = await fetchBotResponse(sanitizedInput);
-
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { user: "bot", text: botReply, icon: "🤖" },
-    ]);
+    const botReply = await fetchBotResponse(trimmedInput);
+    setMessages(prev => [...prev, { user: "bot", text: botReply, icon: "🤖" }]);
     setIsTyping(false);
   };
 
@@ -133,7 +159,7 @@ const ChatBot = ({ closeMe }) => {
 
   return (
     <div
-      className="bg-black/40 fixed bottom-8 right-8 z-50 rounded-lg p-4 shadow-lg backdrop-blur-md border border-gray-600"
+      className="fixed bottom-8 right-8 z-50 rounded-lg border border-gray-600 bg-black/40 p-4 shadow-lg backdrop-blur-md"
       style={{ width: calculateWidth() }}
     >
       <div className="relative flex flex-col space-y-4">
@@ -143,7 +169,14 @@ const ChatBot = ({ closeMe }) => {
         >
           ✖️
         </button>
-        <div className="h-96 space-y-4 overflow-y-auto p-2">
+        <div
+          className="h-96 space-y-4 overflow-y-auto p-2"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(255, 255, 255, 0.6) transparent",
+            scrollbarTrackColor: "rgba(0, 0, 0, 0.2)",
+          }}
+        >
           <style>
             {`
               .h-96::-webkit-scrollbar {
@@ -184,7 +217,7 @@ const ChatBot = ({ closeMe }) => {
             </div>
           ))}
           {isTyping && (
-            <div className="flex justify-start items-center">
+            <div className="flex items-center justify-start">
               <span className="text-xl">🤖</span>
               <div className="ml-2 max-w-xs rounded-lg bg-gray-800 p-3 text-white">
                 <span className="animate-pulse text-gray-400">Typing...</span>
@@ -193,32 +226,19 @@ const ChatBot = ({ closeMe }) => {
           )}
           <div ref={messagesEndRef} />
         </div>
-        <div className="flex overflow-x-hidden pb-2 mt-2">
-          <div className="flex space-x-1 animate-marquee">
-            {templateMessages.concat(templateMessages).map((message, index) => (
-              <button
-                key={index}
-                onClick={() => setUserInput(message)}
-                className="px-4 py-2 bg-gray-700 text-white rounded-full shadow-sm hover:bg-gray-600"
-                style={{ whiteSpace: "nowrap" }}
-              >
-                {message}
-              </button>
-            ))}
-          </div>
-        </div>
+
         <div className="flex items-center space-x-2">
           <input
             type="text"
             value={userInput}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
-            className="w-full rounded-lg border border-gray-300 p-3 bg-gray-700 text-white"
+            className="w-full rounded-lg border border-gray-300 bg-gray-700 p-3 text-white"
             placeholder="Type your message..."
           />
           <button
             onClick={handleSendMessage}
-            className="relative overflow-hidden rounded-full bg-blue-500 p-3 text-white transition-all hover:bg-blue-600 flex items-center"
+            className="relative flex items-center overflow-hidden rounded-full bg-blue-500 p-3 text-white transition-all hover:bg-blue-600"
           >
             <div className="svg-wrapper-1">
               <div className="svg-wrapper animate-fly">
@@ -257,8 +277,23 @@ const ChatBot = ({ closeMe }) => {
             </style>
           </button>
         </div>
-      </div>
 
+        {/* Quick Messages Section with Seamless Loop and Slow Animation */}
+        <div className="mt-2 flex overflow-x-hidden pb-2">
+          <div className="animate-marquee flex space-x-1">
+            {templateMessages.concat(templateMessages).map((message, index) => (
+              <button
+                key={index}
+                onClick={() => setUserInput(message)}
+                className="rounded-full bg-gray-700 px-4 py-2 text-white shadow-sm hover:bg-gray-600"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                {message}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
       <style>
         {`
           .animate-marquee {
@@ -269,20 +304,10 @@ const ChatBot = ({ closeMe }) => {
 
           @keyframes marquee {
             0% {
-              transform: translateX(0%);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-        `}
-      </style>
+              transform: translateX(0%);            }            100% {              transform: translateX(-50%);            }          }        `}{" "}
+      </style>{" "}
     </div>
   );
 };
-
 export default ChatBot;
-
-ChatBot.propTypes = {
-  closeMe: propTypes.func.isRequired,
-};
+ChatBot.propTypes = { closeMe: propTypes.func.isRequired };

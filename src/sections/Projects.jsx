@@ -72,11 +72,11 @@ const SortDropdown = ({ onSort }) => {
   );
 
   return (
-    <div className="w-full sm:w-auto">
+    <div className="relative w-full sm:w-auto">
       <select
         value={selectedTag}
         onChange={handleSort}
-        className="w-full rounded bg-gray-800 bg-opacity-30 px-4 py-3 text-white shadow-lg backdrop-blur-lg focus:outline-none"
+        className="w-full appearance-none rounded-lg border border-gray-700 bg-black bg-opacity-50 px-4 py-3 pl-4 pr-10 text-white shadow-lg backdrop-blur-lg transition duration-300 hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
         <option value="">Sort by Tags</option>
         {uniqueTags.map((tag, index) => (
@@ -85,6 +85,11 @@ const SortDropdown = ({ onSort }) => {
           </option>
         ))}
       </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+        <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+          <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+        </svg>
+      </div>
     </div>
   );
 };
