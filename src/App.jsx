@@ -8,7 +8,7 @@ import { useScroll, useTransform } from "framer-motion";
 import { useState, useEffect } from "react";
 import BackToTop from "./components/BackToTop.jsx";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
-import "@fontsource/roboto"; //TODO: change roboto font to a good one
+import "@fontsource/roboto"; // TODO: change roboto font to a good one
 
 export default function App() {
   const { scrollY } = useScroll();
@@ -17,13 +17,19 @@ export default function App() {
 
   useEffect(() => {
     const checkIfLoadingComplete = async () => {
-      const sectionsLoaded = [Navbar, Hero, Projects, Contact, Footer].every(
-        (section) => typeof section === "function"
-      );
+      // Optimize section loading validation
+      const sectionsLoaded = await Promise.all([
+        Navbar,
+        Hero,
+        Projects,
+        Contact,
+        Footer,
+      ].map((section) => Promise.resolve(typeof section === "function")));
+
       const assetsLoaded = document.fonts.status === "loaded";
 
-      if (sectionsLoaded && assetsLoaded) {
-        setTimeout(() => setIsLoading(false), 500); // Smooth transition
+      if (sectionsLoaded.every(Boolean) && assetsLoaded) {
+        setTimeout(() => setIsLoading(false), 300); // Faster smooth transition
       }
     };
 
@@ -39,7 +45,7 @@ export default function App() {
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }} // Shortened duration
             key="loading"
           >
             <LoadingSpinner />

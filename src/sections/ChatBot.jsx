@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Groq from "groq-sdk";
 import ReactMarkdown from "react-markdown";
 import propTypes from "prop-types";
+
 const groq = new Groq({
   apiKey: import.meta.env.VITE_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -124,6 +125,12 @@ const ChatBot = ({ closeMe }) => {
     }
   };
 
+  const templateMessages = [
+    "How much Projects You Did",
+    "What is Your Favorite Project",
+    "Show Me Images Of lms-microservice Project",
+  ];
+
   return (
     <div
       className="bg-black/40 fixed bottom-8 right-8 z-50 rounded-lg p-4 shadow-lg backdrop-blur-md border border-gray-600"
@@ -136,14 +143,7 @@ const ChatBot = ({ closeMe }) => {
         >
           ✖️
         </button>
-        <div
-          className="h-96 space-y-4 overflow-y-auto p-2"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "rgba(255, 255, 255, 0.6) transparent",
-            scrollbarTrackColor: "rgba(0, 0, 0, 0.2)",
-          }}
-        >
+        <div className="h-96 space-y-4 overflow-y-auto p-2">
           <style>
             {`
               .h-96::-webkit-scrollbar {
@@ -193,7 +193,20 @@ const ChatBot = ({ closeMe }) => {
           )}
           <div ref={messagesEndRef} />
         </div>
-
+        <div className="flex overflow-x-hidden pb-2 mt-2">
+          <div className="flex space-x-1 animate-marquee">
+            {templateMessages.concat(templateMessages).map((message, index) => (
+              <button
+                key={index}
+                onClick={() => setUserInput(message)}
+                className="px-4 py-2 bg-gray-700 text-white rounded-full shadow-sm hover:bg-gray-600"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                {message}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center space-x-2">
           <input
             type="text"
@@ -245,6 +258,25 @@ const ChatBot = ({ closeMe }) => {
           </button>
         </div>
       </div>
+
+      <style>
+        {`
+          .animate-marquee {
+            display: flex;
+            flex-direction: row;
+            animation: marquee 30s linear infinite;
+          }
+
+          @keyframes marquee {
+            0% {
+              transform: translateX(0%);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
