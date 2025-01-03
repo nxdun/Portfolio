@@ -50,7 +50,7 @@ const SearchBar = ({ onSearch, query, setQuery }) => {
       />
       <button
         onClick={handleSearch}
-        className=" outline-1 outline-dashed text-nowrap text-sm rounded bg-grey-600 px-3 py-1 text-white hover:bg-indigo-700"
+        className=" outline-1 outline-dashed text-nowrap text-sm rounded bg-grey-600 px-3 py-1 text-grey hover:bg-indigo-700"
       >
        ENTER 
       </button>

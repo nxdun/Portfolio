@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Groq from "groq-sdk";
 import ReactMarkdown from "react-markdown";
-
+import propTypes from "prop-types";
 const groq = new Groq({
   apiKey: import.meta.env.VITE_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -46,7 +46,10 @@ const renderMessageContent = (text) => {
 
   return text.split(urlRegex).map((part, index) => {
     if (urlRegex.test(part)) {
-      if (part.startsWith("https://ik.imagekit.io") || part.startsWith("https://raw.githubusercontent.com")) {
+      if (
+        part.startsWith("https://ik.imagekit.io") ||
+        part.startsWith("https://raw.githubusercontent.com")
+      ) {
         return (
           <img
             key={index}
@@ -68,7 +71,7 @@ const renderMessageContent = (text) => {
         </a>
       );
     }
-    return part;
+    return <ReactMarkdown key={index}>{part}</ReactMarkdown>;
   });
 };
 
@@ -133,7 +136,34 @@ const ChatBot = ({ closeMe }) => {
         >
           ✖️
         </button>
-        <div className="h-96 space-y-4 overflow-y-auto p-2">
+        <div
+          className="h-96 space-y-4 overflow-y-auto p-2"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(255, 255, 255, 0.6) transparent",
+            scrollbarTrackColor: "rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          <style>
+            {`
+              .h-96::-webkit-scrollbar {
+                width: 8px;
+              }
+              .h-96::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.2);
+                backdrop-filter: blur(10px);
+                border-radius: 8px;
+              }
+              .h-96::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 8px;
+                transition: background 0.3s ease;
+              }
+              .h-96::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.9);
+              }
+            `}
+          </style>
           {messages.map((message, index) => (
             <div
               key={index}
@@ -149,7 +179,7 @@ const ChatBot = ({ closeMe }) => {
                     : "bg-gray-800 text-white"
                 }`}
               >
-                <ReactMarkdown>{message.text}</ReactMarkdown>
+                {renderMessageContent(message.text)}
               </div>
             </div>
           ))}
@@ -175,9 +205,43 @@ const ChatBot = ({ closeMe }) => {
           />
           <button
             onClick={handleSendMessage}
-            className="rounded-full bg-blue-500 p-3 text-white hover:bg-blue-600"
+            className="relative overflow-hidden rounded-full bg-blue-500 p-3 text-white transition-all hover:bg-blue-600 flex items-center"
           >
-            Send
+            <div className="svg-wrapper-1">
+              <div className="svg-wrapper animate-fly">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width={24}
+                  height={24}
+                >
+                  <path fill="none" d="M0 0h24v24H0z" />
+                  <path
+                    fill="currentColor"
+                    d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <span className="ml-2"></span>
+            <style>
+              {`
+                .svg-wrapper-1 {
+                  display: inline-flex;
+                }
+                .svg-wrapper {
+                  animation: fly 0.6s ease-in-out infinite alternate;
+                }
+                @keyframes fly {
+                  from {
+                    transform: translateY(0.1em);
+                  }
+                  to {
+                    transform: translateY(-0.1em);
+                  }
+                }
+              `}
+            </style>
           </button>
         </div>
       </div>
@@ -186,3 +250,7 @@ const ChatBot = ({ closeMe }) => {
 };
 
 export default ChatBot;
+
+ChatBot.propTypes = {
+  closeMe: propTypes.func.isRequired,
+};
