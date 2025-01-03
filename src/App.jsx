@@ -1,3 +1,7 @@
+// * Main Application Component
+// ! Requires proper section and asset loading
+// ? Consider implementing code splitting
+
 import { Navbar, Hero, Projects, Contact, Footer } from "./sections";
 import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 import * as reactSpring from "@react-spring/three";
@@ -8,16 +12,25 @@ import { useScroll, useTransform } from "framer-motion";
 import { useState, useEffect } from "react";
 import BackToTop from "./components/BackToTop.jsx";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
-import "@fontsource/roboto"; // TODO: change roboto font to a good one
+// todo: Change roboto font to a better alternative
+import "@fontsource/roboto";
 
 export default function App() {
+  // * Scroll Animation Setup
+  // note: Controls background scale on scroll
   const { scrollY } = useScroll();
   const scale = useTransform(scrollY, [0, 500], [1, 3]);
+
+  // * Loading State Management
+  // 💡 Could add progress tracking
   const [isLoading, setIsLoading] = useState(true);
 
+  // * Section Loading Validation
+  // hack: Using Promise.all for parallel loading
   useEffect(() => {
     const checkIfLoadingComplete = async () => {
-      // Optimize section loading validation
+      // * Section Loading Check
+      // ✅ Validates all sections are loaded
       const sectionsLoaded = await Promise.all([
         Navbar,
         Hero,
@@ -26,6 +39,8 @@ export default function App() {
         Footer,
       ].map((section) => Promise.resolve(typeof section === "function")));
 
+      // * Font Loading Check
+      // ! Critical for UI rendering
       const assetsLoaded = document.fonts.status === "loaded";
 
       if (sectionsLoaded.every(Boolean) && assetsLoaded) {
@@ -38,6 +53,8 @@ export default function App() {
 
   return (
     <>
+      {/* * Loading Screen
+          work: Add loading progress indicator */}
       <AnimatePresence>
         {isLoading && (
           <motion.div
@@ -52,8 +69,13 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* * Main Application Content 
+          ! Ensure proper section ordering */}
       {!isLoading && (
         <main className="relative flex min-h-screen flex-col overflow-hidden font-sans">
+          {/* * Background Shader
+              💡 Could be optimized for performance */}
           <ShaderGradientCanvas
             importedfiber={{ ...fiber, ...drei, ...reactSpring }}
             style={{
@@ -73,6 +95,8 @@ export default function App() {
             />
           </ShaderGradientCanvas>
 
+          {/* * Main Sections
+              note: Order affects scroll behavior */}
           <Navbar />
           <Hero />
           <Projects />

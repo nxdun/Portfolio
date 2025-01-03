@@ -1,9 +1,17 @@
+// * Navbar Component
+// ? Consider splitting into smaller components
+// ! Requires proper profile image handling
+
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
+// * Profile Popup Component
+// note: Displays user information on hover/click
 const ProfilePopup = ({ isVisible }) => (
-    <motion.div
+  <motion.div
+    // * Animation Configuration
+    // 💡 Could be moved to a separate config file
     initial={{ opacity: 0, scale: 0.5, y: 0, x: -50 }}
     animate={{
       opacity: isVisible ? 1 : 0,
@@ -14,7 +22,10 @@ const ProfilePopup = ({ isVisible }) => (
     transition={{ duration: 0.5, ease: "easeInOut" }}
     className="absolute left-1/2 top-14 z-50 -translate-x-1/2 transform rounded-lg bg-white shadow-lg"
   >
+    {/* * Profile Card Container */}
     <div className="flex h-28 w-72 items-center rounded-md bg-white p-3 shadow-lg">
+      {/* * Profile Image Section 
+          ! Update profile image URL when needed */}
       <section className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-[#F9C97C] to-[#A2E9C1] shadow-md duration-300 hover:scale-110 hover:cursor-pointer hover:from-[#C9A9E9] hover:to-[#7EE7FC]">
         <img
           src="https://github.com/nxdun.png?size=200"
@@ -23,6 +34,8 @@ const ProfilePopup = ({ isVisible }) => (
         />
       </section>
   
+      {/* * Profile Info Section 
+          todo: Add dynamic content loading */}
       <section className="m-3 block border-l border-gray-300 pl-3">
         <div>
           <h3 className="text-sm font-semibold text-gray-600">Nadun Lakshan</h3>
@@ -30,6 +43,8 @@ const ProfilePopup = ({ isVisible }) => (
             Future DevOps Engineer 🚀
           </h3>
         </div>
+        {/* * Social Icons Section 
+            💡 Could be extracted into a separate component */}
         <div className="flex gap-3 pt-2">
           <svg
             stroke="currentColor"
@@ -64,13 +79,18 @@ const ProfilePopup = ({ isVisible }) => (
       </section>
     </div>
   </motion.div>
-  
 );
 
+// * Main Navbar Component
+// work: Ongoing improvements for mobile responsiveness
 export const Navbar = () => {
+  // * State Management
+  // ? Consider using context for global state
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
+  // * Smooth Scroll Effect
+  // ✅ Implements smooth scrolling behavior
   useEffect(() => {
     const smoothScroll = (e) => {
       e.preventDefault();
@@ -96,6 +116,8 @@ export const Navbar = () => {
     };
   }, []);
 
+  // * Event Handlers
+  // note: Separate handlers for mobile and desktop
   const handleMouseEnter = () => {
     if (window.innerWidth >= 768) {
       // desktop
@@ -117,24 +139,32 @@ export const Navbar = () => {
     }
   };
 
+  // * Component Render
+  // hack: Using backdrop blur for glass effect
   return (
     <header className="body-font relative m-2 ml-5 mr-5 mt-5 rounded-lg p-4 text-gray-400 ring-2 ring-[#0a0a0a] backdrop-blur-md">
+      {/* * Main Container */}
       <div className="container mx-auto flex flex-wrap items-center justify-between">
-      <div
-  className="title-font relative flex items-center font-medium text-white"
-  onMouseEnter={handleMouseEnter}
-  onMouseLeave={handleMouseLeave}
-  onClick={handleClick}
->
-  <img
-    src="https://github.com/nxdun.png?size=200"
-    alt="Nadun Lakshan"
-    className="h-10 w-10 rounded-full bg-indigo-500 p-2"
-  />
-  {(isHovered || isClicked) && (
-    <ProfilePopup isVisible={isHovered || isClicked} />
-  )}
-</div>
+        {/* * Profile Section 
+            ! Update hover behavior on mobile */}
+        <div
+          className="title-font relative flex items-center font-medium text-white"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+        >
+          <img
+            src="https://github.com/nxdun.png?size=200"
+            alt="Nadun Lakshan"
+            className="h-10 w-10 rounded-full bg-indigo-500 p-2"
+          />
+          {(isHovered || isClicked) && (
+            <ProfilePopup isVisible={isHovered || isClicked} />
+          )}
+        </div>
+
+        {/* * Navigation Links 
+            💡 Could be mapped from config */}
         <nav className="flex items-center justify-center">
           <a href="#home" className="hover:text-grey mr-5 flex items-center">
             <svg

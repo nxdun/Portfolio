@@ -1,7 +1,13 @@
+// * Project Details Popup Component
+// ! Requires proper image loading handling
+// ? Consider adding image preloading
+
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
+// * Animation Configuration
+// 💡 Could be moved to a separate config file
 const popupVariants = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: {
@@ -16,15 +22,23 @@ const popupVariants = {
   },
 };
 
+// * Tag Color Generator
+// note: Generates consistent colors for tags
 const getColorFromTag = (tag) => {
   const hash = tag.charCodeAt(0) % 360;
   return `hsl(${hash}, 70%, 50%)`;
 };
 
+// * Main Popup Component
+// work: Ongoing improvements for accessibility
 const Popup = ({ project, onClose }) => {
+  // * State Management
+  // ? Consider using useReducer for complex state
   const [currentImage, setCurrentImage] = useState(0);
   const [progress, setProgress] = useState(0);
 
+  // * Image Carousel Effect
+  // hack: Using progress bar for smooth transitions
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => (prev + 10) % 100); // Simulate loading progress
@@ -38,6 +52,8 @@ const Popup = ({ project, onClose }) => {
 
   return (
     <motion.div
+      // * Backdrop Configuration
+      // note: Click outside to close
       className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-75"
       onClick={onClose}
       initial="hidden"
@@ -45,10 +61,14 @@ const Popup = ({ project, onClose }) => {
       exit="exit"
       variants={popupVariants}
     >
+      {/* * Main Content Container 
+          ! Ensure proper mobile responsiveness */}
       <motion.div
         className="relative w-full max-w-4xl rounded-lg bg-gray-800 bg-opacity-30 p-6 shadow-lg backdrop-blur-lg sm:mx-6 md:mx-auto"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* * Close Button 
+            💡 Could add confirmation dialog */}
         <button
           onClick={onClose}
           className="absolute -top-10 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-transparent text-white shadow-md outline-none duration-300 hover:bg-red-600 lg:-top-16"
@@ -56,6 +76,8 @@ const Popup = ({ project, onClose }) => {
           ✖️
         </button>
 
+        {/* * Image Carousel Section 
+            todo: Add swipe gestures for mobile */}
         <div className="relative mb-6 h-80 w-full overflow-hidden rounded">
           <motion.img
             src={project.photos[currentImage]}
@@ -73,6 +95,7 @@ const Popup = ({ project, onClose }) => {
           </div>
         </div>
 
+        {/* * Project Information Section */}
         <h2 className="mb-4 text-center text-3xl font-bold text-white">
           {project.project_name}
         </h2>
@@ -81,6 +104,8 @@ const Popup = ({ project, onClose }) => {
           {project.full_desc}
         </p>
 
+        {/* * Tags Section 
+            ✅ Dynamic color generation */}
         <div className="mb-6 flex flex-wrap justify-center gap-3">
           {project.tags.map((tag, index) => (
             <motion.span
@@ -94,6 +119,8 @@ const Popup = ({ project, onClose }) => {
           ))}
         </div>
 
+        {/* * GitHub Button 
+            ! Update with star count API integration */}
         <button
           href={project.github_url}
           className="m-2 focus-visible:ring-ring group relative flex h-9 w-full max-w-52 items-center justify-center gap-2 overflow-hidden whitespace-pre rounded-md bg-black px-4 py-2 text-sm font-medium text-white shadow transition-all duration-300 ease-out hover:bg-black/90 hover:ring-2 hover:ring-black hover:ring-offset-2 focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 md:flex"
@@ -128,6 +155,8 @@ const Popup = ({ project, onClose }) => {
   );
 };
 
+// * PropTypes Validation
+// ! Required for type checking
 Popup.propTypes = {
   project: PropTypes.shape({
     project_name: PropTypes.string.isRequired,

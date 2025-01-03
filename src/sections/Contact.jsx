@@ -1,8 +1,15 @@
+// * Contact Form Component
+// ! Requires proper environment variables setup
+// ? Consider adding form validation library
+
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import ReCAPTCHA from "react-google-recaptcha";
 
+// * Main Contact Component
 export const Contact = () => {
+  // * State Management
+  // ? Consider using useReducer for complex form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,10 +18,14 @@ export const Contact = () => {
   const [status, setStatus] = useState("");
   const [captcha, setCaptcha] = useState("");
 
+  // * Event Handlers
+  // note: Form input change handler
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // * Captcha Handlers
+  // ! Critical for security
   const handleCaptchaChange = (token) => {
     setCaptcha(token);
   };
@@ -23,16 +34,20 @@ export const Contact = () => {
     setCaptcha("");
   };
 
+  // * Form Submission Handler
+  // 🔥 Critical functionality
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //verify form data exists
+    // * Validation
+    // ! Required field checks
     if (!formData.name || !formData.email || !formData.message) {
       setStatus("NoFormData");
       return;
     }
 
-    //verify captcha exists
+    // * Captcha Verification
+    // ! Security critical
     if (!captcha) {
       setStatus("CaptchaError");
       return;
@@ -41,19 +56,15 @@ export const Contact = () => {
     setStatus("Sending...");
 
     try {
-
-      // Verify CAPTCHA
+      // * Backend Verification
+      // ! API call for captcha verification
       const response = await fetch(import.meta.env.VITE_AUTH_BACKEND, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ captcha }),
       });
 
-      if (!response.ok) {
-        throw new Error("CAPTCHA verification failed");
-      }
+      if (!response.ok) throw new Error("CAPTCHA verification failed");
 
       const captchaResult = await response.json();
       if (!captchaResult.success) {
@@ -61,7 +72,8 @@ export const Contact = () => {
         return;
       }
 
-      // Send email
+      // * Email Sending
+      // ! Requires proper EmailJS configuration
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
@@ -69,15 +81,21 @@ export const Contact = () => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
 
+      // * Success Handling
+      // ✅ Clear form and show success message
       setStatus("Success");
       setFormData({ name: "", email: "", message: "" });
       setCaptcha("");
     } catch (error) {
+      // * Error Handling
+      // fixme: Add better error handling
       setStatus("Error");
       console.error("Error:", error);
     }
   };
 
+  // * Component Render
+  // 💡 Could be split into smaller components
   return (
     <section className="body-font relative text-gray-400" id="contact">
       <div className="container mx-auto px-5 py-24">

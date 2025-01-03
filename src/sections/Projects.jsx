@@ -1,3 +1,7 @@
+// * Projects Section Component
+// ! Requires proper image optimization
+// ? Consider implementing infinite scroll
+
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";

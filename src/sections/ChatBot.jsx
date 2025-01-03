@@ -1,13 +1,21 @@
+// * Main ChatBot Component File
+// ! Security Note: This component requires proper API key configuration
+// ? Consider adding rate limiting for API calls
+
 import { useState, useEffect, useRef } from "react";
 import Groq from "groq-sdk";
 import ReactMarkdown from "react-markdown";
 import propTypes from "prop-types";
 
+// * Groq API Configuration
+// ! Make sure to set VITE_API_KEY in .env
 const groq = new Groq({
   apiKey: import.meta.env.VITE_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
+// * API Communication Function
+// ? Could be moved to a separate service file in the future
 const fetchBotResponse = async (userMessage) => {
   try {
     const response = await groq.chat.completions.create({
@@ -27,6 +35,8 @@ const fetchBotResponse = async (userMessage) => {
   }
 };
 
+// * Markdown and URL Processing Functions
+// 💡 These functions handle special URL format: $$$ "label": "url" $$$
 const parseMarkdownContent = (text) => {
   const urlBlocks = [];
   const cleanText = text.replace(
@@ -43,12 +53,17 @@ const parseMarkdownContent = (text) => {
   };
 };
 
+// * URL Type Checker
+// note: Checks if URL points to an image resource
 const isImageUrl = url => (
   url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
   url.includes('ik.imagekit.io') ||
   url.includes('raw.githubusercontent.com')
 );
 
+// * Message Content Renderer
+// todo: Add support for code blocks and tables
+// 💡 Could be enhanced with syntax highlighting
 const renderMessageContent = (text) => {
   const { sections, urlBlocks } = parseMarkdownContent(text);
 
@@ -109,7 +124,11 @@ const renderMessageContent = (text) => {
   );
 };
 
+// * Main ChatBot Component
+// work: Ongoing improvements for accessibility
 const ChatBot = ({ closeMe }) => {
+  // * State Management
+  // ? Consider using useReducer for complex state
   const [messages, setMessages] = useState([
     { user: "bot", text: "Hello! How can I assist you today?", icon: "🤖" },
   ]);
@@ -117,10 +136,14 @@ const ChatBot = ({ closeMe }) => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // * Auto-scroll Effect
+  // hack: Using smooth scroll for better UX
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
+  // * Width Calculator
+  // note: Responsive design helper
   const calculateWidth = () => {
     const baseWidth = window.innerWidth < 768 ? 320 : 480;
     const maxWidth = window.innerWidth < 768 ? 400 : 720;
@@ -128,6 +151,8 @@ const ChatBot = ({ closeMe }) => {
     return baseWidth + increment;
   };
 
+  // * Message Handlers
+  // ✅ Implements error handling and loading states
   const handleSendMessage = async () => {
     const trimmedInput = userInput.trim();
     if (!trimmedInput) return;
@@ -141,6 +166,8 @@ const ChatBot = ({ closeMe }) => {
     setIsTyping(false);
   };
 
+  // * Event Handlers
+  // ? Consider debouncing these handlers
   const handleInputChange = (e) => {
     setUserInput(e.target.value);
   };
@@ -151,12 +178,16 @@ const ChatBot = ({ closeMe }) => {
     }
   };
 
+  // * Quick Access Messages
+  // 💡 Could be dynamically generated based on user history
   const templateMessages = [
     "How much Projects You Did",
-    "What is Your Favorite Project",
+    "What is Your Favorite Project provide github and relevant images",
     "Show Me Images Of lms-microservice Project",
   ];
 
+  // * Component Render
+  // 🔥 Critical for user interaction
   return (
     <div
       className="fixed bottom-8 right-8 z-50 rounded-lg border border-gray-600 bg-black/40 p-4 shadow-lg backdrop-blur-md"
@@ -309,5 +340,8 @@ const ChatBot = ({ closeMe }) => {
     </div>
   );
 };
+
+// * Component Export and PropTypes
+// ! Required for type checking
 export default ChatBot;
 ChatBot.propTypes = { closeMe: propTypes.func.isRequired };

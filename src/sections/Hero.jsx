@@ -1,16 +1,24 @@
+// * Hero Section Component
+// ? Consider splitting into smaller components
+// ! Requires proper 3D model optimization
+
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
 import { AnimationMixer } from "three";
 import { motion, AnimatePresence } from "framer-motion";
-import Heroo from "../assets/optimal-hero.glb"; // Your GLTF model
-import Button from "../components/BotButton"; // The Hovering Chat Bot Button
-import ChatBot from "../sections/ChatBot"; // The ChatBot Component
+import Heroo from "../assets/optimal-hero.glb";
+import Button from "../components/BotButton";
+import ChatBot from "../sections/ChatBot";
 
+// * 3D Model Component
+// note: Handles model loading and animation
 function Model(props) {
   const { scene, animations } = useGLTF(Heroo);
   const mixer = useRef(null);
 
+  // * Animation Setup
+  // hack: Using ref to store mixer to prevent memory leaks
   useEffect(() => {
     if (animations.length) {
       mixer.current = new AnimationMixer(scene);
@@ -24,6 +32,8 @@ function Model(props) {
     };
   }, [animations, scene]);
 
+  // * Animation Frame Update
+  // ? Consider optimizing frame updates
   useFrame((state, delta) => {
     if (mixer.current) mixer.current.update(delta);
   });
@@ -31,13 +41,21 @@ function Model(props) {
   return <primitive object={scene} {...props} />;
 }
 
+// * Main Hero Component
+// 💡 Could be split into Layout and Content components
 export const Hero = () => {
+  // * State Management
+  // todo: Consider using context for global state
   const [isVisible, setIsVisible] = useState(true);
   const [dynamicText, setDynamicText] = useState("Student");
-  const [isChatBotOpen, setIsChatBotOpen] = useState(false); // State to track ChatBot visibility
+  const [isChatBotOpen, setIsChatBotOpen] = useState(false);
 
+  // * Text Animation Configuration
+  // note: Words for typing effect
   const words = useMemo(() => ["Student", "Developer", "Programmer"], []);
 
+  // * Typing Effect
+  // work: Improve typing animation smoothness
   useEffect(() => {
     let wordIndex = 0;
     let charIndex = 0;
@@ -65,6 +83,8 @@ export const Hero = () => {
     return () => {};
   }, [words]);
 
+  // * Animation Variants
+  // 💡 Could be moved to a separate config file
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -100,6 +120,8 @@ export const Hero = () => {
     exit: { opacity: 0, y: 50, transition: { duration: 0.5 } },
   };
 
+  // * Event Handlers
+  // ✅ Implements smooth scrolling
   const handleProjectsClick = () => {
     setIsVisible(false);
     setTimeout(() => {
@@ -111,6 +133,8 @@ export const Hero = () => {
     }, 800);
   };
 
+  // * Download Handler
+  // ! Update resume link when needed
   const handleDownloadClick = () => {
     window.open(
       "https://drive.google.com/file/d/1jWOOgDv0Tiw1gk9UcmsUjUVdZKgyVHgt/view?usp=sharing",
@@ -118,19 +142,21 @@ export const Hero = () => {
     );
   };
 
-  // Toggle ChatBot visibility
+  // * ChatBot Controls
+  // note: Handles ChatBot visibility
   const toggleChatBot = () => {
     setIsChatBotOpen(!isChatBotOpen);
   };
 
-  // Close ChatBot
   const closeChatBot = () => {
     setIsChatBotOpen(false);
   };
 
   return (
     <section className="body-font h-full w-full text-gray-400">
+      {/* * Main Container */}
       <div className="container mx-auto flex flex-col items-center px-5 py-10 md:flex-row md:py-24">
+        {/* * Left Content Section */}
         <motion.div
           className="mb-12 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24"
           initial="hidden"
@@ -204,6 +230,9 @@ export const Hero = () => {
           </motion.div>
         </motion.div>
 
+        {/* * 3D Model Section 
+            ! Ensure model is properly optimized
+            ? Consider adding loading state */}
         <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
@@ -237,12 +266,12 @@ export const Hero = () => {
         </motion.div>
       </div>
 
-      {/* Sticky AI ChatBot Button */}
+      {/* * ChatBot Integration
+          💡 Could be moved to layout component */}
       <div onClick={toggleChatBot} className="fixed bottom-6 right-8 z-50">
         <Button />
       </div>
 
-      {/* ChatBot Component with visibility toggle */}
       <AnimatePresence>
         {isChatBotOpen && (
           <motion.div
