@@ -2,47 +2,58 @@
 // ! Security Note: This component requires proper API key configuration
 // ? Consider adding rate limiting for API calls
 
-import { useState, useEffect, useRef } from "react";
-import Groq from "groq-sdk";
+import { useEffect, useRef, useReducer, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import propTypes from "prop-types";
+import { ChatService } from '../utils/ChatService';
 
-// * Groq API Configuration
-// ! Make sure to set VITE_API_KEY in .env
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_API_KEY,
-  dangerouslyAllowBrowser: true,
+// Initialize ChatService
+const chatService = new ChatService(import.meta.env.VITE_API_KEY, {
+  timeout: 30000,
+  maxRetries: 3
 });
 
-// * API Communication Function
-// ? Could be moved to a separate service file in the future
-const fetchBotResponse = async (userMessage) => {
-  try {
-    const response = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: import.meta.env.VITE_MODEL_SYSTEM_INSTRUCTIONS || "System instructions not set",
-        },
-        { role: "user", content: userMessage },
-      ],
-      model: "llama-3.3-70b-versatile",
-    });
-    return response.choices[0]?.message?.content || "Sorry, I couldn't understand that.";
-  } catch (error) {
-    console.error("Error fetching bot response:", error);
-    return "Sorry, there was an error processing your request.";
+// State management
+const initialState = {
+  messages: [{ user: "bot", text: "Hello! How can I assist you today?", icon: "🤖" }],
+  userInput: "",
+  isTyping: false,
+  error: null
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "SET_USER_INPUT":
+      return { ...state, userInput: action.payload };
+    case "ADD_MESSAGE":
+      return { ...state, messages: [...state.messages, action.payload] };
+    case "SET_TYPING":
+      return { ...state, isTyping: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    default:
+      return state;
   }
 };
 
 // * Markdown and URL Processing Functions
 // 💡 These functions handle special URL format: $$$ "label": "url" $$$
+// Update URL regex to handle both formats
 const parseMarkdownContent = (text) => {
   const urlBlocks = [];
   const cleanText = text.replace(
-    /\$\$\$ "([^"]+)": "([^"]+)" \$\$\$/g,
-    (_, label, url) => {
-      urlBlocks.push({ label, url });
+    /\$\$\$ "([^"]+)": "([^"]+)" \$\$\$|"(https?:\/\/[^"]+)"/g,
+    (match, label, url, directUrl) => {
+      if (directUrl) {
+        // Handle direct URLs
+        urlBlocks.push({ 
+          label: 'Image', 
+          url: directUrl 
+        });
+      } else {
+        // Handle $$$ format
+        urlBlocks.push({ label, url });
+      }
       return `__URL_${urlBlocks.length - 1}__`;
     }
   );
@@ -64,45 +75,49 @@ const isImageUrl = url => (
 // * Message Content Renderer
 // todo: Add support for code blocks and tables
 // 💡 Could be enhanced with syntax highlighting
+const renderUrlBlock = (blockIndex, urlBlocks) => {
+  const { label, url } = urlBlocks[blockIndex];
+  const cleanUrl = url.startsWith('http') ? url : `https://${url}`;
+
+  return isImageUrl(cleanUrl) ? (
+    <div key={`img-${blockIndex}`} className="my-4">
+      <img
+        src={cleanUrl}
+        alt={label}
+        className="rounded-lg max-w-full h-auto"
+        loading="lazy"
+        onError={(e) => {
+          console.error(`Failed to load image: ${cleanUrl}`);
+          e.target.style.display = 'none';
+        }}
+      />
+      <p className="mt-1 text-sm text-gray-400">{label}</p>
+    </div>
+  ) : (
+    <a
+      key={`link-${blockIndex}`}
+      href={cleanUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="my-1 inline-block break-words text-blue-500 underline"
+    >
+      {label}
+    </a>
+  );
+};
+
+// Update the renderMessageContent function
 const renderMessageContent = (text) => {
   const { sections, urlBlocks } = parseMarkdownContent(text);
 
-  const renderUrlBlock = (blockIndex) => {
-    const { label, url } = urlBlocks[blockIndex];
-    const cleanUrl = url.startsWith('http') ? url : `https://${url}`;
-
-    return isImageUrl(url) ? (
-      <div key={`img-${blockIndex}`} className="my-4">
-        <img
-          src={cleanUrl}
-          alt={label}
-          className="rounded-lg max-w-full"
-          loading="lazy"
-          onError={(e) => e.target.style.display = 'none'}
-        />
-        <p className="mt-1 text-sm text-gray-400">{label}</p>
-      </div>
-    ) : (
-      <a
-        key={`link-${blockIndex}`}
-        href={cleanUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="my-1 inline-block break-words text-blue-500 underline"
-      >
-        {label}
-      </a>
-    );
-  };
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-full">
       {sections.map((section, sIndex) => (
         <div key={`section-${sIndex}`} className="mb-4">
           {section.split(/(__URL_\d+__)/).map((part, pIndex) => {
             const urlMatch = part.match(/__URL_(\d+)__/);
             return urlMatch ? 
-              renderUrlBlock(parseInt(urlMatch[1])) : 
+              renderUrlBlock(parseInt(urlMatch[1]), urlBlocks) : 
               part && (
                 <ReactMarkdown
                   key={`md-${pIndex}`}
@@ -127,55 +142,68 @@ const renderMessageContent = (text) => {
 // * Main ChatBot Component
 // work: Ongoing improvements for accessibility
 const ChatBot = ({ closeMe }) => {
-  // * State Management
-  // ? Consider using useReducer for complex state
-  const [messages, setMessages] = useState([
-    { user: "bot", text: "Hello! How can I assist you today?", icon: "🤖" },
-  ]);
-  const [userInput, setUserInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const messagesEndRef = useRef(null);
 
-  // * Auto-scroll Effect
-  // hack: Using smooth scroll for better UX
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+  }, [state.messages, state.isTyping]);
+
+  const handleSendMessage = async () => {
+    const trimmedInput = state.userInput.trim();
+    if (!trimmedInput) return;
+
+    // Add user message
+    dispatch({ type: "ADD_MESSAGE", payload: { user: "user", text: trimmedInput, icon: "👤" } });
+    dispatch({ type: "SET_USER_INPUT", payload: "" });
+    dispatch({ type: "SET_TYPING", payload: true });
+
+    try {
+      // Get bot response using ChatService
+      const response = await chatService.createChatCompletion(
+        trimmedInput,
+        import.meta.env.VITE_MODEL_SYSTEM_INSTRUCTIONS
+      );
+
+      if (response.success) {
+        dispatch({
+          type: "ADD_MESSAGE",
+          payload: { user: "bot", text: response.content, icon: "🤖" }
+        });
+      } else {
+        dispatch({
+          type: "ADD_MESSAGE",
+          payload: { user: "bot", text: response.content, icon: "⚠️" }
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: "SET_ERROR",
+        payload: "Failed to get response from the bot"
+      });
+    } finally {
+      dispatch({ type: "SET_TYPING", payload: false });
+    }
+  };
+
+  const handleInputChange = useCallback((e) => {
+    dispatch({ type: "SET_USER_INPUT", payload: e.target.value });
+  }, []);
+
+  const handleKeyPress = useCallback((e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }, []);
 
   // * Width Calculator
   // note: Responsive design helper
   const calculateWidth = () => {
     const baseWidth = window.innerWidth < 768 ? 320 : 480;
     const maxWidth = window.innerWidth < 768 ? 400 : 720;
-    const increment = Math.min(messages.length * 20, maxWidth - baseWidth);
+    const increment = Math.min(state.messages.length * 20, maxWidth - baseWidth);
     return baseWidth + increment;
-  };
-
-  // * Message Handlers
-  // ✅ Implements error handling and loading states
-  const handleSendMessage = async () => {
-    const trimmedInput = userInput.trim();
-    if (!trimmedInput) return;
-
-    setMessages(prev => [...prev, { user: "user", text: trimmedInput, icon: "👤" }]);
-    setUserInput("");
-    setIsTyping(true);
-
-    const botReply = await fetchBotResponse(trimmedInput);
-    setMessages(prev => [...prev, { user: "bot", text: botReply, icon: "🤖" }]);
-    setIsTyping(false);
-  };
-
-  // * Event Handlers
-  // ? Consider debouncing these handlers
-  const handleInputChange = (e) => {
-    setUserInput(e.target.value);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
   };
 
   // * Quick Access Messages
@@ -228,7 +256,7 @@ const ChatBot = ({ closeMe }) => {
               }
             `}
           </style>
-          {messages.map((message, index) => (
+          {state.messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${
@@ -247,7 +275,7 @@ const ChatBot = ({ closeMe }) => {
               </div>
             </div>
           ))}
-          {isTyping && (
+          {state.isTyping && (
             <div className="flex items-center justify-start">
               <span className="text-xl">🤖</span>
               <div className="ml-2 max-w-xs rounded-lg bg-gray-800 p-3 text-white">
@@ -261,7 +289,7 @@ const ChatBot = ({ closeMe }) => {
         <div className="flex items-center space-x-2">
           <input
             type="text"
-            value={userInput}
+            value={state.userInput}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
             className="w-full rounded-lg border border-gray-300 bg-gray-700 p-3 text-white"
@@ -315,7 +343,7 @@ const ChatBot = ({ closeMe }) => {
             {templateMessages.concat(templateMessages).map((message, index) => (
               <button
                 key={index}
-                onClick={() => setUserInput(message)}
+                onClick={() => dispatch({ type: "SET_USER_INPUT", payload: message })}
                 className="rounded-full bg-gray-700 px-4 py-2 text-white shadow-sm hover:bg-gray-600"
                 style={{ whiteSpace: "nowrap" }}
               >
