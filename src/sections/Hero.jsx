@@ -2,11 +2,11 @@
 // ? Consider splitting into smaller components
 // ! Requires proper 3D model optimization
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { PresentationControls, Stage, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Stage, PresentationControls } from "@react-three/drei";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimationMixer } from "three";
-import { motion, AnimatePresence } from "framer-motion";
 import Heroo from "../assets/optimal-hero.glb";
 import Button from "../components/BotButton";
 import ChatBot from "../sections/ChatBot";
@@ -52,7 +52,7 @@ export const Hero = () => {
 
   // * Text Animation Configuration
   // note: Words for typing effect
-  const words = useMemo(() => ["Student", "Developer", "Programmer"], []);
+  const words = useMemo(() => ["a Student", "a Developer", "a Programmer"], []);
 
   // * Typing Effect
   // work: Improve typing animation smoothness

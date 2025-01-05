@@ -180,8 +180,9 @@ export const Projects = () => {
                     viewport={{ once: true, amount: 0.8 }}
                     variants={cardVariants}
                     onClick={() => setSelectedProject(project)}
+                    whileHover={{ scale: 1.05 }}
                   >
-                    <div className="h-full overflow-hidden rounded-lg border-2 border-gray-800 bg-opacity-30 backdrop-blur-lg">
+                    <div className="h-full overflow-hidden rounded-lg border-2 border-gray-800 bg-opacity-30 backdrop-blur-lg transition-transform duration-300 hover:scale-105">
                       <motion.img
                         alt="project"
                         className="w-full object-cover object-center md:h-36 lg:h-48"
