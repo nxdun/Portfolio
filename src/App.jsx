@@ -12,10 +12,25 @@ import { useScroll, useTransform } from "framer-motion";
 import { useState, useEffect } from "react";
 import BackToTop from "./components/BackToTop.jsx";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
+import { handleInvalidRoute } from "./utils/routeGuard";
 // todo: Change roboto font to a better alternative
 import "@fontsource/roboto";
 
 export default function App() {
+  // Add route guard effect
+  useEffect(() => {
+    // Check route on initial load
+    handleInvalidRoute();
+
+    // Listen for hash changes
+    const handleHashChange = () => {
+      handleInvalidRoute();
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   // * Scroll Animation Setup
   // note: Controls background scale on scroll
   const { scrollY } = useScroll();
@@ -70,8 +85,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* * Main Application Content 
-          ! Ensure proper section ordering */}
+    
       {!isLoading && (
         <main className="relative flex min-h-screen flex-col overflow-hidden font-sans">
           {/* * Background Shader
