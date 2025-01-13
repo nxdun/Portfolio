@@ -233,7 +233,7 @@ export const Hero = () => {
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2 }}
+          transition={{ delay: 0.5 }}
         >
           {show3DModel ? (
             <Suspense fallback={
