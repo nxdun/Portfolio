@@ -54,7 +54,7 @@ const Popup = ({ project, onClose }) => {
     <motion.div
       // * Backdrop Configuration
       // note: Click outside to close
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-75"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-75 px-4 py-16 sm:py-24"
       onClick={onClose}
       initial="hidden"
       animate="visible"
@@ -67,13 +67,13 @@ const Popup = ({ project, onClose }) => {
         className="relative w-full max-w-4xl rounded-lg bg-gray-800 bg-opacity-30 p-6 shadow-lg backdrop-blur-lg sm:mx-6 md:mx-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* * Close Button 
-            💡 Could add confirmation dialog */}
+        {/* Updated close button with better mobile positioning */}
         <button
           onClick={onClose}
-          className="absolute -top-10 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-transparent text-white shadow-md outline-none duration-300 hover:bg-red-600 lg:-top-16"
+          className="absolute -right-2 -top-2 flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-lg transition-all duration-300 hover:bg-red-700 hover:scale-110 sm:-right-5 sm:-top-5 sm:h-12 sm:w-12 lg:-right-6 lg:-top-6"
+          aria-label="Close popup"
         >
-          ✖️
+          <span className="text-lg">✖️</span>
         </button>
 
         {/* * Image Carousel Section 

@@ -39,31 +39,59 @@ export default function App() {
   // * Loading State Management
   // 💡 Could add progress tracking
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   // * Section Loading Validation
   // hack: Using Promise.all for parallel loading
   useEffect(() => {
+    const MAX_LOADING_TIME = 10000; // 10 seconds maximum loading time
+    let timeoutId;
+
     const checkIfLoadingComplete = async () => {
-      // * Section Loading Check
-      // ✅ Validates all sections are loaded
-      const sectionsLoaded = await Promise.all([
-        Navbar,
-        Hero,
-        Projects,
-        Contact,
-        Footer,
-      ].map((section) => Promise.resolve(typeof section === "function")));
+      try {
+        // Start with font loading - 20% weight
+        const fontPromise = new Promise((resolve) => {
+          if (document.fonts.status === "loaded") {
+            setProgress((prev) => Math.min(prev + 20, 100));
+            resolve(true);
+          }
+          document.fonts.ready.then(() => {
+            setProgress((prev) => Math.min(prev + 20, 100));
+            resolve(true);
+          });
+        });
 
-      // * Font Loading Check
-      // ! Critical for UI rendering
-      const assetsLoaded = document.fonts.status === "loaded";
+        // Section loading - 60% weight
+        const sections = [Navbar, Hero, Projects, Contact, Footer];
+        const sectionPromises = sections.map((section, index) => 
+          Promise.resolve(typeof section === "function").then(result => {
+            setProgress(prev => Math.min(prev + 12, 100)); // 12% per section
+            return result;
+          })
+        );
 
-      if (sectionsLoaded.every(Boolean) && assetsLoaded) {
-        setTimeout(() => setIsLoading(false), 300); // Faster smooth transition
+        // Wait for all loading to complete
+        await Promise.all([fontPromise, ...sectionPromises]);
+        
+        // Final progress
+        setProgress(100);
+        setTimeout(() => setIsLoading(false), 300);
+      } catch (error) {
+        console.error("Loading error:", error);
+        setIsLoading(false); // Fallback in case of error
       }
     };
 
+    // Start loading check
     checkIfLoadingComplete();
+
+    // Safety timeout to prevent infinite loading
+    timeoutId = setTimeout(() => {
+      setIsLoading(false);
+      setProgress(100);
+    }, MAX_LOADING_TIME);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -80,7 +108,7 @@ export default function App() {
             transition={{ duration: 0.3 }} // Shortened duration
             key="loading"
           >
-            <LoadingSpinner />
+            <LoadingSpinner progress={progress} />
           </motion.div>
         )}
       </AnimatePresence>
