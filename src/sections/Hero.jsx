@@ -1,54 +1,22 @@
-// * Hero Section Component
-// ? Consider splitting into smaller components
-// ! Requires proper 3D model optimization
-
-import { PresentationControls, Stage, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimationMixer } from "three";
-import Heroo from "../assets/optimal-hero.glb";
+import { Suspense, lazy, useEffect, useMemo, useState, useCallback } from "react";
 import Button from "../components/BotButton";
 import ChatBot from "../sections/ChatBot";
+import posterImage from "../assets/poster.webp";  // Add this import
 
-// * 3D Model Component
-// note: Handles model loading and animation
-function Model(props) {
-  const { scene, animations } = useGLTF(Heroo);
-  const mixer = useRef(null);
+// Lazy load the 3D components
+const Model3DSection = lazy(() => import('../components/Model3DSection'));
 
-  // * Animation Setup
-  // hack: Using ref to store mixer to prevent memory leaks
-  useEffect(() => {
-    if (animations.length) {
-      mixer.current = new AnimationMixer(scene);
-      animations.forEach((clip) => mixer.current.clipAction(clip).play());
-    }
-    return () => {
-      if (mixer.current) {
-        mixer.current.stopAllAction();
-        mixer.current = null;
-      }
-    };
-  }, [animations, scene]);
-
-  // * Animation Frame Update
-  // ? Consider optimizing frame updates
-  useFrame((state, delta) => {
-    if (mixer.current) mixer.current.update(delta);
-  });
-
-  return <primitive object={scene} {...props} />;
-}
-
-// * Main Hero Component
-// 💡 Could be split into Layout and Content components
 export const Hero = () => {
   // * State Management
   // todo: Consider using context for global state
   const [isVisible, setIsVisible] = useState(true);
   const [dynamicText, setDynamicText] = useState("Student");
   const [isChatBotOpen, setIsChatBotOpen] = useState(false);
+  const [show3DModel, setShow3DModel] = useState(false);
+  const [isModelLoading, setIsModelLoading] = useState(false);
+  const [hoverPosition, setHoverPosition] = useState({ x: 50, y: 50 });
+  const [isHovering, setIsHovering] = useState(false);
 
   // * Text Animation Configuration
   // note: Words for typing effect
@@ -152,6 +120,36 @@ export const Hero = () => {
     setIsChatBotOpen(false);
   };
 
+  const handleLoadModel = () => {
+    setIsModelLoading(true);
+    setShow3DModel(true);
+  };
+
+  const handleMouseMove = useCallback((e) => {
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setHoverPosition({ x, y });
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    const touch = e.touches[0];
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const x = ((touch.clientX - rect.left) / rect.width) * 100;
+    const y = ((touch.clientY - rect.top) / rect.height) * 100;
+    setHoverPosition({ x, y });
+  }, []);
+
+  const commonButtonStyles = `
+    relative z-10 cursor-pointer text-[14px] font-bold text-white
+    before:absolute before:-z-10 before:content-['']
+    before:transition-all before:duration-[1s] before:ease-in-out
+    hover:animate-gradient-xy bg-[length:400%]
+    bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90%
+  `;
+
   return (
     <section className="body-font h-full w-full text-gray-400">
       {/* * Main Container */}
@@ -230,44 +228,103 @@ export const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* * 3D Model Section 
-            ! Ensure model is properly optimized
-            ? Consider adding loading state */}
+        {/* 3D Model Section */}
         <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2 }}
+          transition={{ delay: 0.5 }}
         >
-          <Canvas
-            dpr={[1, 2]}
-            shadows
-            camera={{ fov: 50 }}
-            style={{
-              height: "70vh",
-              backgroundColor: "transparent",
-              width: "100%",
-            }}
-          >
-            <PresentationControls
-              speed={1.5}
-              zoom={0.5}
-              polar={[-0.1, Math.PI / 4]}
+          {show3DModel ? (
+            <Suspense fallback={
+              <div className="h-[70vh] w-full flex items-center justify-center bg-gray-900/30 rounded-lg">
+                <div className="text-white">Preparing 3D Environment...</div>
+              </div>
+            }>
+              <div className="relative w-full flex justify-center items-center">
+                <Model3DSection />
+              </div>
+            </Suspense>
+          ) : (
+            <div 
+              className="relative h-[70vh] w-full flex items-center justify-center overflow-hidden rounded-lg"
+              onMouseMove={handleMouseMove}
+              onTouchMove={handleTouchMove}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              onTouchStart={() => setIsHovering(true)}
+              onTouchEnd={() => setIsHovering(false)}
             >
-              <Stage
-                environment={null}
-                intensity={0.5}
-                contactShadowOpacity={0.5}
+              <img 
+                src={posterImage} 
+                alt="3D Model Preview" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <motion.div 
+                className="absolute inset-0 backdrop-blur-[2px]"
+                animate={{
+                  background: isHovering ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.3)",
+                  backdropFilter: isHovering ? "blur(4px)" : "blur(0px)"
+                }}
+                transition={{ duration: 0.3 }}
+              />
+              <motion.div
+                className="absolute w-[200px] h-[200px] rounded-full pointer-events-none mix-blend-overlay"
+                animate={{
+                  x: hoverPosition.x + "%",
+                  y: hoverPosition.y + "%",
+                  scale: isHovering ? 1 : 0,
+                  translateX: "-50%",
+                  translateY: "-50%",
+                }}
+                style={{
+                  background: "radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 80%)",
+                  backdropFilter: "blur(16px)",
+                }}
+                transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              />
+              <motion.button
+                className={`${commonButtonStyles} absolute z-10 h-[3em] px-6 rounded-[30px] backdrop-blur-sm
+                  before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px]
+                  before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10%
+                  before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%]
+                  before:hover:bg-[length:10%] before:hover:blur-xl`}
+                onClick={handleLoadModel}
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                initial={false}
+                animate={{
+                  y: isHovering ? -10 : 0,
+                  scale: isHovering ? 1.1 : 1,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 25,
+                  mass: 1
+                }}
               >
-                <Model scale={[1, 1, 1]} />
-              </Stage>
-            </PresentationControls>
-          </Canvas>
+                {isModelLoading ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Initializing...
+                  </span>
+                ) : (
+                  <>
+                   
+                    Load 3D Model
+                  </>
+                )}
+              </motion.button>
+            </div>
+          )}
         </motion.div>
       </div>
 
-      {/* * ChatBot Integration
-          💡 Could be moved to layout component */}
+      {/* ChatBot Integration */}
       <div onClick={toggleChatBot} className="fixed bottom-6 right-8 z-50">
         <Button />
       </div>
