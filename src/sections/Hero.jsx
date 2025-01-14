@@ -237,7 +237,7 @@ export const Hero = () => {
         >
           {show3DModel ? (
             <Suspense fallback={
-              <div className="h-[70vh] w-full flex items-center justify-center bg-gray-900/30 rounded-lg">
+              <div className="h-[70vh] w-full flex items-center justify-center bg-gray-900/10 rounded-lg">
                 <div className="text-white">Preparing 3D Environment...</div>
               </div>
             }>
@@ -263,7 +263,7 @@ export const Hero = () => {
               <motion.div 
                 className="absolute inset-0 backdrop-blur-[2px]"
                 animate={{
-                  background: isHovering ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.3)",
+                  background: isHovering ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.3)",
                   backdropFilter: isHovering ? "blur(4px)" : "blur(0px)"
                 }}
                 transition={{ duration: 0.3 }}

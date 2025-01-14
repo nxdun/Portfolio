@@ -2,33 +2,12 @@ import { PresentationControls, Stage, useProgress } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
 import { Suspense, lazy, useState, useEffect } from "react";
+import LoadingSpinner from './LoadingSpinner';
 
 const Model3D = lazy(() => import('./Model3D'));
 
-const LoadingScreen = () => {
-  const { progress, total } = useProgress();
-  const [displayProgress, setDisplayProgress] = useState(0);
-
-  useEffect(() => {
-    // Ensure progress only goes up
-    setDisplayProgress(prev => Math.max(prev, progress));
-  }, [progress]);
-
-  return (
-    <div className="h-full w-full flex flex-col items-center justify-center">
-      <div className="text-white text-lg mb-2">Loading 3D Model...</div>
-      <div className="w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-violet-500 transition-all duration-300"
-          style={{ width: `${displayProgress}%` }}
-        />
-      </div>
-      <div className="text-violet-400 mt-2">{displayProgress.toFixed(0)}%</div>
-    </div>
-  );
-};
-
 const Model3DSection = () => {
+  const { progress } = useProgress();
   const [isLoaded, setIsLoaded] = useState(false);
   const [showModel, setShowModel] = useState(false);
 
@@ -103,9 +82,9 @@ const Model3DSection = () => {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0 bg-gray-900/30 rounded-lg"
+            className="absolute inset-0 bg-gray-900/30 rounded-lg flex items-center justify-center"
           >
-            <LoadingScreen />
+            <LoadingSpinner progress={progress} />
           </motion.div>
         )}
       </AnimatePresence>

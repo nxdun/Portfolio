@@ -2,7 +2,7 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { AnimationMixer } from "three";
-import HeroModel from "../assets/optimal-hero.glb"; // Import the model
+import HeroModel from "../assets/optimal-hero.glb"; 
 
 const Model3D = (props) => {
   // Update preload path to use imported model
@@ -46,7 +46,7 @@ const Model3D = (props) => {
       });
     };
   }, [scene]);
-
+  // ! Ignore this error objects-{scene} is unknown
   return <primitive object={scene} {...props} />;
 };
 
