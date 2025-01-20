@@ -101,7 +101,7 @@ export const Footer = () => (
           aria-label="WhatsApp"
           className="relative ml-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-gray-800 text-gray-400 transition-all duration-300 hover:bg-green-500 hover:text-white"
         >
-          <div className="absolute bottom-0 left-0 top-auto h-0 w-full bg-green-500 transition-all duration-300"></div>
+          <div className="absolute bottom-0 left-0 top-auto h-0 w-full bg-green-500 transition-all duration-300 "></div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
