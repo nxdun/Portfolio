@@ -27,8 +27,8 @@ export default function App() {
       handleInvalidRoute();
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   // * Scroll Animation Setup
@@ -63,16 +63,16 @@ export default function App() {
 
         // Section loading - 60% weight
         const sections = [Navbar, Hero, Projects, Contact, Footer];
-        const sectionPromises = sections.map((section, index) => 
-          Promise.resolve(typeof section === "function").then(result => {
-            setProgress(prev => Math.min(prev + 12, 100)); // 12% per section
+        const sectionPromises = sections.map((section, index) =>
+          Promise.resolve(typeof section === "function").then((result) => {
+            setProgress((prev) => Math.min(prev + 12, 100)); // 12% per section
             return result;
           })
         );
 
         // Wait for all loading to complete
         await Promise.all([fontPromise, ...sectionPromises]);
-        
+
         // Final progress
         setProgress(100);
         setTimeout(() => setIsLoading(false), 300);
@@ -113,7 +113,6 @@ export default function App() {
         )}
       </AnimatePresence>
 
-    
       {!isLoading && (
         <main className="relative flex min-h-screen flex-col overflow-hidden font-sans">
           {/* * Background Shader
@@ -133,7 +132,7 @@ export default function App() {
           >
             <ShaderGradient
               control="query"
-              urlString="https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=0.8&cAzimuthAngle=270&cDistance=0.5&cPolarAngle=180&cameraZoom=15.1&color1=%2373bfc4&color2=%23b70000&color3=%230000a2&destination=onCanvas&embedMode=off&envPreset=city&format=gif&fov=45&frameRate=10&gizmoHelper=hide&grain=on&lightType=env&pixelDensity=1&positionX=-0.1&positionY=0&positionZ=0&range=enabled&rangeEnd=40&rangeStart=3.5&reflection=0.5&rotationX=0&rotationY=130&rotationZ=70&shader=defaults&type=sphere&uAmplitude=3.2&uDensity=0.8&uFrequency=5.5&uSpeed=0.3&uStrength=0.3&uTime=3.5&wireframe=false"
+              urlString="https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=0.8&cAzimuthAngle=270&cDistance=0.5&cPolarAngle=180&cameraZoom=15.1&color1=%236ab3c4&color2=%23ff7657&color3=%237563ce&destination=onCanvas&embedMode=off&envPreset=city&format=gif&fov=45&frameRate=10&gizmoHelper=hide&grain=on&lightType=env&pixelDensity=1.5&positionX=-0.1&positionY=0&positionZ=0&range=enabled&rangeEnd=40&rangeStart=0&reflection=0.4&rotationX=0&rotationY=130&rotationZ=70&shader=defaults&type=sphere&uAmplitude=3.6&uDensity=0&uFrequency=5.5&uSpeed=0.5&uStrength=4.7&uTime=0&wireframe=false"
             />
           </ShaderGradientCanvas>
 

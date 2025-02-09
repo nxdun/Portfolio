@@ -165,8 +165,8 @@ export const Navbar = () => {
 
         {/* * Navigation Links 
             💡 Could be mapped from config */}
-        <nav className="flex items-center justify-center">
-          <a href="#home" className="hover:text-grey mr-5 flex items-center">
+        <nav className="flex items-center justify-center" aria-label="Main navigation">
+          <a href="#home" aria-label="Home section" className="hover:text-grey mr-5 flex items-center">
             <svg
               className="h-6 w-6 md:hidden"
               fill="currentColor"
@@ -178,6 +178,7 @@ export const Navbar = () => {
           </a>
           <a
             href="#projects"
+            aria-label="Projects section"
             className="group mr-5 flex items-center hover:text-white"
           >
             <svg
@@ -193,6 +194,7 @@ export const Navbar = () => {
           </a>
           <a
             href="#contact"
+            aria-label="Contact section"
             className="group mr-5 flex items-center hover:text-white"
           >
             <svg

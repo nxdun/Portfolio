@@ -2,9 +2,10 @@
 // ! Requires proper image loading handling
 // ? Consider adding image preloading
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useSwipeable } from 'react-swipeable';
 
 // * Animation Configuration
 // 💡 Could be moved to a separate config file
@@ -35,31 +36,65 @@ const Popup = ({ project, onClose }) => {
   // * State Management
   // ? Consider using useReducer for complex state
   const [currentImage, setCurrentImage] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isClosing, setIsClosing] = useState(false);
 
-  // * Image Carousel Effect
-  // hack: Using progress bar for smooth transitions
+  // Handle ESC key
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => (prev + 10) % 100); // Simulate loading progress
-      if (progress === 90) {
-        setCurrentImage((prev) => (prev + 1) % project.photos.length);
+    const handleEscKey = (e) => {
+      if (e.key === 'Escape') {
+        handleClose();
       }
-    }, 300);
+    };
+    window.addEventListener('keydown', handleEscKey);
+    return () => window.removeEventListener('keydown', handleEscKey);
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [progress, project.photos.length]);
+  // Debounced close handler to prevent double-tap issues
+  const handleClose = () => {
+    if (!isClosing) {
+      setIsClosing(true);
+      onClose();
+      setTimeout(() => setIsClosing(false), 500);
+    }
+  };
+
+  // Replace progress state with proper image loading
+  useEffect(() => {
+    setIsLoading(true);
+  }, [currentImage]);
+
+  const nextImage = () => {
+    setCurrentImage((prev) => (prev + 1) % project.photos.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImage((prev) => (prev - 1 + project.photos.length) % project.photos.length);
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: nextImage,
+    onSwipedRight: prevImage,
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true
+  });
+
+  const toggleZoom = () => setIsZoomed(!isZoomed);
 
   return (
     <motion.div
       // * Backdrop Configuration
       // note: Click outside to close
       className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-75 px-4 py-16 sm:py-24"
-      onClick={onClose}
+      onClick={handleClose}
       initial="hidden"
       animate="visible"
       exit="exit"
       variants={popupVariants}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="popup-title"
     >
       {/* * Main Content Container 
           ! Ensure proper mobile responsiveness */}
@@ -67,36 +102,92 @@ const Popup = ({ project, onClose }) => {
         className="relative w-full max-w-4xl rounded-lg bg-gray-800 bg-opacity-30 p-6 shadow-lg backdrop-blur-lg sm:mx-6 md:mx-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Updated close button with better mobile positioning */}
+        {/* Enhanced close button */}
         <button
-          onClick={onClose}
-          className="absolute -right-2 -top-2 flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-lg transition-all duration-300 hover:bg-red-700 hover:scale-110 sm:-right-5 sm:-top-5 sm:h-12 sm:w-12 lg:-right-6 lg:-top-6"
+          onClick={handleClose}
+          className="fixed right-4 top-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg transition-all duration-300 hover:bg-red-700 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 sm:absolute sm:-right-5 sm:-top-5 md:h-14 md:w-14"
           aria-label="Close popup"
         >
-          <span className="text-lg">✖️</span>
+          <span className="text-2xl" aria-hidden="true">✖️</span>
         </button>
+
+        {/* Mobile-friendly close hint */}
+        <div className="mb-4 text-center text-sm text-gray-400 sm:hidden">
+          Tap outside or press ESC to close
+        </div>
 
         {/* * Image Carousel Section 
             todo: Add swipe gestures for mobile */}
         <div className="relative mb-6 h-80 w-full overflow-hidden rounded">
-          <motion.img
-            src={project.photos[currentImage]}
-            alt="Project Preview"
-            className="h-full w-full -p-0 transform object-cover transition-all duration-1000 ease-in-out"
-            initial={{ opacity: 0, transform: "scale(1.2)" }}
-            animate={{ opacity: 1, transform: "scale(1)" }}
-            transition={{ duration: 1 }}
-          />
-          <div className="absolute bottom-0 h-1 w-full bg-gray-600">
-            <div
-              className="h-full bg-blue-500"
-              style={{ width: `${progress}%` }}
-            ></div>
+
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentImage}
+              src={project.photos[currentImage]}
+              alt={`Project preview ${currentImage + 1}`}
+              className={`h-full w-full object-cover transition-all duration-300 ${
+                isZoomed ? 'cursor-zoom-out scale-150' : 'cursor-zoom-in'
+              }`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              onClick={toggleZoom}
+              onLoad={() => setIsLoading(false)}
+            />
+          </AnimatePresence>
+
+          {/* Loading overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
+            </div>
+          )}
+
+          {/* Image navigation */}
+          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-4">
+            <button
+              onClick={(e) => { e.stopPropagation(); prevImage(); }}
+              className="group rounded-full bg-black bg-opacity-50 p-2 transition-all hover:bg-opacity-75"
+              aria-label="Previous image"
+            >
+              <svg className="h-6 w-6 transform transition-transform group-hover:-translate-x-1" fill="none" stroke="white" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Image counter */}
+            <span className="rounded-full bg-black bg-opacity-50 px-3 py-1 text-sm text-white">
+              {currentImage + 1} / {project.photos.length}
+            </span>
+
+            <button
+              onClick={(e) => { e.stopPropagation(); nextImage(); }}
+              className="group rounded-full bg-black bg-opacity-50 p-2 transition-all hover:bg-opacity-75"
+              aria-label="Next image"
+            >
+              <svg className="h-6 w-6 transform transition-transform group-hover:translate-x-1" fill="none" stroke="white" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
+
+          {/* Zoom indicator */}
+          <button
+            onClick={toggleZoom}
+            className="absolute right-4 top-4 rounded-full bg-black bg-opacity-50 p-2 transition-all hover:bg-opacity-75"
+            aria-label={isZoomed ? "Zoom out" : "Zoom in"}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="white" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                    d={isZoomed ? "M21 21l-6-6m-2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10h-6m3-3v6" 
+                                : "M21 21l-6-6m-2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"} />
+            </svg>
+          </button>
         </div>
 
         {/* * Project Information Section */}
-        <h2 className="mb-4 text-center text-3xl font-bold text-white">
+        <h2 id="popup-title" className="mb-4 text-center text-3xl font-bold text-white">
           {project.project_name}
         </h2>
 
