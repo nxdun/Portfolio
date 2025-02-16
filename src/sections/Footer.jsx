@@ -18,7 +18,7 @@ export const Footer = () => (
       {/* note: Update version number when making releases */}
       <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
         <p className="text-sm text-gray-400 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2025 Nadun Lakshan<br/>
-          <a href="#" className="text-gray-400 " target="_blank" rel="noopener noreferrer">ver -</a> <a href="#" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">1.0.1-public</a>.</p>
+          <a href="#" className="text-gray-400 " target="_blank" rel="noopener noreferrer">ver -</a> <a href="#" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">2.0.0-public</a>.</p>
       </span>
 
       {/* * Privacy Policy Section */}
@@ -94,7 +94,6 @@ export const Footer = () => (
         </a>
 
         {/* * WhatsApp */}
-        {/* ! Update phone number if needed */}
         <a
           href="https://api.whatsapp.com/send?phone=94774364177"
           target="_blank"

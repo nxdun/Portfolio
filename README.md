@@ -49,6 +49,7 @@ This project is licensed under the MIT License.
 
 ## TODO
 Performance & Optimization:
+- [ ] Fix 3D Object loading mechanism
 - [ ] Add image preloading for better performance
 - [ ] Optimize 3D model loading and rendering
 - [ ] Implement code splitting for better load times
