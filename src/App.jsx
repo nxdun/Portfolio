@@ -652,13 +652,6 @@ export default function App() {
           </div>
           <BackToTop />
 
-          {/* Development indicator (optional, can be removed for production) */}
-          <div className="fixed bottom-2 right-2 bg-black/50 text-white text-xs p-1 rounded z-50 pointer-events-none">
-            {activeSection}{" "}
-            {isTransitioning
-              ? `(${Math.round(transitionProgress * 100)}%)`
-              : ""}
-          </div>
         </main>
       )}
     </>
