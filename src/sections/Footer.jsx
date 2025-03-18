@@ -2,38 +2,72 @@
 // ? Consider making social links configurable through props
 
 export const Footer = () => (
-  <footer className="text-gray-400 bg-gray-900 body-font">
+  <footer className="text-gray-400 bg-gray-900/20 backdrop-blur-sm body-font">
     {/* * Brand Section */}
     <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
       {/* * Logo and Brand Name */}
-      {/* ! Update SVG with actual logo if needed */}
       <a className="flex title-font font-medium items-center text-white md:justify-start justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-        </svg>
+        <img
+          src="/vite.svg"
+          alt="Nadun Lakshan Logo"
+          className="w-10 h-10 text-white p-2 bg-transperant rounded-full"
+        />
         <span className="ml-3 text-xl">Nadun Lakshan</span>
       </a>
 
-      {/* * Copyright Information */}
-      {/* note: Update version number when making releases */}
+      {/* * Copyright */}
       <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
-        <p className="text-sm text-gray-400 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2025 Nadun Lakshan<br/>
-          <a href="#" className="text-gray-400 " target="_blank" rel="noopener noreferrer">ver -</a> <a href="#" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">2.0.0-public</a>.</p>
+        <p className="text-sm text-gray-400 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">
+          © 2025 Nadun Lakshan<br />
+          <a
+            href="#"
+            className="text-gray-400 "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ver -
+          </a>{" "}
+          <a
+            href="#"
+            className="text-gray-400 ml-1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            2.0.0-public
+          </a>
+          .
+        </p>
       </span>
 
-      {/* * Privacy Policy Section */}
-      {/* ! Required for reCAPTCHA compliance */}
+      {/* * Privacy Policy */}
       <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
-        <p className="text-sm text-gray-500 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">This site is protected by reCAPTCHA and the Google<br/><a href="#" className="text-gray-400 " target="_blank" rel="noopener noreferrer">Privacy Policy</a> and <a href="https://policies.google.com/terms" className="text-gray-400 ml-1" target="_blank" rel="noopener noreferrer">Terms of Service</a>.</p>
+        <p className="text-sm text-gray-500 sm:ml-6 sm:pl-6 sm:border-l border-gray-800 sm:py-2 sm:mt-0 mt-4">
+          This site is protected by reCAPTCHA and the Google<br />
+          <a
+            href="#"
+            className="text-gray-400 "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://policies.google.com/terms"
+            className="text-gray-400 ml-1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Terms of Service
+          </a>
+          .
+        </p>
       </span>
 
       <div className="flex-grow sm:flex sm:justify-center mt-4 sm:mt-0"></div>
 
       {/* * Social Media Links */}
-      {/* 💡 Could be extracted into a separate SocialLinks component */}
       <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
-        {/* * LinkedIn */}
-        {/* * Social button hover effects */}
         <a
           target="_blank"
           href="https://linkedin.com/in/nxdun"
@@ -53,7 +87,6 @@ export const Footer = () => (
           </svg>
         </a>
 
-        {/* * GitHub */}
         <a
           href="https://www.github.com/nxdun"
           target="_blank"
@@ -73,7 +106,6 @@ export const Footer = () => (
           </svg>
         </a>
 
-        {/* * Instagram */}
         <a
           href="https://www.instagram.com/nadu.lk"
           target="_blank"
@@ -93,7 +125,6 @@ export const Footer = () => (
           </svg>
         </a>
 
-        {/* * WhatsApp */}
         <a
           href="https://api.whatsapp.com/send?phone=94774364177"
           target="_blank"
