@@ -1,124 +1,112 @@
 import Groq from 'groq-sdk';
 
-// * ChatService class
-// * This class is responsible for handling the communication with the Groq API
+/**
+ * ChatService - Handles API communication with the chat model
+ */
 export class ChatService {
   constructor(apiKey, options = {}) {
-    this.client = new Groq({
-      apiKey,
-      timeout: options.timeout || 60000,
-      maxRetries: options.maxRetries || 2,
-      dangerouslyAllowBrowser: true
-    });
+    this.apiKey = apiKey;
+    this.modelURL = import.meta.env.VITE_MODEL_SERVER_URL;
+    this.timeout = options.timeout || 30000;
+    this.maxRetries = options.maxRetries || 3;
+  }
 
-    this.models = [
-      "llama-3.3-70b-versatile",
-      "llama-3.1-8b-instant",
-      "llama-3.2-3b-preview",
-      "llama3-groq-8b-8192-tool-use-preview"
-    ];
+  /**
+   * Processes response content to ensure proper formatting
+   * @param {string} content - Raw content from API
+   * @returns {string} - Properly formatted content
+   */
+  processResponseContent(content) {
+    // Fix malformed image markdown patterns first
+    let processedContent = content
+      // Fix duplicate image markdown syntax
+      .replace(/!\[Project Screenshot\s*\n*\s*.*?\]\(!\[Project Screenshot/g, '![Project Screenshot')
+      // Fix closing parentheses issues
+      .replace(/\)\s*\n*\s*\)/g, ')')
+      // Clean up any remaining malformed markdown
+      .replace(/\]\(!\[(.*?)\]\((.*?)\)/g, '](http:$2)')
+      .replace(/\]\(!\[(.*?)\]\[(.*?)\]/g, ']($2)');
+
+    // Then process plain URLs into proper markdown
+    processedContent = processedContent.replace(
+      /(https?:\/\/[^\s\)]+\.(jpg|jpeg|png|gif|webp))/gi,
+      (match) => {
+        // Only convert to markdown if not already part of markdown syntax
+        if (!content.includes(`[`) && !content.includes(`](${match})`)) {
+          return `![Project Screenshot](${match})`;
+        }
+        return match;
+      }
+    );
+
+    // Ensure special URL format is consistent
+    return processedContent.replace(
+      /\$\$\$ "([^"]+)": "([^"]+)" \$\$\$/g,
+      '$$$ $1: $2 $$$'
+    );
+  }
+
+  /**
+   * Creates a chat completion by calling the API
+   * @param {string} userMessage - The user message
+   * @param {string} systemInstructions - The system instructions
+   * @returns {Promise<Object>} - The API response
+   */
+  async createChatCompletion(userMessage, systemInstructions) {
+    let retries = 0;
     
-    this.currentModelIndex = 0;
-    this.retryDelay = 1000; // Initial retry delay in ms
-  }
-
-  async sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async createChatCompletion(userMessage, systemInstruction) {
-    let attempts = 0;
-    const maxAttempts = this.client._options.maxRetries + 1;
-
-    while (attempts < maxAttempts) {
+    while (retries <= this.maxRetries) {
       try {
-        const params = {
-          messages: [
-            {
-              role: "system",
-              content: systemInstruction
-            },
-            {
-              role: "user",
-              content: userMessage
-            }
-          ],
-          model: this.models[this.currentModelIndex]
-        };
+        const response = await fetch(this.modelURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "llama3-70b-8192",
+            messages: [
+              {
+                role: "system",
+                content: systemInstructions,
+              },
+              {
+                role: "user",
+                content: userMessage,
+              },
+            ],
+            temperature: 0.7,
+            max_tokens: 1000,
+          }),
+          signal: AbortSignal.timeout(this.timeout),
+        });
 
-        const completion = await this.client.chat.completions.create(params);
+        if (!response.ok) {
+          throw new Error(`API responded with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const content = data.choices[0]?.message?.content || "I couldn't generate a response.";
+        
+        // Process the content to ensure proper formatting
+        const processedContent = this.processResponseContent(content);
+        
         return {
           success: true,
-          content: completion.choices[0]?.message?.content,
-          model: this.models[this.currentModelIndex]
+          content: processedContent,
         };
-
       } catch (error) {
-        attempts++;
-        
-        // Handle different error types
-        if (error instanceof Groq.RateLimitError) {
-          this.currentModelIndex = (this.currentModelIndex + 1) % this.models.length;
+        retries++;
+        if (retries > this.maxRetries) {
+          console.error("Chat API error:", error);
           return {
             success: false,
-            content: `Rate limit reached. Switching to ${this.models[this.currentModelIndex]}...`,
-            model: this.models[this.currentModelIndex]
+            content: "Sorry, I'm having trouble connecting to my brain. Please try again later.",
           };
         }
-        
-        if (error instanceof Groq.APIConnectionTimeoutError) {
-          if (attempts < maxAttempts) {
-            await this.sleep(this.retryDelay * attempts);
-            continue;
-          }
-          return {
-            success: false,
-            content: "Request timed out. Please try again.",
-            error: error
-          };
-        }
-
-        if (error instanceof Groq.AuthenticationError) {
-          return {
-            success: false,
-            content: "API key is invalid or not provided.",
-            error: error
-          };
-        }
-
-        if (error instanceof Groq.BadRequestError) {
-          return {
-            success: false,
-            content: "Invalid request format.",
-            error: error
-          };
-        }
-
-        if (error instanceof Groq.APIConnectionError) {
-          if (attempts < maxAttempts) {
-            await this.sleep(this.retryDelay * attempts);
-            continue;
-          }
-          return {
-            success: false,
-            content: "Connection error. Please check your internet connection.",
-            error: error
-          };
-        }
-
-        // Handle any other errors
-        return {
-          success: false,
-          content: "An unexpected error occurred.",
-          error: error
-        };
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
-
-    return {
-      success: false,
-      content: "Maximum retry attempts reached.",
-      error: new Error("Max retries exceeded")
-    };
   }
 }

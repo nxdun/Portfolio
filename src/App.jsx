@@ -549,7 +549,8 @@ export default function App() {
   useEffect(() => {
     const MAX_LOADING_TIME = 10000; // 10 seconds maximum loading time
     let timeoutId;
-
+    console.clear(); // Clear console for better readability
+    
     const checkIfLoadingComplete = async () => {
       try {
         // Start with font loading - 20% weight

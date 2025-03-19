@@ -6,6 +6,7 @@ import { useEffect, useRef, useReducer, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import propTypes from "prop-types";
 import { ChatService } from '../utils/ChatService';
+import projectData from '../data/ProjectData.json';
 
 // Initialize ChatService
 const chatService = new ChatService(import.meta.env.VITE_API_KEY, {
@@ -36,21 +37,87 @@ const reducer = (state, action) => {
   }
 };
 
+// * Prepare system instructions with project data
+const prepareSystemInstructions = () => {
+  const baseInstructions = import.meta.env.VITE_MODEL_SYSTEM_INSTRUCTIONS;
+  
+  // Add special instructions for image formatting
+  const enhancedInstructions = baseInstructions + 
+    "IMPORTANT IMAGE FORMATTING:\n" +
+    "- When showing project images, use EXACTLY this format: ![Image Description](image_url)\n" +
+    "- DO NOT nest image markdown tags - use ONE SINGLE markdown tag per image\n" +
+    "- NEVER use nested brackets when showing images\n" +
+    "- Each image should be on its own line with proper markdown\n" +
+    "- Example: ![Project Screenshot](https://example.com/image.png)\n\n";
+  
+  const projectDataJSON = JSON.stringify({
+    platform_config: {
+      host: "www.nadun.me",
+      owner: "Nadun Lakshan",
+      contact: {
+        email: "nadun@gmail.com",
+        phone: "0774364177",
+        whatsapp: "0774364177",
+        instagram: "nadu.lk"
+      }
+    },
+    projects: projectData,
+    guidelines: {
+      response_tone: "Professional",
+      query_handling: "Context-specific",
+      privacy_level: "High"
+    }
+  }, null, 2);
+  
+  return enhancedInstructions + projectDataJSON;
+};
+
 // * Markdown and URL Processing Functions
-// 💡 These functions handle special URL format: $$$ "label": "url" $$$
-// Update URL regex to handle both formats
+// 💡 These functions handle special URL format: $$$ "label": "url" $$$ and plain URLs
 const parseMarkdownContent = (text) => {
   const urlBlocks = [];
-  const cleanText = text.replace(
-    /\$\$\$ "([^"]+)": "([^"]+)" \$\$\$|"(https?:\/\/[^"]+)"/g,
-    (match, label, url, directUrl) => {
-      if (directUrl) {
-        // Handle direct URLs
+  
+  // Sanitize the text to fix common issues with markdown
+  let sanitizedText = text
+    // Fix duplicate image markdown syntax
+    .replace(/!\[Project Screenshot\s*\n*\s*.*?\]\(!\[Project Screenshot/g, '![Project Screenshot')
+    // Fix closing parentheses issues
+    .replace(/\)\s*\n*\s*\)/g, ')')
+    // Clean up any remaining malformed markdown
+    .replace(/\]\(!\[(.*?)\]\((.*?)\)/g, '](http:$2)')
+    .replace(/\]\(!\[(.*?)\]\[(.*?)\]/g, ']($2)');
+  
+  // First pass: Process markdown image syntax ![alt](url)
+  const markdownImagesProcessed = sanitizedText.replace(
+    /!\[(.*?)\]\((https?:\/\/[^)\s]+)\)/g,
+    (match, alt, url) => {
+      // Make sure URL is clean
+      const cleanUrl = url.replace(/[\n\r\s]+/g, '');
+      urlBlocks.push({ 
+        label: alt || 'Project Image', 
+        url: cleanUrl 
+      });
+      return `__URL_${urlBlocks.length - 1}__`;
+    }
+  );
+  
+  // Second pass: Process special URL format and direct URLs
+  const cleanText = markdownImagesProcessed.replace(
+    /\$\$\$ ([^:]+): (https?:\/\/[^ ]+) \$\$\$|"(https?:\/\/[^"]+)"|(https?:\/\/[^\s]+)/g,
+    (match, label, url, quotedUrl, plainUrl) => {
+      if (plainUrl) {
+        // Handle plain URLs (not in quotes, not in special format)
         urlBlocks.push({ 
-          label: 'Image', 
-          url: directUrl 
+          label: isImageUrl(plainUrl) ? 'Project Image' : 'Link', 
+          url: plainUrl 
         });
-      } else {
+      } else if (quotedUrl) {
+        // Handle quoted URLs
+        urlBlocks.push({ 
+          label: isImageUrl(quotedUrl) ? 'Project Image' : 'Link', 
+          url: quotedUrl 
+        });
+      } else if (url) {
         // Handle $$$ format
         urlBlocks.push({ label, url });
       }
@@ -64,12 +131,16 @@ const parseMarkdownContent = (text) => {
   };
 };
 
-// * URL Type Checker
-// note: Checks if URL points to an image resource
+// * URL Type Checker - Enhanced
+// note: Checks if URL points to an image resource with more patterns
 const isImageUrl = url => (
-  url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
-  url.includes('ik.imagekit.io') ||
-  url.includes('raw.githubusercontent.com')
+  url && (
+    url.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp|tiff)$/i) ||
+    url.includes('ik.imagekit.io') ||
+    url.includes('raw.githubusercontent.com') ||
+    url.includes('imagekit') ||
+    url.match(/\bimage\b|\bimg\b/i)
+  )
 );
 
 // * Message Content Renderer
@@ -159,10 +230,10 @@ const ChatBot = ({ closeMe }) => {
     dispatch({ type: "SET_TYPING", payload: true });
 
     try {
-      // Get bot response using ChatService
+      // Get bot response using ChatService with combined instructions and project data
       const response = await chatService.createChatCompletion(
         trimmedInput,
-        import.meta.env.VITE_MODEL_SYSTEM_INSTRUCTIONS
+        prepareSystemInstructions()
       );
 
       if (response.success) {
@@ -363,8 +434,14 @@ const ChatBot = ({ closeMe }) => {
 
           @keyframes marquee {
             0% {
-              transform: translateX(0%);            }            100% {              transform: translateX(-50%);            }          }        `}{" "}
-      </style>{" "}
+              transform: translateX(0%);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
