@@ -98,7 +98,6 @@ export class ChatService {
       } catch (error) {
         retries++;
         if (retries > this.maxRetries) {
-          console.error("Chat API error:", error);
           return {
             success: false,
             content: "Sorry, I'm having trouble connecting to my brain. Please try again later.",
