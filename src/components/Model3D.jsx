@@ -2,52 +2,56 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { AnimationMixer } from "three";
-import HeroModel from "../assets/optimal-hero.glb"; 
+import HeroModel from "../assets/optimal-hero.glb";
+
+// Preload the model for faster loading
+useGLTF.preload(HeroModel);
 
 const Model3D = (props) => {
-  // Update preload path to use imported model
-  useGLTF.preload(HeroModel);
+  const groupRef = useRef();
+  const mixerRef = useRef();
   
-  // Use imported model path
+  // Load the model with DRACO compression support if available
   const { scene, animations } = useGLTF(HeroModel);
-  const mixer = useRef(null);
-
+  
+  // Set up animations and mixer when component mounts
   useEffect(() => {
-    if (animations.length) {
-      mixer.current = new AnimationMixer(scene);
-      const actions = animations.map(clip => mixer.current.clipAction(clip));
-      actions.forEach(action => action.play());
-
-      return () => {
-        actions.forEach(action => action.stop());
-        mixer.current.stopAllAction();
-        mixer.current.uncacheRoot(scene);
-        mixer.current = null;
-      };
-    }
-  }, [animations, scene]);
-
-  useFrame((_, delta) => {
-    if (mixer.current) mixer.current.update(delta);
-  });
-
-  useEffect(() => {
-    // Cleanup function
+    if (!animations.length) return;
+    
+    // Create a new animation mixer directly on the scene
+    const mixer = new AnimationMixer(scene);
+    mixerRef.current = mixer;
+    
+    // Create and play all animations
+    const actions = animations.map(clip => {
+      const action = mixer.clipAction(clip);
+      // Configure the animation
+      action.loop = 2201; // Loop mode - repeat
+      action.clampWhenFinished = false; 
+      action.timeScale = 1;
+      action.play();
+      return action;
+    });
+    
+    // Cleanup function to stop all animations
     return () => {
-      scene.traverse((obj) => {
-        if (obj.geometry) obj.geometry.dispose();
-        if (obj.material) {
-          if (Array.isArray(obj.material)) {
-            obj.material.forEach(m => m.dispose());
-          } else {
-            obj.material.dispose();
-          }
-        }
-      });
+      actions.forEach(action => action.stop());
+      mixer.stopAllAction();
     };
-  }, [scene]);
-  // ! Ignore this error objects-{scene} is unknown
-  return <primitive object={scene} {...props} />;
+  }, [scene, animations]);
+  
+  // Update the animations on each frame
+  useFrame((_, delta) => {
+    if (mixerRef.current) {
+      mixerRef.current.update(delta);
+    }
+  });
+  
+  return (
+    <group ref={groupRef} {...props}>
+      <primitive object={scene} />
+    </group>
+  );
 };
 
 export default Model3D;

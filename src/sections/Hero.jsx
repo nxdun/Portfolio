@@ -1,22 +1,26 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Suspense, lazy, useEffect, useMemo, useState, useCallback } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState, useCallback, useRef } from "react";
 import Button from "../components/BotButton";
 import ChatBot from "../sections/ChatBot";
-import posterImage from "../assets/poster.webp";  // Add this import
+import posterImage from "../assets/poster.webp";
+import LoadingSpinner from "../components/LoadingSpinner";
 
-// Lazy load the 3D components
+// Preload the Model3DSection component but don't render it immediately
 const Model3DSection = lazy(() => import('../components/Model3DSection'));
 
 export const Hero = () => {
   // * State Management
-  // todo: Consider using context for global state
   const [isVisible, setIsVisible] = useState(true);
   const [dynamicText, setDynamicText] = useState("Student");
   const [isChatBotOpen, setIsChatBotOpen] = useState(false);
   const [show3DModel, setShow3DModel] = useState(false);
   const [isModelLoading, setIsModelLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [hoverPosition, setHoverPosition] = useState({ x: 50, y: 50 });
   const [isHovering, setIsHovering] = useState(false);
+  const progressTimerRef = useRef(null);
+  // Flag to start the model initialization process
+  const [modelInitiated, setModelInitiated] = useState(false);
 
   // * Text Animation Configuration
   // note: Words for typing effect
@@ -120,10 +124,60 @@ export const Hero = () => {
     setIsChatBotOpen(false);
   };
 
+  // Enhanced model loading function with unified loading process
   const handleLoadModel = () => {
     setIsModelLoading(true);
-    setShow3DModel(true);
+    setLoadingProgress(0);
+    
+    // Start simulated preloading sequence for better UX
+    clearInterval(progressTimerRef.current);
+    progressTimerRef.current = setInterval(() => {
+      setLoadingProgress(prev => {
+        // Gradual initial progress to show activity 
+        if (prev < 25) {
+          return prev + 1.5;
+        }
+        // Slower middle phase to show "processing"
+        else if (prev < 65) {
+          return prev + 0.5;
+        } 
+        // Final phase waits for the actual model loading
+        else if (prev < 90) {
+          return prev + 0.2; 
+        }
+        return prev;
+      });
+    }, 30);
+    
+    // Start the model initialization but don't show it yet
+    setModelInitiated(true);
+    
+    // When progress reaches 100%, we'll set show3DModel to true
+    const completeTimer = setTimeout(() => {
+      clearInterval(progressTimerRef.current);
+      setLoadingProgress(100);
+      
+      // Short delay to ensure smooth transition
+      setTimeout(() => {
+        setShow3DModel(true);
+        setIsModelLoading(false);
+      }, 300);
+    }, 3000); // Total loading time (adjust as needed for perceived performance)
+    
+    return () => {
+      clearInterval(progressTimerRef.current);
+      clearTimeout(completeTimer);
+    };
   };
+  
+  // Clean up interval on component unmount
+  useEffect(() => {
+    return () => {
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleMouseMove = useCallback((e) => {
     const container = e.currentTarget;
@@ -228,99 +282,109 @@ export const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* 3D Model Section */}
+        {/* 3D Model Section with Unified Loading */}
         <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          {show3DModel ? (
-            <Suspense fallback={
-              <div className="h-[70vh] w-full flex items-center justify-center bg-gray-900/10 rounded-lg">
-                <div className="text-white">Preparing 3D Environment...</div>
-              </div>
-            }>
-              <div className="relative w-full flex justify-center items-center">
-                <Model3DSection />
-              </div>
-            </Suspense>
-          ) : (
-            <div 
-              className="relative h-[70vh] w-full flex items-center justify-center overflow-hidden rounded-lg"
-              onMouseMove={handleMouseMove}
-              onTouchMove={handleTouchMove}
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => setIsHovering(false)}
-              onTouchStart={() => setIsHovering(true)}
-              onTouchEnd={() => setIsHovering(false)}
-            >
-              <img 
-                src={posterImage} 
-                alt="3D Model Preview" 
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <motion.div 
-                className="absolute inset-0 backdrop-blur-[2px]"
-                animate={{
-                  background: isHovering ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.3)",
-                  backdropFilter: isHovering ? "blur(4px)" : "blur(0px)"
-                }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.div
-                className="absolute w-[200px] h-[200px] rounded-full pointer-events-none mix-blend-overlay"
-                animate={{
-                  x: hoverPosition.x + "%",
-                  y: hoverPosition.y + "%",
-                  scale: isHovering ? 1 : 0,
-                  translateX: "-50%",
-                  translateY: "-50%",
-                }}
-                style={{
-                  background: "radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 80%)",
-                  backdropFilter: "blur(16px)",
-                }}
-                transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              />
-              <motion.button
-                className={`${commonButtonStyles} absolute z-10 h-[3em] px-6 rounded-[30px] backdrop-blur-sm
-                  before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px]
-                  before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10%
-                  before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%]
-                  before:hover:bg-[length:10%] before:hover:blur-xl`}
-                onClick={handleLoadModel}
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                initial={false}
-                animate={{
-                  y: isHovering ? -10 : 0,
-                  scale: isHovering ? 1.1 : 1,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 25,
-                  mass: 1
-                }}
+          <div className="relative h-[70vh] w-full rounded-lg">
+            {/* Image background for when model is not shown */}
+            {!show3DModel && (
+              <div 
+                className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg z-10"
+                onMouseMove={handleMouseMove}
+                onTouchMove={handleTouchMove}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                onTouchStart={() => setIsHovering(true)}
+                onTouchEnd={() => setIsHovering(false)}
               >
-                {isModelLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    Initializing...
-                  </span>
-                ) : (
-                  <>
-                   
+                <img 
+                  src={posterImage} 
+                  alt="3D Model Preview" 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <motion.div 
+                  className="absolute inset-0 backdrop-blur-[2px]"
+                  animate={{
+                    background: isHovering ? "rgba(0, 0, 0, 0)" : "rgba(0, 0, 0, 0.3)",
+                    backdropFilter: isHovering ? "blur(4px)" : "blur(0px)"
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div
+                  className="absolute w-[200px] h-[200px] rounded-full pointer-events-none mix-blend-overlay"
+                  animate={{
+                    x: hoverPosition.x + "%",
+                    y: hoverPosition.y + "%",
+                    scale: isHovering ? 1 : 0,
+                    translateX: "-50%",
+                    translateY: "-50%",
+                  }}
+                  style={{
+                    background: "radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 80%)",
+                    backdropFilter: "blur(16px)",
+                  }}
+                  transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                />
+                
+                {/* Load button (only show when not loading and not showing model) */}
+                {!isModelLoading && !show3DModel && (
+                  <motion.button
+                    className={`${commonButtonStyles} absolute z-10 h-[3em] px-6 rounded-[30px] backdrop-blur-sm
+                      before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px]
+                      before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10%
+                      before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%]
+                      before:hover:bg-[length:10%] before:hover:blur-xl`}
+                    onClick={handleLoadModel}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={false}
+                    animate={{
+                      y: isHovering ? -10 : 0,
+                      scale: isHovering ? 1.1 : 1,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25,
+                      mass: 1
+                    }}
+                  >
                     Load 3D Model
-                  </>
+                  </motion.button>
                 )}
-              </motion.button>
+              </div>
+            )}
+            
+            {/* Loading overlay */}
+            <AnimatePresence>
+              {isModelLoading && (
+                <motion.div
+                  className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/60 backdrop-blur-sm z-20 rounded-lg"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <LoadingSpinner progress={loadingProgress} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            {/* Model section - preload when initiated, show when ready */}
+            <div className={`absolute inset-0 z-0 ${show3DModel ? 'z-30' : ''}`}>
+              {modelInitiated && (
+                <Suspense fallback={null}>
+                  <div className={`opacity-0 transition-opacity duration-500 ${show3DModel ? 'opacity-100' : ''}`}>
+                    <Model3DSection />
+                  </div>
+                </Suspense>
+              )}
             </div>
-          )}
+          </div>
         </motion.div>
       </div>
 
