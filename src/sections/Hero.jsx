@@ -109,7 +109,7 @@ export const Hero = () => {
   // ! Update resume link when needed
   const handleDownloadClick = () => {
     window.open(
-      "https://drive.google.com/file/d/1AzNbcTf6hO_pM46sE2BF-WxjECxok8s1/view?usp=sharing",
+      "https://drive.google.com/file/d/1XzQZsXANRcjnOsbiTVlY0AKQD0FP-eGN/view",
       "_blank"
     );
   };
