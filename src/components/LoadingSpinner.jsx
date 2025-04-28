@@ -201,7 +201,7 @@ const LoadingSpinner = ({ progress }) => {
           {progress < 30 ? 'Preparing Environment' : 
            progress < 70 ? 'Loading 3D Assets' : 
            progress < 90 ? 'Initializing Renderer' : 
-           'Model Ready'}
+           'Ready Now'}
         </motion.div>
       </div>
     </div>

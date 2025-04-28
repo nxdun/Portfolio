@@ -205,84 +205,81 @@ export const Hero = () => {
   `;
 
   return (
-    <section className="body-font h-full w-full text-gray-400">
+    <section className="body-font h-full w-full text-gray-300">
       {/* * Main Container */}
       <div className="container mx-auto flex flex-col items-center px-5 py-10 md:flex-row md:py-24">
-        {/* * Left Content Section */}
-        <motion.div
-          className="mb-12 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <motion.h1
-            className="title-font mb-4 whitespace-nowrap text-3xl font-extrabold text-yellow-300 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
-            variants={itemVariants}
-          >
-            Welcome to My Portfolio
-          </motion.h1>
-          <motion.h2
-            className="title-font mb-4 text-xl font-medium text-white sm:text-2xl md:text-3xl lg:text-4xl"
-            variants={itemVariants}
-          >
-            I am <span className="text-xl text-purple-400 sm:text-2xl md:text-3xl lg:text-4xl">{dynamicText}</span>
-          </motion.h2>
-          <motion.p
-            className="mb-8 mt-4 leading-relaxed text-base lg:text-lg xl:text-xl"
-            variants={itemVariants}
-          >
-            Passionate software engineering student with hands-on experience in
-            modern technologies. Seeking opportunities to contribute to
-            impactful projects and gain industry experience.
-          </motion.p>
           <motion.div
-            className="flex flex-col items-center space-y-4 md:flex-row md:space-x-4 md:space-y-0"
-            variants={itemVariants}
+            className="mb-12 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
           >
-            <AnimatePresence>
-              {isVisible && (
-                <>
-                  <motion.button
-                    className="hover:animate-gradient-xy relative z-10 h-[3em] w-[12em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700"
-                    onClick={handleProjectsClick}
-                    variants={buttonVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    MY PROJECTS
-                  </motion.button>
-                  <motion.button
-                    className="flex w-48 cursor-pointer items-center justify-center rounded-full border border-gradient-to-r from-violet-500 via-sky-500 to-pink-500 px-4 py-2 font-mono text-sm tracking-wide text-white shadow-lg transition-transform transform hover:scale-105"
-                    onClick={handleDownloadClick}
-                    variants={buttonVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    Download Resume
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      className="h-5 w-5 ml-2 animate-bounce"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
-                      />
-                    </svg>
-                  </motion.button>
-                </>
-              )}
-            </AnimatePresence>
+            <motion.h1
+              className="title-font mb-4 tracking-tight whitespace-nowrap text-3xl font-extrabold bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 inline-block text-transparent bg-clip-text sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+              variants={itemVariants}
+            >
+              Welcome to My Portfolio
+            </motion.h1>
+            <motion.h2
+              className="title-font mb-6 text-xl font-medium text-white sm:text-2xl md:text-3xl lg:text-4xl"
+              variants={itemVariants}
+            >
+              I am <span className="text-xl bg-gradient-to-r from-purple-400 to-pink-400 inline-block text-transparent bg-clip-text font-bold sm:text-2xl md:text-3xl lg:text-4xl">{dynamicText}</span>
+            </motion.h2>
+            <motion.p
+              className="mb-10 mt-4 leading-relaxed text-base tracking-wide text-gray-300 p-4 rounded-lg lg:text-lg xl:text-xl bg-gradient-to-b from-black/1 to-purple-900/5 backdrop-filter backdrop-blur-[1px]"
+              variants={itemVariants}
+            >
+              <span className="font-medium text-gradient bg-gradient-to-r from-sky-300 to-blue-400 inline-block text-transparent bg-clip-text">Final-year Software Engineering Undergraduate</span> (CGPA 3.4) with a passion for <span className="font-medium text-emerald-300">AI research</span> and <span className="font-medium text-emerald-300">multi-agent systems</span>. Currently leading a <span className="font-medium text-violet-300">Multi-Agentic AI Research Project</span> at LOLC, overseeing <span className="italic text-sky-200">system design</span>, <span className="italic text-sky-200">agent coordination</span>, and <span className="italic text-sky-200">collaborative AI strategies</span>. Experienced in <span className="font-medium text-orange-300">Scrum methodologies</span>, <span className="font-medium text-orange-300">team leadership</span>, and <span className="font-medium text-orange-300">agile development</span>. Maintains an active <span className="font-medium text-fuchsia-300">GitHub portfolio</span> demonstrating hands-on projects, clean coding practices, and continuous learning. Seeking an <span className="font-medium text-yellow-200">internship opportunity</span> to apply leadership, technical expertise, and innovation in real-world software engineering challenges.
+            </motion.p>
+            <motion.div
+              className="flex flex-col items-center space-y-4 md:flex-row md:space-x-6 md:space-y-0"
+              variants={itemVariants}
+            >
+              <AnimatePresence>
+                {isVisible && (
+            <>
+              <motion.button
+                className="hover:animate-gradient-xy relative z-10 h-[3.2em] w-[13em] cursor-pointer rounded-[30px] bg-gradient-to-r from-violet-500 from-10% via-sky-500 via-30% to-pink-500 to-90% bg-[length:400%] text-center text-[14px] font-bold text-white before:absolute before:-bottom-[5px] before:-left-[5px] before:-right-[5px] before:-top-[5px] before:-z-10 before:rounded-[35px] before:bg-gradient-to-r before:from-violet-500 before:from-10% before:via-sky-500 before:via-30% before:to-pink-500 before:bg-[length:400%] before:transition-all before:duration-[1s] before:ease-in-out before:content-[''] hover:bg-[length:100%] before:hover:bg-[length:10%] before:hover:blur-xl focus:ring-violet-700 active:bg-violet-700 uppercase tracking-wider"
+                onClick={handleProjectsClick}
+                variants={buttonVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <span className="drop-shadow-md">Explore Projects</span>
+              </motion.button>
+              <motion.button
+                className="flex w-52 cursor-pointer items-center justify-center rounded-full border border-gradient-to-r from-violet-500 via-sky-500 to-pink-500 backdrop-blur-sm bg-gray-900/30 px-5 py-3 font-mono text-sm tracking-wide text-white shadow-lg hover:shadow-violet-500/25 transition-all transform hover:scale-105 hover:border-violet-400"
+                onClick={handleDownloadClick}
+                variants={buttonVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                Download Resume
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="h-5 w-5 ml-2 animate-bounce text-violet-300"
+                >
+                  <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
+                  />
+                </svg>
+              </motion.button>
+            </>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </motion.div>
-        </motion.div>
 
-        {/* 3D Model Section with Unified Loading */}
+          {/* 3D Model Section with Unified Loading */}
         <motion.div
           className="w-full md:w-1/2 lg:w-full lg:max-w-lg"
           initial={{ opacity: 0, y: 50 }}
