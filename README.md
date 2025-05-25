@@ -106,6 +106,32 @@ src/
 └── App.jsx      # Main component
 ```
 
+## 🧑‍💻 Codebase Architecture & Interview Prep
+
+### Functional Components & Hierarchy
+- The app is built entirely with **React functional components** for modularity and reusability.
+- **Main hierarchy:**
+  - `App.jsx` (root, wraps everything in context)
+    - `Navbar` (top navigation)
+    - `Hero` (landing section, intro, 3D model, chatbot)
+    - `Projects` (project cards, search/filter, popup details)
+    - `Contact` (contact form with validation & captcha)
+    - `Footer` (site footer)
+    - **Shared components:** `BackToTop`, `LoadingSpinner`, `Model3DSection`, etc.
+
+### Hooks Used & Use Cases
+- **useState**: Local state for UI (e.g., form data, loading, toggles).
+- **useEffect**: Side effects (e.g., data preloading, event listeners, animations).
+- **useRef**: DOM refs (e.g., scroll targets, section refs, timers).
+- **useReducer**: Complex state (e.g., chatbot message management).
+- **useMemo/useCallback**: Memoization for performance (e.g., dynamic lists, handlers).
+- **Custom hooks:**
+  - `useAppLoading`: Manages global loading state and progress.
+  - `useSectionObserver`: Tracks which section is active for dynamic backgrounds.
+  - `useShaderBackground`: Handles animated background color transitions.
+  - `useColorScheme` (context): Provides theme and color scheme switching.
+
+
 ## 🎨 Make It Yours
 
 1. **Add Projects** — Update `ProjectData.json`
