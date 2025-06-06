@@ -9,8 +9,10 @@ import * as drei from "@react-three/drei";
 import * as fiber from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
 import { useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react"; // Ensure useState is imported
 import BackToTop from "./components/BackToTop.jsx";
+import BotButton from "./components/BotButton.jsx"; // Corrected path
+import ChatBot from "./sections/ChatBot.jsx"; // Corrected path
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
 import { handleInvalidRoute } from "./utils/routeGuard";
 import { useEffect } from "react";
@@ -22,6 +24,12 @@ import "@fontsource/roboto";
 
 // App content separated from main to use hooks within context
 function AppContent() {
+  // State for ChatBot visibility
+  const [isChatBotOpen, setIsChatBotOpen] = useState(false);
+
+  const toggleChatBot = () => setIsChatBotOpen(!isChatBotOpen);
+  const closeChatBot = () => setIsChatBotOpen(false);
+
   // Scroll animation for background scaling
   const { scrollY } = useScroll();
   const scale = useTransform(scrollY, [0, 500], [1, 3]);
@@ -124,6 +132,13 @@ function AppContent() {
             <Footer />
           </div>
           <BackToTop />
+          {/* Add BotButton here */}
+          <div className="fixed bottom-8 right-8 z-30 lg:bottom-8 lg:right-[22.5rem]">
+            <BotButton onClick={toggleChatBot} />
+          </div>
+
+          {/* Conditionally render ChatBot panel */}
+          {isChatBotOpen && <ChatBot closeMe={closeChatBot} />}
         </main>
       )}
     </>
