@@ -8,7 +8,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import projectData from "../data/ProjectData.json";
-import Popup from "./Popup";
+import { Suspense, lazy } from "react"; // Added React, Suspense, lazy
+
+const Popup = lazy(() => import("./Popup").then(mod => {
+  console.log("Popup lazy import:", mod);
+  return mod;
+})); // Correct lazy import
 
 const cardVariants = {
   offscreen: {
@@ -187,6 +192,7 @@ export const Projects = () => {
                         alt="project"
                         className="w-full object-cover object-center md:h-36 lg:h-48"
                         src={project.photos[0]}
+                         loading="lazy" // Added native lazy loading
                         whileHover={{ scale: 1.1 }}
                       />
                       <div className="p-6">
@@ -264,10 +270,12 @@ export const Projects = () => {
       </div>
       <AnimatePresence>
         {selectedProject && (
-          <Popup
-            project={selectedProject}
-            onClose={() => setSelectedProject(null)}
-          />
+           <Suspense fallback={<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"><LoadingSpinner /></div>}>
+             <Popup
+               project={selectedProject}
+               onClose={() => setSelectedProject(null)}
+             />
+           </Suspense>
         )}
       </AnimatePresence>
     </section>

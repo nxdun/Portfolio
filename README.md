@@ -11,7 +11,7 @@
     <a href="#project-structure">🗂️ Map</a>
   </p>
 
-  [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadun.me)
+  [![Made bu nadzu](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadun.me)
 </div>
 
 <hr />
@@ -106,7 +106,7 @@ src/
 └── App.jsx      # Main component
 ```
 
-## 🧑‍💻 Codebase Architecture & Interview Prep
+## 🧑‍💻 Codebase Architecture
 
 ### Functional Components & Hierarchy
 - The app is built entirely with **React functional components** for modularity and reusability.
@@ -131,6 +131,14 @@ src/
   - `useShaderBackground`: Handles animated background color transitions.
   - `useColorScheme` (context): Provides theme and color scheme switching.
 
+### Other Notes
+- **Functional components** are preferred for their simplicity and hooks support.
+- **Hooks** enable state, side effects, and context in function components.
+- **Component hierarchy** is clean and modular, with separation of concerns.
+- **Custom hooks** encapsulate reusable logic (loading, theming, section tracking).
+- **Context API** is used for global state (color schemes, section transitions).
+- **Performance**: useMemo/useCallback prevent unnecessary re-renders.
+- **Accessibility**: Keyboard navigation, ARIA labels, and focus management are considered.
 
 ## 🎨 Make It Yours
 
