@@ -64,7 +64,7 @@ export class ChatService {
             Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify({
-            model: "llama3-70b-8192",
+            model: "openai/gpt-oss-120b",
             messages: [
               {
                 role: "system",
