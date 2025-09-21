@@ -52,7 +52,7 @@ const prepareSystemInstructions = () => {
   
   const projectDataJSON = JSON.stringify({
     platform_config: {
-      host: "www.nadun.me",
+      host: "www.nadzu.me",
       owner: "Nadun Lakshan",
       contact: {
         email: "nadun@gmail.com",
