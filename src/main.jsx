@@ -19,3 +19,14 @@ if (isLocalhost) {
 } else {
   root.render(<App />)
 }
+
+// Add Google Tag Manager script to the head
+const gtmScript = document.createElement('script');
+gtmScript.async = true;
+gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-54K4GF5J';
+document.head.appendChild(gtmScript);
+
+// Add Google Tag Manager noscript to the body
+const gtmNoscript = document.createElement('noscript');
+gtmNoscript.innerHTML = `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54K4GF5J" height="0" width="0" style="display:none;visibility:hidden"></iframe>`;
+document.body.insertBefore(gtmNoscript, document.body.firstChild);
