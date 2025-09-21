@@ -11,7 +11,7 @@
     <a href="#project-structure">🗂️ Map</a>
   </p>
 
-  [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadun.me)
+  [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadzu.me)
 </div>
 
 <hr />
@@ -25,7 +25,7 @@ A digital playground where tech meets art. Interactive 3D elements, AI-powered c
 ## 🔥 Live Site
 
 <div align="center">
-  <h3><a href="https://www.nadun.me">✨ EXPLORE NADUN.ME ✨</a></h3>
+  <h3><a href="https://www.nadzu.me">✨ EXPLORE NADZU.ME ✨</a></h3>
   <img src="./src/assets/poster.webp" alt="Portfolio Preview" width="80%" />
 </div>
 
@@ -143,7 +143,7 @@ src/
 
 Nadun - [inbox.nadun@gmail.com](mailto:inbox.nadun@gmail+portfolioreadme.com)
 
-Portfolio: [https://www.nadun.me](https://www.nadun.me)
+Portfolio: [https://www.nadzu.me](https://www.nadzu.me)
 
 ---
 
