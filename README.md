@@ -1,14 +1,14 @@
 <div align="center">
-  <img src="./public/vite.svg" alt="Portfolio Logo" width="180" />
-  <h1>✨ Digital Odyssey ✨</h1>
-  <p><em>Where code meets creativity</em></p>
+  <img src="./public/vite.png" alt="Portfolio Logo" width="180" />
+  <h1><a href="https://www.nadzu.me" target="_blank" rel="noopener noreferrer">PORTFOLIO</a></h1>
+  <p><em></em></p>
   
   <p>
-    <a href="#live-demo">🌐 Demo</a> •
-    <a href="#features">🚀 Features</a> •
-    <a href="#tech-stack">🛠️ Tech</a> •
-    <a href="#getting-started">🏁 Start</a> •
-    <a href="#project-structure">🗂️ Map</a>
+    <a href="#live-demo">Demo</a> •
+    <a href="#features">Features</a> •
+    <a href="#tech-stack">Tech</a> •
+    <a href="#getting-started">Start</a> •
+    <a href="#project-structure">Map</a>
   </p>
 
   [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadzu.me)
@@ -16,44 +16,44 @@
 
 <hr />
 
-> "Simplicity is the ultimate sophistication."
+> Simplicity is the ultimate sophistication.
 
-## 🌟 Overview
+## Overview
 
-A digital playground where tech meets art. Interactive 3D elements, AI-powered conversation, and immersive design create an experience beyond the typical portfolio.
+A small portfolio that blends interactive 3D, an AI assistant, and clean visuals.
 
-## 🔥 Live Site
+## Live Site
 
 <div align="center">
-  <h3><a href="https://www.nadzu.me">✨ EXPLORE NADZU.ME ✨</a></h3>
+  <h3><a href="https://www.nadzu.me">EXPLORE NADZU.ME</a></h3>
   <img src="./src/assets/poster.webp" alt="Portfolio Preview" width="80%" />
 </div>
 
-## ⚡ Features
+## Features
 
 <table align="center">
   <tr>
-    <td align="center"><b>🌌 3D Magic</b></td>
-    <td align="center"><b>🤖 AI Guide</b></td>
-    <td align="center"><b>✨ Visual Flair</b></td>
+    <td align="center"><b>3D</b></td>
+    <td align="center"><b>AI Guide</b></td>
+    <td align="center"><b>Visuals</b></td>
   </tr>
   <tr>
-    <td>Interactive Three.js models that bring projects to life</td>
-    <td>Smart chatbot companion for seamless navigation</td>
-    <td>Holographic textures and effects for visual impact</td>
+    <td>Interactive Three.js models</td>
+    <td>Chatbot for quick guidance</td>
+    <td>Holographic textures and effects</td>
   </tr>
 </table>
 
 <details>
-  <summary><b>🔍 More Goodies</b></summary>
+  <summary><b>More</b></summary>
   
-  - 📱 **Fully Responsive** — Perfect on every device
-  - 🖥️ **Project Showcase** — Dynamic filtering system
-  - 🚀 **Lightning Fast** — Optimized performance
-  - 🎨 **Smooth Transitions** — Seamless navigation flow
+  - Fully responsive
+  - Project filtering and details
+  - Performance optimizations
+  - Smooth transitions
 </details>
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 <div align="center">
   
@@ -64,94 +64,70 @@ A digital playground where tech meets art. Interactive 3D elements, AI-powered c
 </div>
 
 Built with:
-- **⚛️ React + Vite** — Speed and flexibility
-- **🎨 Tailwind** — Elegant, responsive design
-- **🌐 Three.js** — Immersive 3D experiences
-- **🧠 Custom AI** — Smart interaction layer
+- React + Vite
+- Tailwind CSS
+- Three.js
+- Custom AI component
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js (v14+)
-- npm/yarn
+- npm or yarn
 
 ### Setup
-1. Clone it
+1. Clone
    ```bash
    git clone https://github.com/nadun/portfolio.git
    cd portfolio
    ```
-
-2. Install it
+2. Install
    ```bash
    npm install
    ```
-
-3. Run it
+3. Run
    ```bash
    npm run dev
    ```
+4. Open `http://localhost:5173`
 
-4. Visit `http://localhost:5173`
-
-## 📂 Project Map
+## Project Map
 
 ```
 src/
-├── assets/      # Visual treasures
-├── components/  # UI building blocks
-├── sections/    # Main content areas
-├── data/        # Content configuration
-├── utils/       # Helper functions
-└── App.jsx      # Main component
+├── assets/
+├── components/
+├── sections/
+├── data/
+├── utils/
+└── App.jsx
 ```
 
-## 🧑‍💻 Codebase Architecture & Interview Prep
+## Codebase Notes
 
-### Functional Components & Hierarchy
-- The app is built entirely with **React functional components** for modularity and reusability.
-- **Main hierarchy:**
-  - `App.jsx` (root, wraps everything in context)
-    - `Navbar` (top navigation)
-    - `Hero` (landing section, intro, 3D model, chatbot)
-    - `Projects` (project cards, search/filter, popup details)
-    - `Contact` (contact form with validation & captcha)
-    - `Footer` (site footer)
-    - **Shared components:** `BackToTop`, `LoadingSpinner`, `Model3DSection`, etc.
+- Built with React functional components for clarity and reuse.
+- Key sections: App, Navbar, Hero, Projects, Contact, Footer.
+- Hooks used: useState, useEffect, useRef, useReducer, useMemo, useCallback.
+- Custom hooks: useAppLoading, useSectionObserver, useShaderBackground, useColorScheme.
 
-### Hooks Used & Use Cases
-- **useState**: Local state for UI (e.g., form data, loading, toggles).
-- **useEffect**: Side effects (e.g., data preloading, event listeners, animations).
-- **useRef**: DOM refs (e.g., scroll targets, section refs, timers).
-- **useReducer**: Complex state (e.g., chatbot message management).
-- **useMemo/useCallback**: Memoization for performance (e.g., dynamic lists, handlers).
-- **Custom hooks:**
-  - `useAppLoading`: Manages global loading state and progress.
-  - `useSectionObserver`: Tracks which section is active for dynamic backgrounds.
-  - `useShaderBackground`: Handles animated background color transitions.
-  - `useColorScheme` (context): Provides theme and color scheme switching.
+## Make It Yours
 
+- Add projects in `ProjectData.json`
+- Replace models in `src/assets/`
+- Update colors in `tailwind.config.js`
+- Edit sections in `src/sections/`
 
-## 🎨 Make It Yours
+## Contact
 
-1. **Add Projects** — Update `ProjectData.json`
-2. **Swap Models** — Replace assets in `src/assets/`
-3. **Change Colors** — Modify `tailwind.config.js`
-4. **Edit Sections** — Customize in `src/sections/`
+Nadun - inbox.nadun@gmail.com
 
-## 📬 Connect
-
-Nadun - [inbox.nadun@gmail.com](mailto:inbox.nadun@gmail+portfolioreadme.com)
-
-Portfolio: [https://www.nadzu.me](https://www.nadzu.me)
-
----
+Portfolio: https://www.nadzu.me
 
 <div align="center">
   <pre>
   +-----------------+
   |  CRAFTED WITH   |
-  |     ❤️ Nuu      |
+  |      Nuu        |
   +-----------------+
   </pre>
 </div>
