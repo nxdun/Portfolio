@@ -1,134 +1,64 @@
-<div align="center">
-  <img src="./public/vite.png" alt="Portfolio Logo" width="180" />
-  <h1><a href="https://www.nadzu.me" target="_blank" rel="noopener noreferrer">PORTFOLIO</a></h1>
-  <p><em></em></p>
-  
-  <p>
-    <a href="#live-demo">Demo</a> •
-    <a href="#features">Features</a> •
-    <a href="#tech-stack">Tech</a> •
-    <a href="#getting-started">Start</a> •
-    <a href="#project-structure">Map</a>
-  </p>
 
-  [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadzu.me)
-</div>
+## ✅ Lighthouse Score
 
-<hr />
+soon...
+<!-- <p align="center">
+  <a href="https://pagespeed.web.dev/report?url=https%3A%2F%2Fnadzu.me%2F&form_factor=desktop">
+    <img width="710" alt="nadzu Lighthouse Score" src="nadzu-lighthouse-score.svg">
+  </a>
+</p> -->
 
-> Simplicity is the ultimate sophistication.
+## 🚀 Project Structure
 
-## Overview
+Inside of nadzu, you'll see the following folders and files:
 
-A small portfolio that blends interactive 3D, an AI assistant, and clean visuals.
-
-## Live Site
-
-<div align="center">
-  <h3><a href="https://www.nadzu.me">EXPLORE NADZU.ME</a></h3>
-  <img src="./src/assets/poster.webp" alt="Portfolio Preview" width="80%" />
-</div>
-
-## Features
-
-<table align="center">
-  <tr>
-    <td align="center"><b>3D</b></td>
-    <td align="center"><b>AI Guide</b></td>
-    <td align="center"><b>Visuals</b></td>
-  </tr>
-  <tr>
-    <td>Interactive Three.js models</td>
-    <td>Chatbot for quick guidance</td>
-    <td>Holographic textures and effects</td>
-  </tr>
-</table>
-
-<details>
-  <summary><b>More</b></summary>
-  
-  - Fully responsive
-  - Project filtering and details
-  - Performance optimizations
-  - Smooth transitions
-</details>
-
-## Tech Stack
-
-<div align="center">
-  
-  ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-  ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
-  ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-  
-</div>
-
-Built with:
-- React + Vite
-- Tailwind CSS
-- Three.js
-- Custom AI component
-
-## Quick Start
-
-### Prerequisites
-- Node.js (v14+)
-- npm or yarn
-
-### Setup
-1. Clone
-   ```bash
-   git clone https://github.com/nadun/portfolio.git
-   cd portfolio
-   ```
-2. Install
-   ```bash
-   npm install
-   ```
-3. Run
-   ```bash
-   npm run dev
-   ```
-4. Open `http://localhost:5173`
-
-## Project Map
-
-```
-src/
-├── assets/
-├── components/
-├── sections/
-├── data/
-├── utils/
-└── App.jsx
+```bash
+soon
 ```
 
-## Codebase Notes
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-- Built with React functional components for clarity and reuse.
-- Key sections: App, Navbar, Hero, Projects, Contact, Footer.
-- Hooks used: useState, useEffect, useRef, useReducer, useMemo, useCallback.
-- Custom hooks: useAppLoading, useSectionObserver, useShaderBackground, useColorScheme.
+Any static assets, like images, can be placed in the `public/` directory.
 
-## Make It Yours
+All blog posts are stored in `src/data/blog` directory.
 
-- Add projects in `ProjectData.json`
-- Replace models in `src/assets/`
-- Update colors in `tailwind.config.js`
-- Edit sections in `src/sections/`
+## 💻 Tech Stack
 
-## Contact
+**Main Framework** - [Astro](https://astro.build/)  
+**Type Checking** - [TypeScript](https://www.typescriptlang.org/)  
+**Styling** - [TailwindCSS](https://tailwindcss.com/)  
+**UI/UX** - [Figma Design File](https://www.figma.com/community/file/1356898632249991861)  
+**Static Search** - [FuseJS](https://pagefind.app/)  
+**Icons** - [Tablers](https://tabler-icons.io/)  
+**Code Formatting** - [Prettier](https://prettier.io/)  
+**Deployment** - [Cloudflare Pages](https://pages.cloudflare.com/)  
+**Illustration in About Page** - [https://freesvgillustration.com](https://freesvgillustration.com/)  
+**Linting** - [ESLint](https://eslint.org)
 
-Nadun - inbox.nadun@gmail.com
+## 👨🏻‍💻 Running Locally
 
-Portfolio: https://www.nadzu.me
+You can start using this project locally by running the following command in your desired directory:
 
-<div align="center">
-  <pre>
-  +-----------------+
-  |  CRAFTED WITH   |
-  |      Nuu        |
-  +-----------------+
-  </pre>
-</div>
+```bash
+# pnpm
+pnpm create astro@latest --template satnaing/astro-paper
 
+# npm
+npm create astro@latest -- --template satnaing/astro-paper
+
+# yarn
+yarn create astro --template satnaing/astro-paper
+
+# bun
+bun create astro@latest -- --template satnaing/astro-paper
+```
+
+Then start the project by running the following commands:
+
+```bash
+# install dependencies if you haven't done so in the previous step.
+pnpm install
+
+# start running the project
+pnpm run dev
+```
