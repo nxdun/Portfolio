@@ -1,7 +1,7 @@
-
 ## ✅ Lighthouse Score
 
 soon...
+
 <!-- <p align="center">
   <a href="https://pagespeed.web.dev/report?url=https%3A%2F%2Fnadzu.me%2F&form_factor=desktop">
     <img width="710" alt="nadzu Lighthouse Score" src="nadzu-lighthouse-score.svg">
@@ -39,26 +39,27 @@ All blog posts are stored in `src/data/blog` directory.
 
 You can start using this project locally by running the following command in your desired directory:
 
+install make to make easier executions
 ```bash
-# pnpm
-pnpm create astro@latest --template satnaing/astro-paper
-
-# npm
-npm create astro@latest -- --template satnaing/astro-paper
-
-# yarn
-yarn create astro --template satnaing/astro-paper
-
-# bun
-bun create astro@latest -- --template satnaing/astro-paper
+# for macOS
+brew install make
+# foe windows
+choco install make
+# for Ubuntu already have make pre-installed
 ```
 
-Then start the project by running the following commands:
-
+use the makefile to run commands
 ```bash
-# install dependencies if you haven't done so in the previous step.
-pnpm install
-
-# start running the project
-pnpm run dev
+# install dependencies
+make install
+# start development server
+make
+# build for production
+make build
+# preview production build
+make preview
+# run linter
+make lint
+# clean project
+make clean
 ```
