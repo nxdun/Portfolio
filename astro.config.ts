@@ -10,6 +10,7 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { SITE } from "./src/config";
+process.env.ASTRO_TELEMETRY_DISABLED = '1';
 
 // core from: https://astro.build/config
 export default defineConfig({
