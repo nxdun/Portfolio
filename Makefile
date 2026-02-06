@@ -32,8 +32,8 @@ lint:
 # cross-platform
 ifeq ($(OS),Windows_NT)
 clean:
-	-cmd /C for %%d in (.nuxt .output .dist .yarn node_modules) do if exist %%d rmdir /s /q %%d
+	-cmd /C "for %%d in (.astro .output .dist .yarn node_modules) do if exist %%d rmdir /s /q %%d"
 else
 clean:
-	-rm -rf .nuxt .output .dist .yarn node_modules
+	-rm -rf .output .dist node_modules
 endif
