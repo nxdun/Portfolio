@@ -9,25 +9,25 @@ default: dev
 #interoperable 
 dev:
 	@echo "Running $(PROJECT_NAME) version $(PROJECT_VERSION) in development mode..."
-	npm run dev
+	pnpm run dev
 
 build:
-	npm run build
+	pnpm run build
 
 preview:
-	npm run preview
+	pnpm run preview
 
 sync:
-	npm run sync
+	pnpm run sync
 
 format:
-	npm run format
+	pnpm run format
 
 format-check:
-	npm run format:check
+	pnpm run format:check
 
 lint:
-	npm run lint
+	pnpm run lint
 
 # cross-platform
 ifeq ($(OS),Windows_NT)

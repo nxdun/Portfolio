@@ -39,12 +39,12 @@ const isActive = (path: string) => {
       "mt-4 px-4 py-4 sm:px-6 sm:py-6",
       "rounded-3xl border border-border",
       "relative w-full bg-background",
-      "flex items-baseline justify-between sm:items-center outline-1",
+      "flex items-baseline justify-between outline-1 sm:items-center",
     ]}
   >
     <a
       href="/"
-      class="absolute left-1/2 -translate-x-1/2 py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:translate-x-0 sm:my-auto sm:text-2xl sm:leading-none"
+      class="absolute left-1/2 -translate-x-1/2 py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:translate-x-0 sm:text-2xl sm:leading-none"
     >
       {SITE.title}
     </a>
@@ -86,7 +86,7 @@ const isActive = (path: string) => {
             About
           </a>
         </li>
-        <li class="hidden sm:block col-span-2 h-2" aria-hidden="true"></li>
+        <li class="col-span-2 hidden h-2 sm:block" aria-hidden="true"></li>
         {
           SITE.showArchives && (
             <li class="col-span-2">

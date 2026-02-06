@@ -42,23 +42,22 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       </a>
 
       <h2 class="mb-4 text-xl font-medium sm:text-2xl">
-        I am <span id="dynamic-text" class="font-bold text-accent">a Student</span><span id="cursor" class="animate-pulse">|</span>
+        I am <span id="dynamic-text" class="font-bold text-accent"
+          >a Student</span
+        ><span id="cursor" class="animate-pulse">|</span>
       </h2>
 
       <p class="leading-relaxed tracking-wide">
         Graduating Software Engineer with a{" "}
-        <span class="font-medium">DevOps mindset</span>. I bridge the gap between
-        complex infrastructure and clean application code using
+        <span class="font-medium">DevOps mindset</span>. I bridge the gap
+        between complex infrastructure and clean application code using
         <span class="font-medium">AWS</span> and{" "}
         <span class="font-medium">modern CI/CD</span>. Ready to deploy
         production-grade solutions.
       </p>
 
       <div class="mt-6 flex flex-wrap gap-4">
-        <LinkButton
-          href="/posts/"
-          class="whitespace-nowrap"
-        >
+        <LinkButton href="/posts/" class="whitespace-nowrap">
           All Posts
           <IconArrowRight class="inline-block rtl:-rotate-180" />
         </LinkButton>

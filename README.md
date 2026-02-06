@@ -40,6 +40,7 @@ All blog posts are stored in `src/data/blog` directory.
 You can start using this project locally by running the following command in your desired directory:
 
 install make to make easier executions
+
 ```bash
 # for macOS
 brew install make
@@ -49,6 +50,7 @@ choco install make
 ```
 
 use the makefile to run commands
+
 ```bash
 # install dependencies
 make install
