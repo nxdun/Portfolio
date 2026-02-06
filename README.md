@@ -1,3 +1,11 @@
+> [!WARNING]
+> New portfolio is being developed. Please refer to PRs, which this will be outdated soon.
+
+> [!TIP]
+> Access development prototype via proto.nadzu.me
+
+
+
 <div align="center">
   <img src="./public/vite.svg" alt="Portfolio Logo" width="180" />
   <h1>✨ Digital Odyssey ✨</h1>
