@@ -45,8 +45,10 @@ export default defineConfig({
     // eslint-disable-next-line
     // @ts-ignore
     plugins: [tailwindcss()],
-    optimizeDeps: {
-      exclude: ["@resvg/resvg-js"],
+    build: {
+      rollupOptions: {
+        external: ["@resvg/resvg-js"],
+      },
     },
   },
 
