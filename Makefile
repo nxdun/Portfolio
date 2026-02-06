@@ -30,10 +30,7 @@ lint:
 	pnpm run lint
 
 # cross-platform
-ifeq ($(OS),Windows_NT)
 clean:
-	-cmd /C "for %%d in (.astro .output .dist .yarn node_modules) do if exist %%d rmdir /s /q %%d"
-else
-clean:
-	-rm -rf .output .dist node_modules
-endif
+	@echo "Cleaning build artifacts..."
+	@rm -rf dist node_modules .astro dist
+
