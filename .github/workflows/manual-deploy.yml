@@ -8,9 +8,7 @@ on:
         required: true
         type: boolean
         default: false
-  push:
-    branches:
-      - nadun/port-to-ts
+
 env:
     deploy_me: true
     # deploy_me: ${{ github.event.inputs.deploy_me }}
