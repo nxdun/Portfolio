@@ -10,8 +10,7 @@ on:
         default: false
 
 env:
-    deploy_me: true
-    # deploy_me: ${{ github.event.inputs.deploy_me }}
+    deploy_me: ${{ github.event.inputs.deploy_me }}
 jobs:
   deploy-portfolio:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
