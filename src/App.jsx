@@ -12,6 +12,7 @@ import { useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import BackToTop from "./components/BackToTop.jsx";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
+import TopBanner from "./components/TopBanner.jsx";
 import { handleInvalidRoute } from "./utils/routeGuard";
 import { useEffect } from "react";
 import { ColorSchemeProvider } from "./contexts/ColorSchemeContext.jsx";
@@ -106,6 +107,9 @@ function AppContent() {
           >
             <ShaderGradient control="query" urlString={shaderUrl} />
           </ShaderGradientCanvas>
+
+          {/* Top banner announcing prototype */}
+          <TopBanner />
 
           {/* Main Sections with refs for intersection observer */}
           <div id="navbar-section" ref={sectionRefs.navbar}>
