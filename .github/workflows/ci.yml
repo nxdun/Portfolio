@@ -23,10 +23,10 @@ jobs:
         node-version: [24.13.0]
 
     steps:
-      - name: "☁️ Checkout repository"
+      - name: "Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "📦 Install pnpm"
+      - name: "Install pnpm"
         uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
