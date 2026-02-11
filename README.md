@@ -3,9 +3,9 @@
   <h1><code>~/nadzu.me</code> </h1>
   <p><em>Super Fast Portfolio x Blogger</em></p>
 
-  [![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
-</div>
+[![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
 
+</div>
 
 ## Tech-Stack
 
@@ -35,6 +35,7 @@ choco install make
 You need a free Cloudflare account and the following credentials:
 
 - Environment variables (set these in your Cloudflare Pages project or CI):
+
   ```env
   CLOUDFLARE_API_TOKEN=...
   CLOUDFLARE_ACCOUNT_ID=...
