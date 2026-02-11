@@ -3,7 +3,7 @@
   <h1><code>~/nadzu.me</code> </h1>
   <p><em>Super Fast Portfolio x Blogger</em></p>
 
-  [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadzu.me)
+  [![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
 </div>
 
 ## Tech-Stack
