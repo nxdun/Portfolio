@@ -1,0 +1,48 @@
+name: Deploy Portfolio Manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_me:
+        description: "Deploy Portfolio?"
+        required: true
+        type: boolean
+        default: false
+
+env:
+  deploy_me: ${{ github.event.inputs.deploy_me }}
+jobs:
+  deploy-portfolio:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node.js
+        run: |
+          if [[ -z "${{ vars.AUTHORIZED_USERS }}" ]]; then
+            echo "::error::VPN_CERT_AUTHORIZED_USERS variable not configured"
+            exit 1
+          fi
+          if ! echo "${{ vars.AUTHORIZED_USERS }}" | grep -qw "${{ github.actor }}"; then
+            echo "::error::User '${{ github.actor }}' not authorized"
+            exit 1
+          fi
+          echo "User '${{ github.actor }}' authorized"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.13.0
+
+      - name: Build Astro
+        run: make build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=YOUR_PROJECT_NAME
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
