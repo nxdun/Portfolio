@@ -1,4 +1,4 @@
-.PHONY: default dev build preview sync format format-check lint clean
+.PHONY: default dev build preview sync format format-check lint clean deploy install
 
 PROJECT_NAME ?= $(shell node -e "console.log(require('./package.json').name)")
 PROJECT_VERSION ?= $(shell node -e "console.log(require('./package.json').version)")
@@ -10,6 +10,9 @@ default: dev
 dev:
 	@echo "Running $(PROJECT_NAME) version $(PROJECT_VERSION) in development mode..."
 	pnpm run dev
+
+install:
+	pnpm install
 
 build:
 	pnpm run build
@@ -29,8 +32,12 @@ format-check:
 lint:
 	pnpm run lint
 
+deploy: clean install format build
+	@echo "Deploying $(PROJECT_NAME) version $(PROJECT_VERSION)..."
+	pnpm run deploy
+
 # cross-platform
 clean:
 	@echo "Cleaning build artifacts..."
-	@rm -rf dist node_modules .astro dist
+	@rm -rf dist node_modules .astro public/pagefind
 
