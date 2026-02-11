@@ -5,10 +5,11 @@ import IconX from "@/assets/icons/IconX.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 
 // Get all icons
-const iconImports = import.meta.glob<string>(
-  "/src/assets/tags/*.svg",
-  { eager: true, query: "?raw", import: "default" }
-);
+const iconImports = import.meta.glob<string>("/src/assets/tags/*.svg", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+});
 
 type Props = {
   project: {
@@ -58,7 +59,7 @@ const getIcon = (name: string) => {
 <li class="my-6">
   <button
     onclick={`document.getElementById('${dialogId}').showModal()`}
-    class="group -mx-4 w-full cursor-pointer rounded-lg p-4 text-left transition-all hover:bg-muted/30 min-h-56 flex flex-col"
+    class="group -mx-4 flex min-h-56 w-full cursor-pointer flex-col rounded-lg p-4 text-left transition-all hover:bg-muted/30"
   >
     <Heading
       class="text-lg font-medium text-accent decoration-dashed underline-offset-4 group-hover:underline"
@@ -77,10 +78,7 @@ const getIcon = (name: string) => {
               title={t.name}
             >
               {IconImg && (
-                <span
-                  class="icon-container size-6 block"
-                  set:html={IconImg}
-                />
+                <span class="icon-container block size-6" set:html={IconImg} />
               )}
             </span>
           );
@@ -98,12 +96,12 @@ const getIcon = (name: string) => {
       }
     </div>
 
-    <p class="mt-2 text-sm opacity-90 line-clamp-3">{short_desc}</p>
+    <p class="mt-2 line-clamp-3 text-sm opacity-90">{short_desc}</p>
   </button>
 
   <dialog
     id={dialogId}
-    class="project-dialog m-auto fixed z-50 h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
+    class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
   >
     <div class="flex h-full max-h-full flex-col">
       <!-- Header -->
@@ -119,7 +117,7 @@ const getIcon = (name: string) => {
               {time_period}
             </div>
           </div>
-          
+
           <div class="flex items-center gap-2">
             <LinkButton
               href={github_url}
@@ -128,7 +126,9 @@ const getIcon = (name: string) => {
               title="View Source Code"
             >
               <IconGitHub class="size-6 sm:size-5" />
-              <span class="hidden text-sm font-medium sm:ml-2 sm:block">View Source Code</span>
+              <span class="hidden text-sm font-medium sm:ml-2 sm:block"
+                >View Source Code</span
+              >
             </LinkButton>
 
             <form method="dialog">
@@ -162,7 +162,7 @@ const getIcon = (name: string) => {
                 >
                   {IconImg && (
                     <span
-                      class="icon-container size-8 block"
+                      class="icon-container block size-8"
                       set:html={IconImg}
                     />
                   )}
@@ -193,7 +193,6 @@ const getIcon = (name: string) => {
                 class="grid grid-cols-1 gap-6"
                 data-images={JSON.stringify(photos)}
               >
-                <!-- Images will be injected here on open -->
                 <div class="image-loader flex flex-col items-center py-8 text-center text-sm italic opacity-50">
                   <span class="loading-spinner mb-2" />
                   Loading visuals...
@@ -244,7 +243,7 @@ const getIcon = (name: string) => {
     height: 100%;
     fill: currentColor;
   }
-  
+
   :global(.dark) .icon-container :global(svg path[fill="#014847"]) {
     fill: #e2e8f0;
   }

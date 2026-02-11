@@ -120,8 +120,10 @@ const recentProjects = projectsData.slice(0, 3);
 
     {
       recentProjects.length > 0 && (
-        <section id="projects" class="pt-12 pb-6 border-t border-border">
-          <h2 class="text-2xl font-semibold tracking-wide">Featured Projects</h2>
+        <section id="projects" class="border-t border-border pt-12 pb-6">
+          <h2 class="text-2xl font-semibold tracking-wide">
+            Featured Projects
+          </h2>
           <ul>
             {recentProjects.map(project => (
               <ProjectCard variant="h3" project={project} />

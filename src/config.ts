@@ -1,4 +1,3 @@
-
 export const BLOG_PATH = "src/data/blog";
 
 export const SITE = {

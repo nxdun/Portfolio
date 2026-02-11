@@ -158,15 +158,11 @@
     "full_desc": "Microservices Architecture, Task Management, Real-Time Feedback, Graphical Code Visualization, Issue Tracking, and Code Quality Optimization for multi-language projects. Developed with Agile methodology and optimized for efficient project management.",
     "tags": {
       "icon": [
-          { "name": "React", "iconName": "IconReact" },
-          { "name": "MongoDB", "iconName": "IconMongodb" },
-          { "name": "Express", "iconName": "IconExpress" }
+        { "name": "React", "iconName": "IconReact" },
+        { "name": "MongoDB", "iconName": "IconMongodb" },
+        { "name": "Express", "iconName": "IconExpress" }
       ],
-      "noIcon": [
-        "Microservices",
-        "Code Analysis",
-        "Project Management"
-      ]
+      "noIcon": ["Microservices", "Code Analysis", "Project Management"]
     },
     "github_url": "https://github.com/nxdun/CodeWizard",
     "time_period": "July 2024 - Octomber 2024",
@@ -198,15 +194,11 @@
     "short_desc": "Terabox - Bulk download, Single Download",
     "full_desc": "A Backend Download Manager with parallel, multi-chunks, and fast download capabilities. Features local FTP for quick file transfer using the same API. Includes heavy link fault tolerance, logs failed actions with links, backup fetching algorithm, and separate endpoints for deleting archives/current downloads.",
     "tags": {
-      "icon": [
-        { "name": "Express", "iconName": "IconExpress" }
-      ],
+      "icon": [{ "name": "Express", "iconName": "IconExpress" }],
       "noIcon": ["FTP", "Parallel Downloads", "API"]
     },
     "github_url": "https://github.com/nxdun/TeraboxBulkDownloader",
     "time_period": "june 2024 - July 2025",
-    "photos": [
-      "https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"
-    ]
+    "photos": ["https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"]
   }
 ]
