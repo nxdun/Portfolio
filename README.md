@@ -27,5 +27,23 @@ brew install make
 
 # for Windows
 choco install make
+```
 
-# for Ubuntu (make is pre-installed)
+## Deployment
+
+You need a free Cloudflare account and the following credentials:
+
+- Environment variables (set these in your Cloudflare Pages project or CI):
+  ```env
+  CLOUDFLARE_API_TOKEN=...
+  CLOUDFLARE_ACCOUNT_ID=...
+  ```
+
+- CLOUDFLARE_API_TOKEN
+  - Where: Profile (top left corner in dashboard) > API Tokens > Create Token
+  - Required permissions:
+    - Account | Cloudflare Pages | Edit
+    - User | User Details | Read
+
+- CLOUDFLARE_ACCOUNT_ID
+  - Where: Name (top right corner in dashboard) > Triple Dot Menu > Copy Account ID
