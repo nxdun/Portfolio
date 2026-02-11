@@ -4,12 +4,21 @@ import LinkButton from "./LinkButton.astro";
 import IconX from "@/assets/icons/IconX.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 
+// Get all icons
+const iconImports = import.meta.glob<string>(
+  "/src/assets/tags/*.svg",
+  { eager: true, query: "?raw", import: "default" }
+);
+
 type Props = {
   project: {
     project_name: string;
     short_desc: string;
     full_desc?: string;
-    tags: string[];
+    tags: {
+      icon: { name: string; iconName: string }[];
+      noIcon: string[];
+    };
     github_url: string;
     time_period: string;
     photos?: string[];
@@ -32,20 +41,24 @@ const projectId = slugifyStr(project_name);
 const dialogId = `dialog-${projectId}`;
 
 // Function to generate distinct colorful styles
-const getTagStyle = (tag: string) => {
+const getTagHue = (tag: string) => {
   let hash = 0;
   for (let i = 0; i < tag.length; i++) {
     hash = tag.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const h = Math.abs(hash % 360);
-  return `background-color: hsl(${h}, 90%, 96%); color: hsl(${h}, 80%, 30%); border: 1px solid hsl(${h}, 80%, 30%);`;
+  return Math.abs(hash % 360);
+};
+
+const getIcon = (name: string) => {
+  const path = `/src/assets/tags/${name}.svg`;
+  return iconImports[path];
 };
 ---
 
 <li class="my-6">
   <button
     onclick={`document.getElementById('${dialogId}').showModal()`}
-    class="group -mx-4 w-full cursor-pointer rounded-lg p-4 text-left transition-all hover:bg-muted/30"
+    class="group -mx-4 w-full cursor-pointer rounded-lg p-4 text-left transition-all hover:bg-muted/30 min-h-56 flex flex-col"
   >
     <Heading
       class="text-lg font-medium text-accent decoration-dashed underline-offset-4 group-hover:underline"
@@ -54,12 +67,30 @@ const getTagStyle = (tag: string) => {
       {project_name}
     </Heading>
 
-    <div class="mt-2 flex flex-wrap gap-2">
+    <div class="mt-2 flex flex-wrap items-center gap-2">
       {
-        tags.map(tag => (
+        tags.icon.map(t => {
+          const IconImg = getIcon(t.iconName);
+          return (
+            <span
+              class="flex items-center justify-center p-1 transition-all hover:scale-110"
+              title={t.name}
+            >
+              {IconImg && (
+                <span
+                  class="icon-container size-6 block"
+                  set:html={IconImg}
+                />
+              )}
+            </span>
+          );
+        })
+      }
+      {
+        tags.noIcon.map(tag => (
           <span
-            class="rounded-md px-2 py-1 text-sm"
-            style={getTagStyle(tag)}
+            class="project-tag rounded-md px-2 py-1 text-sm font-medium"
+            style={`--tag-hue: ${getTagHue(tag)}`}
           >
             {tag}
           </span>
@@ -67,7 +98,7 @@ const getTagStyle = (tag: string) => {
       }
     </div>
 
-    <p class="mt-2 text-sm opacity-90">{short_desc}</p>
+    <p class="mt-2 text-sm opacity-90 line-clamp-3">{short_desc}</p>
   </button>
 
   <dialog
@@ -77,23 +108,39 @@ const getTagStyle = (tag: string) => {
     <div class="flex h-full max-h-full flex-col">
       <!-- Header -->
       <div
-        class="sticky top-0 z-10 flex flex-shrink-0 justify-between border-b border-border bg-background p-6"
+        class="sticky top-0 z-10 border-b border-border bg-background px-6 py-4"
       >
-        <div>
-          <h2 class="text-2xl font-bold text-accent">{project_name}</h2>
-          <div class="mt-1 flex items-center gap-2 text-sm opacity-70">
-            <!-- Date moved here inside drawer -->
-            <span>{time_period}</span>
+        <div class="flex items-start justify-between">
+          <div class="mr-4">
+            <h2 class="text-xl font-bold text-accent sm:text-2xl">
+              {project_name}
+            </h2>
+            <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {time_period}
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <LinkButton
+              href={github_url}
+              target="_blank"
+              class="flex items-center justify-center rounded-full border border-border p-2 text-accent transition-all hover:bg-accent hover:text-white hover:shadow-md sm:rounded-lg sm:px-4 sm:py-2"
+              title="View Source Code"
+            >
+              <IconGitHub class="size-6 sm:size-5" />
+              <span class="hidden text-sm font-medium sm:ml-2 sm:block">View Source Code</span>
+            </LinkButton>
+
+            <form method="dialog">
+              <button
+                class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
+                aria-label="Close modal"
+              >
+                <IconX class="size-6" />
+              </button>
+            </form>
           </div>
         </div>
-        <form method="dialog">
-          <button
-            class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
-            aria-label="Close modal"
-          >
-            <IconX class="size-6" />
-          </button>
-        </form>
       </div>
 
       <!-- Scrollable Content -->
@@ -106,27 +153,33 @@ const getTagStyle = (tag: string) => {
         <!-- Tags -->
         <div class="flex flex-wrap gap-2">
           {
-            tags.map(tag => (
+            tags.icon.map(t => {
+              const IconImg = getIcon(t.iconName);
+              return (
+                <span
+                  class="flex items-center justify-center p-1 transition-all hover:scale-110"
+                  title={t.name}
+                >
+                  {IconImg && (
+                    <span
+                      class="icon-container size-8 block"
+                      set:html={IconImg}
+                    />
+                  )}
+                </span>
+              );
+            })
+          }
+          {
+            tags.noIcon.map(tag => (
               <span
-                class="rounded-md px-3 py-1.5 text-base"
-                style={getTagStyle(tag)}
+                class="project-tag rounded-md px-3 py-1.5 text-base"
+                style={`--tag-hue: ${getTagHue(tag)}`}
               >
                 {tag}
               </span>
             ))
           }
-        </div>
-
-        <!-- Links -->
-        <div class="border-t border-dashed border-border pt-4 flex gap-4">
-          <LinkButton
-            href={github_url}
-            target="_blank"
-            class="rounded-lg bg-accent/10 px-4 py-2 transition-colors hover:bg-accent/20"
-          >
-            <IconGitHub class="mr-2 inline-block size-5" />
-            View Source
-          </LinkButton>
         </div>
 
         <!-- Lazy Images Container -->
@@ -173,6 +226,27 @@ const getTagStyle = (tag: string) => {
       opacity: 1;
       transform: scale(1);
     }
+  }
+
+  .project-tag {
+    color: hsl(var(--tag-hue), 80%, 30%);
+    border: 1px solid hsl(var(--tag-hue), 80%, 30%);
+    background-color: transparent;
+  }
+
+  :global(.dark) .project-tag {
+    color: hsl(var(--tag-hue), 90%, 80%);
+    border-color: hsl(var(--tag-hue), 60%, 50%);
+  }
+
+  .icon-container :global(svg) {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+  
+  :global(.dark) .icon-container :global(svg path[fill="#014847"]) {
+    fill: #e2e8f0;
   }
 </style>
 
