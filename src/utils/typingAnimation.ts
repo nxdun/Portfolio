@@ -2,6 +2,7 @@ export const startTypingAnimation = (elementId: string, words: string[]) => {
   const element = document.getElementById(elementId);
   if (!element) return;
 
+  
   const el = element as HTMLElement & {
     _typingTimeout?: ReturnType<typeof setTimeout>;
   };
