@@ -6,7 +6,9 @@ import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Card from "@/components/Card.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
+import projectsData from "@/data/projects/ProjectData.json";
 import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
@@ -17,6 +19,8 @@ const posts = await getCollection("blog");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+
+const recentProjects = projectsData.slice(0, 3);
 ---
 
 <Layout>
@@ -110,6 +114,26 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     <div class="my-8 text-center">
       <LinkButton href="/posts/">
         All Posts
+        <IconArrowRight class="inline-block rtl:-rotate-180" />
+      </LinkButton>
+    </div>
+
+    {
+      recentProjects.length > 0 && (
+        <section id="projects" class="pt-12 pb-6 border-t border-border">
+          <h2 class="text-2xl font-semibold tracking-wide">Featured Projects</h2>
+          <ul>
+            {recentProjects.map(project => (
+              <ProjectCard variant="h3" project={project} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <div class="my-8 text-center">
+      <LinkButton href="/projects/">
+        All Projects
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

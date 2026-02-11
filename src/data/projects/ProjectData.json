@@ -1,0 +1,130 @@
+[
+  {
+    "project_name": "NASA - Spacia",
+    "short_desc": "Full Stack MERN Application Using Official NASA API",
+    "full_desc": "Frontend: Developed with React, including unit and integration testing; deployed on Netlify. Backend: Built with Express, featuring robust security capabilities; deployed on Heroku.",
+    "tags": ["React", "Express", "Netlify", "Heroku"],
+    "github_url": "https://github.com/nxdun/NASA-Spacia",
+    "time_period": "April 2024 - May 2024",
+    "photos": [
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg",
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg"
+    ]
+  },
+  {
+    "project_name": "Study-Forge Learning System",
+    "short_desc": "Microservice: UI and Backend Services with Containerization and Orchestration",
+    "full_desc": "Backend Services: Built and maintained high-performance and secure backend services using Express, Flask, and Spring Boot. Containerization and Orchestration: Utilized Docker and Kubernetes for efficient container orchestration.",
+    "tags": ["React", "Express", "Flask", "Spring Boot", "Docker", "Kubernetes"],
+    "github_url": "https://github.com/nxdun/lms-microservice",
+    "time_period": "March 2024 - May 2024",
+    "photos": [
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-1.png",
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-2.png"
+    ]
+  },
+  {
+    "project_name": "Chatte - P2P and Global Messenger",
+    "short_desc": "Implemented Client-Server and OSGi Architecture with User Authentication.",
+    "full_desc": "Technologies Used: Developed using Java and Apache Felix, incorporating socket programming. Development Environment: Utilized Eclipse IDE for production.",
+    "tags": ["Java", "Apache Felix", "Socket Programming", "Eclipse IDE"],
+    "github_url": "https://github.com/nxdun/OSGI.chatte",
+    "time_period": "February 2024 - March 2024",
+    "photos": [
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-1.jpg",
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-2.jpg"
+    ]
+  },
+  {
+    "project_name": "Movie Theatre Management System",
+    "short_desc": "Role: Lead Developer",
+    "full_desc": "Responsibilities: Leadership in development, Figma for wireframes, MongoDB design, RESTful API creation, and responsive UI/UX with React.js.",
+    "tags": ["React.js", "MongoDB", "RESTful API", "Figma"],
+    "github_url": "https://github.com/nxdun/Movie-theatre-management-system",
+    "time_period": "July 2023 - October 2023",
+    "photos": [
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-2.bak.jpg",
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-1.bak.jpg"
+    ]
+  },
+  {
+    "project_name": "Garment And Textile Management System",
+    "short_desc": "Garment and Textile Management System",
+    "full_desc": "Technologies Used: Developed using JSP Servlets, SQL, PHP, and Apache Tomcat. Collaboration and Version Control: Utilized GitHub for collaboration and version control. Design Patterns: Applied design patterns to enhance system architecture and maintainability.",
+    "tags": ["JSP Servlets", "SQL", "PHP", "Apache Tomcat"],
+    "github_url": "https://github.com/nxdun",
+    "time_period": "January 2023 - March 2023",
+    "photos": [
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png",
+      "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png"
+    ]
+  },
+  {
+    "project_name": "Smart Healthcare System for Urban Hospitals",
+    "short_desc": "Health Wizard",
+    "full_desc": "Application For Urban Area Hospitals using MERN stack with MVC architecture. Implements design patterns such as Singleton, Factory, Strategy, and Observer. Includes unit tests.",
+    "tags": ["Express", "Redux", "MongoDB", "React.js", "JWT Authentication", "Tailwind", "Pure CSS", "Higher Order Components", "Advanced File Organization", "ThreeJS", "Image Upload", "Event Emitter", "IIFE Functions", "Discriminators"],
+    "github_url": "https://github.com/nxdun/HealthWizard",
+    "time_period": "April 2024 - July 2024",
+    "photos": [
+      "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin-userDashboiard.jpeg?updatedAt=1729425370011",
+      "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/appointment%20booking.jpg?updatedAt=1729425369292",
+      "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Screenshot_20-10-2024_17224_localhost.jpeg?updatedAt=1729425369488",
+      "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin%20Configuration%20Management.jpeg?updatedAt=1729425369398"
+    ]
+  },
+  {
+    "project_name": "Smart Healthcare System for Urban Hospitals",
+    "short_desc": "Health Wizard",
+    "full_desc": "JWT Authentication, Design Patterns, Higher Order Components, Advanced File Organization, Event Emitter, IIFE Functions, Discriminators, Requirement Analysis, XP Methodology, and Agile Development.",
+    "tags": ["Express", "Redux", "MongoDB", "React.js"],
+    "github_url": "https://github.com/nxdun/HealthWizard",
+    "time_period": "April 2024 - July 2024",
+    "photos": [
+      "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/appointment%20booking.jpg?updatedAt=1729425369292",
+      "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin%20Configuration%20Management.jpeg?updatedAt=1729425369398"
+    ]
+  },
+  {
+    "project_name": "CodeWizard - Microservice Based Project",
+    "short_desc": "Automated Code Analysis, Flow Chart Generation and Project Management",
+    "full_desc": "Microservices Architecture, Task Management, Real-Time Feedback, Graphical Code Visualization, Issue Tracking, and Code Quality Optimization for multi-language projects. Developed with Agile methodology and optimized for efficient project management.",
+    "tags": [
+      "Microservices",
+      "Code Analysis",
+      "Project Management",
+      "React.js",
+      "MongoDB",
+      "ExpressJS"
+    ],
+    "github_url": "https://github.com/nxdun/CodeWizard",
+    "time_period": "July 2024 - Octomber 2024",
+    "photos": [
+      "https://ik.imagekit.io/nuu/Screenshot%202024-09-14%20112456.png?updatedAt=1730009713252",
+      "https://ik.imagekit.io/nuu/Screenshot%202024-10-27%20114658.png?updatedAt=1730009865478"
+    ]
+  },
+  {
+    "project_name": "NuusBreakfast",
+    "short_desc": "ASP.NET Web API with MVC design",
+    "full_desc": "Rolled out an ASP.NET-based Web API adhering to MVC patterns. Implemented robust error handling and testing for production readiness.",
+    "tags": ["ASP.NET Core", "Web API", "MVC", "C#"],
+    "github_url": "https://github.com/nxdun/NuusBreakfast",
+    "time_period": "Dec 2024 - Jan 2025",
+    "photos": [
+      "https://ik.imagekit.io/nuu/nuus%20breakfast-1.jpg?updatedAt=1735893858337",
+      "https://ik.imagekit.io/nuu/nuus%20breakfast-2.jpg.png?updatedAt=1735893858430"
+    ]
+  },
+  {
+    "project_name": "TbX - Terabox downloading API",
+    "short_desc": "Terabox - Bulk download, Single Download",
+    "full_desc": "A Backend Download Manager with parallel, multi-chunks, and fast download capabilities. Features local FTP for quick file transfer using the same API. Includes heavy link fault tolerance, logs failed actions with links, backup fetching algorithm, and separate endpoints for deleting archives/current downloads.",
+    "tags": ["Express", "FTP", "Parallel Downloads", "API"],
+    "github_url": "https://github.com/nxdun/TeraboxBulkDownloader",
+    "time_period": "june 2024 - July 2025",
+    "photos": [
+      "https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"
+    ]
+  }
+]
