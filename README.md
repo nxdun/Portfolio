@@ -1,67 +1,31 @@
-## ✅ Lighthouse Score
+<div align="center">
+  <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
+  <h1><code>~/nadzu.me</code> </h1>
+  <p><em>Super Fast Portfolio x Blogger</em></p>
 
-soon...
+  [![Made with Love](https://img.shields.io/badge/Made%20with-Love-red.svg)](https://www.nadzu.me)
+</div>
 
-<!-- <p align="center">
-  <a href="https://pagespeed.web.dev/report?url=https%3A%2F%2Fnadzu.me%2F&form_factor=desktop">
-    <img width="710" alt="nadzu Lighthouse Score" src="nadzu-lighthouse-score.svg">
-  </a>
-</p> -->
-
-## 🚀 Project Structure
-
-Inside of nadzu, you'll see the following folders and files:
-
-```bash
-soon
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-All blog posts are stored in `src/data/blog` directory.
-
-## 💻 Tech Stack
+## Tech-Stack
 
 **Main Framework** - [Astro](https://astro.build/)  
 **Type Checking** - [TypeScript](https://www.typescriptlang.org/)  
 **Styling** - [TailwindCSS](https://tailwindcss.com/)  
-**UI/UX** - [Figma Design File](https://www.figma.com/community/file/1356898632249991861)  
-**Static Search** - [FuseJS](https://pagefind.app/)  
-**Icons** - [Tablers](https://tabler-icons.io/)  
+**Static Search** - [Pagefind](https://pagefind.app/)  
+**Icons** - [Icones](https://icones.js.org/)  
 **Code Formatting** - [Prettier](https://prettier.io/)  
 **Deployment** - [Cloudflare Pages](https://pages.cloudflare.com/)  
-**Illustration in About Page** - [https://freesvgillustration.com](https://freesvgillustration.com/)  
 **Linting** - [ESLint](https://eslint.org)
 
-## 👨🏻‍💻 Running Locally
+## Running Locally
 
-You can start using this project locally by running the following command in your desired directory:
-
-install make to make easier executions
+Install make if you don't have it already:
 
 ```bash
 # for macOS
 brew install make
-# foe windows
+
+# for Windows
 choco install make
-# for Ubuntu already have make pre-installed
-```
 
-use the makefile to run commands
-
-```bash
-# install dependencies
-make install
-# start development server
-make
-# build for production
-make build
-# preview production build
-make preview
-# run linter
-make lint
-# clean project
-make clean
-```
+# for Ubuntu (make is pre-installed)
