@@ -28,3 +28,4 @@ public/pagefind
 
 # local development files
 .github/**/*.md
+.vscode/

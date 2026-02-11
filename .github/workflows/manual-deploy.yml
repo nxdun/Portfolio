@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       deploy_me:
-        description: 'Deploy Portfolio?'
+        description: "Deploy Portfolio?"
         required: true
         type: boolean
         default: false
 
 env:
-    deploy_me: ${{ github.event.inputs.deploy_me }}
+  deploy_me: ${{ github.event.inputs.deploy_me }}
 jobs:
   deploy-portfolio:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
@@ -38,7 +38,7 @@ jobs:
 
       - name: Build Astro
         run: make build
-    
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
@@ -46,4 +46,3 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=YOUR_PROJECT_NAME
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-        

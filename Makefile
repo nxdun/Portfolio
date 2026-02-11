@@ -36,7 +36,6 @@ deploy: clean install format build
 	@echo "Deploying $(PROJECT_NAME) version $(PROJECT_VERSION)..."
 	pnpm run deploy
 
-# cross-platform
 clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf dist node_modules .astro public/pagefind
