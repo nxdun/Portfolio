@@ -60,9 +60,14 @@ const recentProjects = projectsData.slice(0, 3);
         production-grade solutions.
       </p>
 
-      <div class="mt-6 flex flex-wrap gap-4">
+        <div class="mt-6 flex flex-col gap-4">
         <LinkButton href="/posts/" class="whitespace-nowrap">
           All Posts
+          <IconArrowRight class="inline-block rtl:-rotate-180" />
+        </LinkButton>
+      
+        <LinkButton href="/projects/" class="whitespace-nowrap">
+          All Projects
           <IconArrowRight class="inline-block rtl:-rotate-180" />
         </LinkButton>
       </div>
@@ -112,10 +117,15 @@ const recentProjects = projectsData.slice(0, 3);
     }
 
     <div class="my-8 text-center">
-      <LinkButton href="/posts/">
-        All Posts
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
+        <LinkButton href="/posts/" class="whitespace-nowrap">
+          All Posts
+          <IconArrowRight class="inline-block rtl:-rotate-180" />
+        </LinkButton>
+      
+        <LinkButton href="/projects/" class="whitespace-nowrap">
+          All Projects
+          <IconArrowRight class="inline-block rtl:-rotate-180" />
+        </LinkButton>
     </div>
 
     {
