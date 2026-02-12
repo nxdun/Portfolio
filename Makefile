@@ -1,4 +1,4 @@
-.PHONY: default dev build preview sync format format-check lint clean deploy install
+.PHONY: default dev build preview sync format format-check lint clean deploy install check
 
 PROJECT_NAME ?= $(shell node -e "console.log(require('./package.json').name)")
 PROJECT_VERSION ?= $(shell node -e "console.log(require('./package.json').version)")
@@ -47,4 +47,7 @@ deploy: clean install format build
 clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf dist node_modules .astro public/pagefind
+
+check: lint format-check
+	@echo "All checks passed. Ready to deploy!"
 
