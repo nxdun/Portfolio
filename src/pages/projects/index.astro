@@ -13,7 +13,7 @@ const projects = projectsData;
 <Layout title={`Projects | ${SITE.title}`}>
   <Header activeNav="projects" />
   <Main pageTitle="Projects" pageDesc="All the projects I've worked on.">
-    <ul>
+    <ul class="columns-1 gap-5 sm:columns-2 lg:columns-3 2xl:columns-4">
       {projects.map(project => <ProjectCard project={project} />)}
     </ul>
   </Main>

@@ -1,0 +1,211 @@
+---
+import { slugifyStr } from "@/utils/slugify";
+import LinkButton from "./LinkButton.astro";
+import IconX from "@/assets/icons/IconX.svg";
+import IconGitHub from "@/assets/icons/IconGitHub.svg";
+
+// Get all icons
+const iconImports = import.meta.glob<string>("/src/assets/tags/*.svg", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+});
+
+type Props = {
+  project: {
+    project_name: string;
+    short_desc: string;
+    full_desc?: string;
+    tags: {
+      icon: { name: string; iconName: string }[];
+      noIcon: string[];
+    };
+    github_url: string;
+    time_period: string;
+    photos?: string[];
+  };
+};
+
+const { project } = Astro.props;
+const {
+  project_name,
+  short_desc,
+  full_desc,
+  tags,
+  github_url,
+  time_period,
+  photos,
+} = project;
+
+const projectId = slugifyStr(project_name);
+const dialogId = `dialog-${projectId}`;
+
+// Function to generate distinct colorful styles
+const getTagHue = (tag: string) => {
+  let hash = 0;
+  for (let i = 0; i < tag.length; i++) {
+    hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash % 360);
+};
+
+const getIcon = (name: string) => {
+  const path = `/src/assets/tags/${name}.svg`;
+  return iconImports[path];
+};
+---
+
+<dialog
+  id={dialogId}
+  class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
+  onclick="event.target === this && this.close()"
+>
+  <div class="flex h-full max-h-full flex-col">
+    <!-- Header -->
+    <div
+      class="sticky top-0 z-10 border-b border-border bg-background px-6 py-4"
+    >
+      <div class="flex items-start justify-between">
+        <div class="mr-4">
+          <h2 class="text-xl font-bold text-accent sm:text-2xl">
+            {project_name}
+          </h2>
+          <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {time_period}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <LinkButton
+            href={github_url}
+            target="_blank"
+            class="flex items-center justify-center rounded-full border border-border p-2 text-accent transition-all hover:bg-accent hover:text-white hover:shadow-md sm:rounded-lg sm:px-4 sm:py-2"
+            title="View Source Code"
+          >
+            <IconGitHub class="size-6 sm:size-5" />
+            <span class="hidden text-sm font-medium sm:ml-2 sm:block"
+              >View Source Code</span
+            >
+          </LinkButton>
+
+          <form method="dialog">
+            <button
+              class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
+              aria-label="Close modal"
+            >
+              <IconX class="size-6" />
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 space-y-6 overflow-y-auto p-6">
+      <!-- Full Description -->
+      <div class="prose max-w-none dark:prose-invert">
+        <p class="leading-relaxed">{full_desc || short_desc}</p>
+      </div>
+
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2">
+        {
+          tags.icon.map(t => {
+            const IconImg = getIcon(t.iconName);
+            return (
+              <span
+                class="flex items-center justify-center p-1 transition-all hover:scale-110"
+                title={t.name}
+              >
+                {IconImg && (
+                  <span
+                    class="icon-container block size-8"
+                    set:html={IconImg}
+                  />
+                )}
+              </span>
+            );
+          })
+        }
+        {
+          tags.noIcon.map(tag => (
+            <span
+              class="project-tag rounded-md px-3 py-1.5 text-base"
+              style={`--tag-hue: ${getTagHue(tag)}`}
+            >
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+
+      <!-- Lazy Images Container -->
+      {
+        photos && photos.length > 0 && (
+          <div class="space-y-4 pt-6">
+            <h3 class="border-b border-border pb-2 text-lg font-semibold">
+              Gallery
+            </h3>
+            <div
+              class="grid grid-cols-1 gap-6"
+              data-images={JSON.stringify(photos)}
+            >
+              <div class="image-loader flex flex-col items-center py-8 text-center text-sm italic opacity-50">
+                <span class="loading-spinner mb-2" />
+                Loading visuals...
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Add global click listener for dialogs
+  document.addEventListener("astro:page-load", () => {
+    const dialogs = document.querySelectorAll("dialog.project-dialog");
+
+    dialogs.forEach(d => {
+      const dialog = d as HTMLDialogElement;
+
+      // Load images on open
+      // Using MutationObserver to detect when 'open' attribute is added
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === "open" && dialog.open) {
+            const imgContainer = dialog.querySelector("[data-images]");
+            if (imgContainer && !imgContainer.classList.contains("loaded")) {
+              const photos = JSON.parse(
+                imgContainer.getAttribute("data-images") || "[]"
+              );
+              // clear loader
+              imgContainer.innerHTML = "";
+
+              if (photos.length === 0) return;
+
+              // Create images
+              photos.forEach((url: string) => {
+                const img = document.createElement("img");
+                img.src = url;
+                img.className =
+                  "rounded-lg shadow-md w-full h-auto border border-border bg-muted/50 transition-opacity duration-500 opacity-0";
+                img.loading = "lazy";
+                img.alt = "Project Screenshot";
+
+                img.onload = () => {
+                  img.classList.remove("opacity-0");
+                };
+                imgContainer.appendChild(img);
+              });
+              imgContainer.classList.add("loaded");
+            }
+          }
+        });
+      });
+
+      observer.observe(dialog, { attributes: true });
+    });
+  });
+</script>

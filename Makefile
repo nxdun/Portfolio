@@ -49,5 +49,5 @@ clean:
 	@rm -rf dist node_modules .astro public/pagefind
 
 check: lint format-check
-	@echo "All checks passed. Ready to deploy!"
+	@echo "All checks passed. Ready to deploy"
 
