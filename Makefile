@@ -74,7 +74,7 @@ preview: $(DIST_DIR)/.build-timestamp ## Preview build (pnpm preview)
 	$(SAY) "$(BLUE)Starting preview...$(NC)"
 	$(Q)pnpm run preview
 
-deploy: guard-production clean install format build ## Deploy (pnpm deploy)
+deploy: guard-production clean install format-check build ## Deploy (pnpm deploy)
 	$(SAY) "$(GREEN)Deploying $(PROJECT_NAME)...$(NC)"
 	$(Q)wrangler pages deploy
 
