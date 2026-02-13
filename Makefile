@@ -1,53 +1,111 @@
-.PHONY: default dev build preview sync format format-check lint clean deploy install check
+.PHONY: default dev build preview sync format format-check lint clean deploy d-p install check help test-env i
+.DELETE_ON_ERROR: $(NODE_MODULES)/.install-timestamp
+.PRECIOUS: $(DIST_DIR)/.build-timestamp $(NODE_MODULES)/.install-timestamp
+
+MAKEFLAGS += --warn-undefined-variables
+.DEFAULT_GOAL := help
 
 PROJECT_NAME ?= $(shell node -e "console.log(require('./package.json').name)")
 PROJECT_VERSION ?= $(shell node -e "console.log(require('./package.json').version)")
+BUILD_TIME := $(shell date -u '+%Y-%m-%d_%H:%M:%S_UTC')
 
-#run make with no arguments
-default: dev
+VERBOSE ?= true
+DIST_DIR := dist
+NODE_MODULES := node_modules
+BUILD_ARTIFACTS := $(DIST_DIR) $(NODE_MODULES) .astro public/pagefind
 
-# make install:  will install the dependencies
-install:
-	pnpm install
+i: install
 
-# make dev:  will run the development server
-dev:
-	@echo "Running $(PROJECT_NAME) version $(PROJECT_VERSION) in development mode..."
-	pnpm run dev
+# -----------------------
+# Terminal colors & Helpers
+# -----------------------
+RED := \033[0;31m
+GREEN := \033[0;32m
+YELLOW := \033[1;33m
+BLUE := \033[0;34m
+NC := \033[0m
 
-# make build:  will build the project
-build:
-	pnpm run build
+ifeq ($(VERBOSE),true)
+    Q :=
+    SAY := @echo -e
+else
+    Q := @
+    SAY := @echo -e
+endif
 
-# make preview:  will preview the production build
-preview:
-	pnpm run preview
+help:
+	$(SAY) "$(BLUE)Available targets for $(PROJECT_NAME) v$(PROJECT_VERSION):$(NC)"
+	$(Q)grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-15s$(NC) %s\n", $$1, $$2}'
 
-# make sync:  will sync the project with the latest changes from the repository
-sync:
-	pnpm run sync
+install: $(NODE_MODULES)/.install-timestamp
 
-# make format:  will format the code using Prettier
-format:
-	pnpm run format
+$(NODE_MODULES)/.install-timestamp: package.json pnpm-lock.yaml
+	$(SAY) "$(YELLOW)Installing dependencies...$(NC)"
+	$(Q)pnpm install
+	$(Q)touch $@
 
-# make format-check:  will check the code format using Prettier
-format-check:
-	pnpm run format:check
+dev: $(NODE_MODULES)/.install-timestamp ## Run dev server (pnpm dev)
+	$(SAY) "$(GREEN)Starting dev server...$(NC)"
+	$(Q)pnpm run dev
 
-# make lint:  will run the linter to check for code quality issues
-lint:
-	pnpm run lint
+# -----------------------
+# Build
+# -----------------------
+build: $(DIST_DIR)/.build-timestamp ## Build production (pnpm build)
 
-# make deploy:  will deploy the project to the cloudflare pages
-deploy: clean install format build
-	@echo "Deploying $(PROJECT_NAME) version $(PROJECT_VERSION)..."
-	pnpm run deploy
+$(DIST_DIR)/.build-timestamp: $(NODE_MODULES)/.install-timestamp $(shell find src -type f 2>/dev/null)
+	$(SAY) "$(BLUE)Building $(PROJECT_NAME)...$(NC)"
+	$(Q)pnpm run build
+	$(Q)touch $@
+	$(SAY) "$(GREEN)✓ Build completed at $(BUILD_TIME)$(NC)"
 
-clean:
-	@echo "Cleaning build artifacts..."
-	@rm -rf dist node_modules .astro public/pagefind
+preview: $(DIST_DIR)/.build-timestamp ## Preview build (pnpm preview)
+	$(SAY) "$(BLUE)Starting preview...$(NC)"
+	$(Q)pnpm run preview
 
-check: lint format-check
-	@echo "All checks passed. Ready to deploy"
+deploy: guard-production clean install format build ## Deploy (pnpm deploy)
+	$(SAY) "$(GREEN)Deploying $(PROJECT_NAME)...$(NC)"
+	$(Q)wrangler pages deploy
 
+d-p: build ## Deploy preview branch
+	$(SAY) "$(YELLOW)Deploying preview...$(NC)"
+	$(Q)wrangler pages deploy --branch=$(shell git rev-parse --abbrev-ref HEAD)
+
+# -----------------------
+# Code Quality
+# -----------------------
+sync: ## Sync types (pnpm sync)
+	$(Q)pnpm run sync
+
+format: ## Format code (pnpm format)
+	$(SAY) "$(BLUE)Formatting code...$(NC)"
+	$(Q)pnpm run format
+
+format-check: ## Check format (pnpm format:check)
+	$(SAY) "$(BLUE)Checking format...$(NC)"
+	$(Q)pnpm run format:check
+
+lint: ## Lint code (pnpm lint)
+	$(SAY) "$(BLUE)Linting code...$(NC)"
+	$(Q)pnpm run lint
+
+check: lint format-check ## Run all checks
+	$(SAY) "$(GREEN)✓ All checks passed$(NC)"
+
+# -----------------------
+# Utilities
+# -----------------------
+clean: ## Clean artifacts
+	$(SAY) "$(RED)Cleaning...$(NC)"
+	$(Q)rm -rf $(BUILD_ARTIFACTS)
+
+clean-cache: ## Deep clean
+	$(SAY) "$(RED)Deep cleaning...$(NC)"
+	$(Q)rm -rf $(NODE_MODULES) .astro dist .turbo
+
+guard-%:
+	$(Q)if [ "$($(*))" != "true" ]; then \
+		echo "$(RED)Error: This target requires $*=true$(NC)"; \
+		exit 1; \
+	fi
