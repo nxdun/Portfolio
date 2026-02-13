@@ -48,6 +48,7 @@ const isActive = (path: string) => {
     >
       {SITE.title}
     </a>
+
     <nav
       id="nav-menu"
       class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"
@@ -62,6 +63,7 @@ const isActive = (path: string) => {
         <span id="close-icon" class="hidden" set:html={IconX} />
         <span id="menu-icon" set:html={IconMenuDeep} />
       </button>
+
       <ul
         id="menu-items"
         class:list={[
@@ -76,6 +78,7 @@ const isActive = (path: string) => {
             Posts
           </a>
         </li>
+
         <li class="col-span-2">
           <a
             href="/projects"
@@ -84,17 +87,21 @@ const isActive = (path: string) => {
             Projects
           </a>
         </li>
+
         <li class="col-span-2">
           <a href="/tags" class:list={{ "active-nav": isActive("/tags") }}>
             Tags
           </a>
         </li>
+
         <li class="col-span-2">
           <a href="/about" class:list={{ "active-nav": isActive("/about") }}>
             About
           </a>
         </li>
+
         <li class="col-span-2 hidden h-2 sm:block" aria-hidden="true"></li>
+
         {
           SITE.showArchives && (
             <li class="col-span-2">
@@ -118,11 +125,12 @@ const isActive = (path: string) => {
             </li>
           )
         }
+
         <li class="col-span-1 flex items-center justify-center">
           <LinkButton
             href="/search"
             class:list={[
-              "focus-outline flex p-3 sm:p-1",
+              "focus-outline flex sm:p-1",
               { "[&_svg]:stroke-accent": isActive("/search") },
             ]}
             title="Search"
@@ -132,22 +140,23 @@ const isActive = (path: string) => {
             <span class="sr-only">Search</span>
           </LinkButton>
         </li>
+
         {
           SITE.lightAndDarkMode && (
             <li class="col-span-1 flex items-center justify-center">
               <button
                 id="theme-btn"
-                class="focus-outline relative size-12 p-4 sm:size-8 hover:[&_svg]:stroke-accent"
+                class="focus-outline grid place-items-center p-3 leading-none hover:text-accent sm:p-1"
                 title="Toggles light & dark"
                 aria-label="auto"
                 aria-live="polite"
               >
                 <span
-                  class="icon-container pointer-events-none absolute top-[50%] left-[50%] -translate-[50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
+                  class="icon-container pointer-events-none col-start-1 row-start-1 size-8 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
                   set:html={IconMoon}
                 />
                 <span
-                  class="icon-container pointer-events-none absolute top-[50%] left-[50%] -translate-[50%] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
+                  class="icon-container pointer-events-none col-start-1 row-start-1 size-8 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
                   set:html={IconSunHigh}
                 />
               </button>
@@ -185,15 +194,3 @@ const isActive = (path: string) => {
   // Runs on view transitions navigation
   document.addEventListener("astro:after-swap", toggleNav);
 </script>
-
-<style>
-  .icon-container :global(svg) {
-    fill: currentColor;
-  }
-  /* Archive icon specific styling if needed, currently it relies on stroke */
-  /* If some icons are stroke-based */
-  :global(.focus-outline:hover .icon-container svg) {
-    /* To match hover effect */
-    /* Handled by parent hover classes or css */
-  }
-</style>

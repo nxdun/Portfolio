@@ -1,0 +1,338 @@
+---
+import { slugifyStr } from "@/utils/slugify";
+import { getTagHue, getIcon } from "@/utils/projectUtils";
+import LinkButton from "./LinkButton.astro";
+import Loader from "./Loader.astro";
+import IconX from "@/assets/icons/IconX.svg";
+import IconGitHub from "@/assets/icons/IconGitHub.svg";
+
+type Props = {
+  project: {
+    project_name: string;
+    short_desc: string;
+    full_desc?: string;
+    tags: {
+      icon: { name: string; iconName: string }[];
+      noIcon: string[];
+    };
+    github_url: string;
+    time_period: string;
+    photos?: string[];
+  };
+};
+
+const { project } = Astro.props;
+const {
+  project_name,
+  short_desc,
+  full_desc,
+  tags,
+  github_url,
+  time_period,
+  photos,
+} = project;
+
+const projectId = slugifyStr(project_name);
+const dialogId = `dialog-${projectId}`;
+---
+
+<dialog
+  id={dialogId}
+  tabindex="-1"
+  aria-modal="true"
+  class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
+>
+  <div class="flex h-full max-h-full flex-col">
+    <!-- Header -->
+    <div
+      class="sticky top-0 z-10 border-b border-border bg-background px-6 py-4"
+    >
+      <div class="flex items-start justify-between">
+        <div class="mr-4">
+          <h2 class="text-xl font-bold text-accent sm:text-2xl">
+            {project_name}
+          </h2>
+          <div class="mt-1 text-sm text-foreground/70">
+            {time_period}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <LinkButton
+            href={github_url}
+            target="_blank"
+            class="flex items-center justify-center rounded-full border border-border p-2 text-accent transition-all hover:bg-accent hover:text-white hover:shadow-md sm:rounded-lg sm:px-4 sm:py-2"
+            title="View Source Code"
+          >
+            <IconGitHub class="size-6 sm:size-5" />
+            <span class="hidden text-sm font-medium sm:ml-2 sm:block"
+              >View Source Code</span
+            >
+          </LinkButton>
+
+          <form method="dialog">
+            <button
+              id={`dialog-close-${projectId}`}
+              data-dialog-close
+              class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
+              aria-label="Close modal"
+            >
+              <IconX class="size-6" />
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 space-y-6 overflow-y-auto p-6">
+      <!-- Full Description -->
+      <div class="prose max-w-none dark:prose-invert">
+        <p class="leading-relaxed">{full_desc || short_desc}</p>
+      </div>
+
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2">
+        {
+          tags.icon.map(t => {
+            const IconImg = getIcon(t.iconName);
+            return (
+              <span
+                class="flex items-center justify-center p-1 transition-all hover:scale-110"
+                title={t.name}
+              >
+                {IconImg && (
+                  <span
+                    class="icon-container block size-8"
+                    set:html={IconImg}
+                  />
+                )}
+              </span>
+            );
+          })
+        }
+        {
+          tags.noIcon.map(tag => (
+            <span
+              class="project-tag rounded-md px-3 py-1.5 text-base"
+              style={`--tag-hue: ${getTagHue(tag)}`}
+            >
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+
+      <!-- Lazy Images Container -->
+      {
+        photos && photos.length > 0 && (
+          <div class="space-y-4 pt-6">
+            <h3 class="border-b border-border pb-2 text-lg font-semibold">
+              Gallery
+            </h3>
+            <div
+              class="grid grid-cols-1 gap-6"
+              data-images={JSON.stringify(photos)}
+            >
+              <div class="image-loader flex flex-col items-center py-8">
+                <Loader size="md" />
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Add focus management and image lazy-loading for dialogs
+  document.addEventListener("astro:page-load", () => {
+    const dialogs = document.querySelectorAll("dialog.project-dialog");
+
+    const focusableSelector = [
+      "a[href]",
+      "area[href]",
+      'input:not([disabled]):not([type="hidden"])',
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "button:not([disabled])",
+      "iframe",
+      "object",
+      "embed",
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
+
+    function getFocusable(container: Element): HTMLElement[] {
+      const els = Array.from(
+        container.querySelectorAll(focusableSelector)
+      ) as HTMLElement[];
+      return els.filter(el => {
+        return (
+          el instanceof HTMLElement &&
+          (el.offsetWidth > 0 || el.offsetHeight > 0) &&
+          el.getAttribute("aria-hidden") !== "true"
+        );
+      });
+    }
+
+    interface DialogWithHandler extends HTMLDialogElement {
+      _onDialogKeyDown?: (ev: KeyboardEvent) => void;
+    }
+
+    dialogs.forEach(d => {
+      const dialog = d as DialogWithHandler;
+
+      // Close dialog when clicking on backdrop
+      dialog.addEventListener("click", (e: MouseEvent) => {
+        if (e.target === dialog) {
+          dialog.close();
+        }
+      });
+
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName !== "open") return;
+
+          if (dialog.open) {
+            // Focus management: move focus to first focusable element or dialog
+            const closeBtn = dialog.querySelector("[data-dialog-close]");
+            const focusables = getFocusable(dialog);
+            const first = focusables[0] || closeBtn || dialog;
+            try {
+              (first as HTMLElement).focus({ preventScroll: true });
+            } catch (_err) {
+              void _err;
+            }
+
+            // Keydown handler to trap focus and handle Escape
+            const onKeyDown = (ev: KeyboardEvent) => {
+              if ((ev as KeyboardEvent).key === "Escape") {
+                try {
+                  dialog.close();
+                } catch (_err) {
+                  void _err;
+                }
+                return;
+              }
+
+              if ((ev as KeyboardEvent).key !== "Tab") return;
+
+              const nodes = getFocusable(dialog);
+              if (nodes.length === 0) {
+                ev.preventDefault();
+                try {
+                  (dialog as HTMLElement).focus();
+                } catch (_err) {
+                  void _err;
+                }
+                return;
+              }
+
+              const firstNode = nodes[0] as HTMLElement;
+              const lastNode = nodes[nodes.length - 1] as HTMLElement;
+
+              if (!ev.shiftKey && document.activeElement === lastNode) {
+                ev.preventDefault();
+                firstNode.focus();
+              } else if (ev.shiftKey && document.activeElement === firstNode) {
+                ev.preventDefault();
+                lastNode.focus();
+              }
+            };
+
+            dialog.addEventListener("keydown", onKeyDown);
+            // store for cleanup
+            dialog._onDialogKeyDown = onKeyDown;
+
+            // Lazy-load images (if any)
+            const imgContainer = dialog.querySelector("[data-images]");
+            if (imgContainer && !imgContainer.classList.contains("loaded")) {
+              const photos = JSON.parse(
+                imgContainer.getAttribute("data-images") || "[]"
+              );
+
+              if (photos.length > 0) {
+                let loadedCount = 0;
+                const totalImages = photos.length;
+                const loaderElement =
+                  imgContainer.querySelector(".image-loader");
+
+                // Create all images
+                const imageElements: HTMLImageElement[] = [];
+                photos.forEach((url: string) => {
+                  const img = document.createElement("img");
+                  img.src = url;
+                  img.className =
+                    "rounded-lg shadow-md w-full h-auto border border-border bg-muted/50 transition-opacity duration-500 opacity-0";
+                  img.loading = "lazy";
+                  img.alt = "Project Screenshot";
+
+                  img.onload = () => {
+                    loadedCount++;
+                    img.classList.remove("opacity-0");
+
+                    // When all images are loaded, hide the loader smoothly
+                    if (loadedCount === totalImages && loaderElement) {
+                      const element = loaderElement as HTMLElement;
+                      const loaderManager = element.__loaderManager;
+                      if (loaderManager) {
+                        loaderManager.hide().then(() => {
+                          if (loaderElement.parentNode) {
+                            loaderElement.parentNode.removeChild(loaderElement);
+                          }
+                        });
+                      } else {
+                        // Fallback if LoaderManager not available
+                        loaderElement.classList.add("fade-out");
+                        setTimeout(() => {
+                          if (loaderElement.parentNode) {
+                            loaderElement.parentNode.removeChild(loaderElement);
+                          }
+                        }, 500);
+                      }
+                    }
+                  };
+
+                  img.onerror = () => {
+                    loadedCount++;
+                    // Still remove loader even if some images fail
+                    if (loadedCount === totalImages && loaderElement) {
+                      const element = loaderElement as HTMLElement;
+                      const loaderManager = element.__loaderManager;
+                      if (loaderManager) {
+                        loaderManager.remove();
+                      }
+                    }
+                  };
+
+                  imageElements.push(img);
+                });
+
+                // Append all images after the loader
+                imageElements.forEach(img => imgContainer.appendChild(img));
+              } else {
+                // No photos, remove loader immediately
+                const loaderElement =
+                  imgContainer.querySelector(".image-loader");
+                if (loaderElement && loaderElement.parentNode) {
+                  loaderElement.parentNode.removeChild(loaderElement);
+                }
+              }
+
+              imgContainer.classList.add("loaded");
+            }
+          } else {
+            // dialog closed -> cleanup keydown handler
+            if (dialog._onDialogKeyDown) {
+              dialog.removeEventListener("keydown", dialog._onDialogKeyDown);
+              delete dialog._onDialogKeyDown;
+            }
+          }
+        });
+      });
+
+      observer.observe(dialog, { attributes: true });
+    });
+  });
+</script>

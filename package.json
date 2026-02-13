@@ -1,8 +1,8 @@
 {
   "name": "Nuus Portfolio",
   "type": "module",
-  "version": "2.0.1",
-  "packageManager": "pnpm@10.28.2",
+  "version": "2.2.0",
+  "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro check && astro build && pagefind --site dist && cp -r dist/pagefind public/",

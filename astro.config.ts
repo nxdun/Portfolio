@@ -46,10 +46,18 @@ export default defineConfig({
     // @ts-ignore
     plugins: [tailwindcss()],
     build: {
+      cssCodeSplit: true,
       rollupOptions: {
         external: ["@resvg/resvg-js"],
+        output: {
+          manualChunks: undefined,
+        },
       },
     },
+  },
+
+  build: {
+    inlineStylesheets: "always",
   },
 
   image: {
