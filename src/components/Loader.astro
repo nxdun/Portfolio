@@ -19,6 +19,9 @@ const sizeClasses = {
 <div
   class={`loader-container flex items-center justify-center ${className}`}
   data-loader
+  role="status"
+  aria-live="polite"
+  aria-label="Loading"
 >
   <div
     class={`loader-wrapper ${sizeClasses[size]} text-accent transition-opacity duration-500`}
@@ -53,9 +56,6 @@ const sizeClasses = {
 </style>
 
 <script>
-  /**
-   * Loader utility for managing loader visibility with smooth transitions
-   */
   class LoaderManager {
     private loader: HTMLElement | null;
     private fadeOutClass = "fade-out";
@@ -64,9 +64,6 @@ const sizeClasses = {
       this.loader = loaderElement;
     }
 
-    /**
-     * Hide the loader with a smooth fade-out transition
-     */
     hide(): Promise<void> {
       return new Promise(resolve => {
         if (!this.loader) {
@@ -75,11 +72,9 @@ const sizeClasses = {
         }
 
         const element = this.loader;
-
-        // Get computed transition duration from CSS
         const computedStyle = window.getComputedStyle(element);
         const duration = parseFloat(computedStyle.transitionDuration) * 1000;
-        const fallbackTimeout = duration || 1000; // Fallback if no transition defined
+        const fallbackTimeout = duration || 1000;
 
         let resolved = false;
         const cleanup = () => {
@@ -94,26 +89,19 @@ const sizeClasses = {
         };
 
         const onTransitionEnd = (e: TransitionEvent) => {
-          // Only respond to opacity transitions on this element
           if (e.target === element && e.propertyName === "opacity") {
             cleanup();
           }
         };
 
-        // Listen for transition end
         element.addEventListener("transitionend", onTransitionEnd);
-
-        // Add fade-out class to trigger transition
         element.classList.add(this.fadeOutClass);
 
-        // Fallback timeout in case transitionend doesn't fire
+        // Fallback in case transitionend doesn't fire
         setTimeout(cleanup, fallbackTimeout + 100);
       });
     }
 
-    /**
-     * Show the loader
-     */
     show(): void {
       if (!this.loader) return;
 
@@ -121,9 +109,6 @@ const sizeClasses = {
       this.loader.classList.remove(this.fadeOutClass);
     }
 
-    /**
-     * Remove the loader from the DOM
-     */
     remove(): void {
       this.hide().then(() => {
         if (this.loader && this.loader.parentNode) {
@@ -133,18 +118,15 @@ const sizeClasses = {
     }
   }
 
-  // Expose LoaderManager globally for use in other components
   if (typeof window !== "undefined") {
     window.LoaderManager = LoaderManager;
   }
 
-  // Auto-initialize loaders on page load
   document.addEventListener("astro:page-load", () => {
     const loaders = document.querySelectorAll("[data-loader]");
     loaders.forEach(loader => {
       const element = loader as HTMLElement;
       const manager = new LoaderManager(element);
-      // Store manager instance on the element for external access
       element.__loaderManager = manager;
     });
   });
