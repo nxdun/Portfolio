@@ -12,44 +12,47 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 ---
 
 ## Future updates - Backlog
+
 - _Design and implement a back-to-top navigation button_
-- _Update the Projects section to reflect the latest information; the current version is outdated._  
+- _Update the Projects section to reflect the latest information; the current version is outdated._
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
+- _Add GTAG Functionality_
 
 <a name="v2.2.0"></a>
 
 ## v2.2.0 - 2026-02-13
+
 - <a href="https://github.com/nxdun/Portfolio/pull/13" target="_blank"><code>#13</code></a> [Feature] Added Projects section, enhanced tooling, and deployment optimizations
-    - Added Projects section - Showcasing my latest work and collaborations
-    - Updated Makefile - Advanced Makefile with parallel execution and interoperability with more commands
-    - Added a unique, specialized changelog blog - Featured this. added upto-date changelog for users.
-    - Optimized deployment - Highly chunked CSS enhanced build script.
+  - Added Projects section - Showcasing my latest work and collaborations
+  - Updated Makefile - Advanced Makefile with parallel execution and interoperability with more commands
+  - Added a unique, specialized changelog blog - Featured this. added upto-date changelog for users.
+  - Optimized deployment - Highly chunked CSS enhanced build script.
 
 <a name="v2.1.0"></a>
 
 ## v2.1.0 - 2026-02-04
 
-- <a href="https://github.com/nxdun/Portfolio/pull/12" target="_blank"><code>#12</code></a> [Transition] Implemented a banner on the nadzu.me domain to announce the retirement of the prototype.  
-    - Deployed a preview version of the prototype at <a href="https://prototype.nadzu.me" target="_blank">prototype.nadzu.me</a>, integrated with the banner for user notification.
+- <a href="https://github.com/nxdun/Portfolio/pull/12" target="_blank"><code>#12</code></a> [Transition] Implemented a banner on the nadzu.me domain to announce the retirement of the prototype.
+  - Deployed a preview version of the prototype at <a href="https://prototype.nadzu.me" target="_blank">prototype.nadzu.me</a>, integrated with the banner for user notification.
 - <a href="https://github.com/nxdun/Portfolio/pull/11" target="_blank"><code>#11</code></a> [Feature] Port to Astro + Add Blogger + Cloudflare Pages Deploy
-    - Implemented blog system - Added a prototype blog system to share updates and insights
-    - Added CI pipeline - Implemented CI pipeline for automated testing and deployment
-    - Updated dependencies - Updated all dependencies to their latest versions for improved security and performance
-    - Added Makefile - Simplified development and deployment processes with a Makefile
-    - CODEOWNERS update - New CODEOWNERS file to manage code ownership and review processes
-    - About page update - Updated the about page with new information.
-
+  - Implemented blog system - Added a prototype blog system to share updates and insights
+  - Added CI pipeline - Implemented CI pipeline for automated testing and deployment
+  - Updated dependencies - Updated all dependencies to their latest versions for improved security and performance
+  - Added Makefile - Simplified development and deployment processes with a Makefile
+  - CODEOWNERS update - New CODEOWNERS file to manage code ownership and review processes
+  - About page update - Updated the about page with new information.
 
 <a name="v2.0.0"></a>
 
 ## v2.0.0 - 2026-02-01
+
 - <a href="https://github.com/nxdun/Portfolio/pull/11" target="_blank"><code>#11</code></a> [Feature] Port to Astro + Add Blogger + Cloudflare Pages Deploy
-    - Migrated to pnpm package manager - Excellent installation speed and better monorepo support
-    - Added Theme Switcher - Allow users to switch between light and dark themes for better accessibility and user experience
-    - Migrated to Astro framework - Reason: better SEO and performance
-    - Migrated to TypeScript - Better type safety and developer experience
-    - Removed 3D model and background - Due to performance issues and lack of relevance to the portfolio's focus
-    - Removed AI chatbot - Due to lack of user engagement and relevance to the portfolio's focus.
+  - Migrated to pnpm package manager - Excellent installation speed and better monorepo support
+  - Added Theme Switcher - Allow users to switch between light and dark themes for better accessibility and user experience
+  - Migrated to Astro framework - Reason: better SEO and performance
+  - Migrated to TypeScript - Better type safety and developer experience
+  - Removed 3D model and background - Due to performance issues and lack of relevance to the portfolio's focus
+  - Removed AI chatbot - Due to lack of user engagement and relevance to the portfolio's focus.
 
 <a name="v1.3.0"></a>
 
