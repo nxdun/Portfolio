@@ -6,4 +6,5 @@
 
 ## Checklist
 
-- [ ]
+- [ ] Updated ChangeLog
+- [ ] ...
