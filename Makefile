@@ -76,11 +76,11 @@ preview: $(DIST_DIR)/.build-timestamp ## Preview build (pnpm preview)
 
 deploy: guard-production clean install format-check build ## Deploy (pnpm deploy)
 	$(SAY) "$(GREEN)Deploying $(PROJECT_NAME)...$(NC)"
-	$(Q)wrangler pages deploy
+	$(Q)pnpm wrangler pages deploy
 
 d-p: build ## Deploy preview branch
 	$(SAY) "$(YELLOW)Deploying preview...$(NC)"
-	$(Q)wrangler pages deploy --branch=$(shell git rev-parse --abbrev-ref HEAD)
+	$(Q)pnpm wrangler pages deploy --branch=$(shell git rev-parse --abbrev-ref HEAD)
 
 # -----------------------
 # Code Quality

@@ -73,13 +73,13 @@ html[data-theme="dark"] {
 
 /* Project Tags */
 .project-tag {
-  color: hsl(var(--tag-hue), 80%, 35%);
+  color: hsl(var(--tag-hue), 85%, 28%);
   border: 1px solid hsla(var(--tag-hue), 80%, 35%, 0.55);
   background: hsla(var(--tag-hue), 90%, 55%, 0.1);
 }
 
 html[data-theme="dark"] .project-tag {
-  color: hsl(var(--tag-hue), 90%, 85%);
+  color: hsl(var(--tag-hue), 95%, 88%);
   border-color: hsla(var(--tag-hue), 70%, 60%, 0.55);
   background: hsla(var(--tag-hue), 90%, 60%, 0.12);
 }
