@@ -1,14 +1,12 @@
 ---
 layout: ../layouts/AboutLayout.astro
-title: "About Mee"
+title: "About Me"
 ---
 
-## About Me
+I’m Nadun Lakshan, a Software Engineering undergraduate at SLIIT (graduating next month).
 
-I am Nadun Lakshan, I am Very Good with computers Since I was little, Here am i doing things what i Always loved to do 😊.
+I build and automate reliable systems, and I’m especially comfortable in Linux environments (Ubuntu/Amazon Linux). I also enjoy the Windows GUI—my current setup is Windows + WSL (Ubuntu 22.04).
 
-🥂 Soon i'll Be Graduated From SLIIT with a BSc in Software Engineering (Next Month).
-
-💢 i am Very Good at Linux (Ubuntu/Amazon Linux/MacOS Tahoe). Loves Windows GUI, Why not Both (Currently Windowqs x WSL with Ubuntu-22.04).
+I'm a tool-oriented developer with extensive knowledge of tools. I excel at quickly finding, testing, and integrating free online tools to boost my productivity.
 
 > In silicon dreams where logic breathes, we sculpt cathedrals from invisible threads.
