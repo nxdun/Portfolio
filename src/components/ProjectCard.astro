@@ -30,6 +30,7 @@ const dialogId = `dialog-${projectId}`;
   <button
     onclick={`document.getElementById('${dialogId}').showModal()`}
     class="group relative mx-0 flex w-full cursor-pointer flex-col rounded-xl border border-border/60 bg-muted/10 p-5 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-muted/20 hover:shadow-[0_0_0_1px_var(--accent)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+    aria-label={`View details for ${project_name}`}
   >
     <Heading
       class="text-lg font-semibold text-accent decoration-dashed underline-offset-4 group-hover:underline"
