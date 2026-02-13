@@ -180,6 +180,7 @@ const dialogId = `dialog-${projectId}`;
                 imgContainer.appendChild(img);
               });
               imgContainer.classList.add("loaded");
+              observer.disconnect();
             }
           }
         });
