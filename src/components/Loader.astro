@@ -1,0 +1,151 @@
+---
+import LoaderSvg from "@/assets/icons/LoaderPacman.svg?raw";
+
+interface Props {
+  size?: "sm" | "md" | "lg" | "xl";
+  class?: string;
+}
+
+const { size = "md", class: className = "" } = Astro.props;
+
+const sizeClasses = {
+  sm: "w-24 h-12",
+  md: "w-32 h-16",
+  lg: "w-48 h-24",
+  xl: "w-64 h-32",
+};
+---
+
+<div
+  class={`loader-container flex items-center justify-center ${className}`}
+  data-loader
+>
+  <div
+    class={`loader-wrapper ${sizeClasses[size]} text-accent transition-opacity duration-500`}
+    set:html={LoaderSvg}
+  />
+</div>
+
+<style>
+  .loader-container {
+    opacity: 1;
+    transition: opacity 500ms ease-in-out;
+  }
+
+  .loader-container.fade-out {
+    opacity: 0;
+  }
+
+  /* Ensure SVG inherits the text color for theme awareness */
+  .loader-wrapper :global(svg) {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
+
+  /* Override SVG internal styles to use current color */
+  .loader-wrapper :global(.pacman-spinner-nadzu),
+  .loader-wrapper :global(.pacmanloadernuu-open),
+  .loader-wrapper :global(.pacmanloadernuu-mouth-top),
+  .loader-wrapper :global(.pacmanloadernuu-mouth-bottom) {
+    fill: currentColor;
+  }
+</style>
+
+<script>
+  /**
+   * Loader utility for managing loader visibility with smooth transitions
+   */
+  class LoaderManager {
+    private loader: HTMLElement | null;
+    private fadeOutClass = "fade-out";
+
+    constructor(loaderElement: HTMLElement) {
+      this.loader = loaderElement;
+    }
+
+    /**
+     * Hide the loader with a smooth fade-out transition
+     */
+    hide(): Promise<void> {
+      return new Promise(resolve => {
+        if (!this.loader) {
+          resolve();
+          return;
+        }
+
+        const element = this.loader;
+
+        // Get computed transition duration from CSS
+        const computedStyle = window.getComputedStyle(element);
+        const duration = parseFloat(computedStyle.transitionDuration) * 1000;
+        const fallbackTimeout = duration || 1000; // Fallback if no transition defined
+
+        let resolved = false;
+        const cleanup = () => {
+          if (!resolved) {
+            resolved = true;
+            element.removeEventListener("transitionend", onTransitionEnd);
+            if (this.loader) {
+              this.loader.style.display = "none";
+            }
+            resolve();
+          }
+        };
+
+        const onTransitionEnd = (e: TransitionEvent) => {
+          // Only respond to opacity transitions on this element
+          if (e.target === element && e.propertyName === "opacity") {
+            cleanup();
+          }
+        };
+
+        // Listen for transition end
+        element.addEventListener("transitionend", onTransitionEnd);
+
+        // Add fade-out class to trigger transition
+        element.classList.add(this.fadeOutClass);
+
+        // Fallback timeout in case transitionend doesn't fire
+        setTimeout(cleanup, fallbackTimeout + 100);
+      });
+    }
+
+    /**
+     * Show the loader
+     */
+    show(): void {
+      if (!this.loader) return;
+
+      this.loader.style.display = "";
+      this.loader.classList.remove(this.fadeOutClass);
+    }
+
+    /**
+     * Remove the loader from the DOM
+     */
+    remove(): void {
+      this.hide().then(() => {
+        if (this.loader && this.loader.parentNode) {
+          this.loader.parentNode.removeChild(this.loader);
+        }
+      });
+    }
+  }
+
+  // Expose LoaderManager globally for use in other components
+  if (typeof window !== "undefined") {
+    window.LoaderManager = LoaderManager;
+  }
+
+  // Auto-initialize loaders on page load
+  document.addEventListener("astro:page-load", () => {
+    const loaders = document.querySelectorAll("[data-loader]");
+    loaders.forEach(loader => {
+      const element = loader as HTMLElement;
+      const manager = new LoaderManager(element);
+      // Store manager instance on the element for external access
+      element.__loaderManager = manager;
+    });
+  });
+</script>

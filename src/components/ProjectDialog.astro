@@ -2,6 +2,7 @@
 import { slugifyStr } from "@/utils/slugify";
 import { getTagHue, getIcon } from "@/utils/projectUtils";
 import LinkButton from "./LinkButton.astro";
+import Loader from "./Loader.astro";
 import IconX from "@/assets/icons/IconX.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 
@@ -37,6 +38,8 @@ const dialogId = `dialog-${projectId}`;
 
 <dialog
   id={dialogId}
+  tabindex="-1"
+  aria-modal="true"
   class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
   onclick="event.target === this && this.close()"
 >
@@ -70,6 +73,8 @@ const dialogId = `dialog-${projectId}`;
 
           <form method="dialog">
             <button
+              id={`dialog-close-${projectId}`}
+              data-dialog-close
               class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
               aria-label="Close modal"
             >
@@ -130,9 +135,8 @@ const dialogId = `dialog-${projectId}`;
               class="grid grid-cols-1 gap-6"
               data-images={JSON.stringify(photos)}
             >
-              <div class="image-loader flex flex-col items-center py-8 text-center text-sm italic opacity-50">
-                <span class="loading-spinner mb-2" />
-                Loading visuals...
+              <div class="image-loader flex flex-col items-center py-8">
+                <Loader size="md" />
               </div>
             </div>
           </div>
@@ -143,44 +147,180 @@ const dialogId = `dialog-${projectId}`;
 </dialog>
 
 <script>
-  // Add global click listener for dialogs
+  // Add focus management and image lazy-loading for dialogs
   document.addEventListener("astro:page-load", () => {
     const dialogs = document.querySelectorAll("dialog.project-dialog");
 
-    dialogs.forEach(d => {
-      const dialog = d as HTMLDialogElement;
+    const focusableSelector = [
+      "a[href]",
+      "area[href]",
+      'input:not([disabled]):not([type="hidden"])',
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "button:not([disabled])",
+      "iframe",
+      "object",
+      "embed",
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
 
-      // Load images on open
-      // Using MutationObserver to detect when 'open' attribute is added
+    function getFocusable(container: Element): HTMLElement[] {
+      const els = Array.from(
+        container.querySelectorAll(focusableSelector)
+      ) as HTMLElement[];
+      return els.filter(el => {
+        return (
+          el instanceof HTMLElement &&
+          (el.offsetWidth > 0 || el.offsetHeight > 0) &&
+          el.getAttribute("aria-hidden") !== "true"
+        );
+      });
+    }
+
+    interface DialogWithHandler extends HTMLDialogElement {
+      _onDialogKeyDown?: (ev: KeyboardEvent) => void;
+    }
+
+    dialogs.forEach(d => {
+      const dialog = d as DialogWithHandler;
+
       const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-          if (mutation.attributeName === "open" && dialog.open) {
+          if (mutation.attributeName !== "open") return;
+
+          if (dialog.open) {
+            // Focus management: move focus to first focusable element or dialog
+            const closeBtn = dialog.querySelector("[data-dialog-close]");
+            const focusables = getFocusable(dialog);
+            const first = focusables[0] || closeBtn || dialog;
+            try {
+              (first as HTMLElement).focus({ preventScroll: true });
+            } catch (_err) {
+              void _err;
+            }
+
+            // Keydown handler to trap focus and handle Escape
+            const onKeyDown = (ev: KeyboardEvent) => {
+              if ((ev as KeyboardEvent).key === "Escape") {
+                try {
+                  dialog.close();
+                } catch (_err) {
+                  void _err;
+                }
+                return;
+              }
+
+              if ((ev as KeyboardEvent).key !== "Tab") return;
+
+              const nodes = getFocusable(dialog);
+              if (nodes.length === 0) {
+                ev.preventDefault();
+                try {
+                  (dialog as HTMLElement).focus();
+                } catch (_err) {
+                  void _err;
+                }
+                return;
+              }
+
+              const firstNode = nodes[0] as HTMLElement;
+              const lastNode = nodes[nodes.length - 1] as HTMLElement;
+
+              if (!ev.shiftKey && document.activeElement === lastNode) {
+                ev.preventDefault();
+                firstNode.focus();
+              } else if (ev.shiftKey && document.activeElement === firstNode) {
+                ev.preventDefault();
+                lastNode.focus();
+              }
+            };
+
+            dialog.addEventListener("keydown", onKeyDown);
+            // store for cleanup
+            dialog._onDialogKeyDown = onKeyDown;
+
+            // Lazy-load images (if any)
             const imgContainer = dialog.querySelector("[data-images]");
             if (imgContainer && !imgContainer.classList.contains("loaded")) {
               const photos = JSON.parse(
                 imgContainer.getAttribute("data-images") || "[]"
               );
-              // clear loader
-              imgContainer.innerHTML = "";
 
-              if (photos.length === 0) return;
+              if (photos.length > 0) {
+                let loadedCount = 0;
+                const totalImages = photos.length;
+                const loaderElement =
+                  imgContainer.querySelector(".image-loader");
 
-              // Create images
-              photos.forEach((url: string) => {
-                const img = document.createElement("img");
-                img.src = url;
-                img.className =
-                  "rounded-lg shadow-md w-full h-auto border border-border bg-muted/50 transition-opacity duration-500 opacity-0";
-                img.loading = "lazy";
-                img.alt = "Project Screenshot";
+                // Create all images
+                const imageElements: HTMLImageElement[] = [];
+                photos.forEach((url: string) => {
+                  const img = document.createElement("img");
+                  img.src = url;
+                  img.className =
+                    "rounded-lg shadow-md w-full h-auto border border-border bg-muted/50 transition-opacity duration-500 opacity-0";
+                  img.loading = "lazy";
+                  img.alt = "Project Screenshot";
 
-                img.onload = () => {
-                  img.classList.remove("opacity-0");
-                };
-                imgContainer.appendChild(img);
-              });
+                  img.onload = () => {
+                    loadedCount++;
+                    img.classList.remove("opacity-0");
+
+                    // When all images are loaded, hide the loader smoothly
+                    if (loadedCount === totalImages && loaderElement) {
+                      const element = loaderElement as HTMLElement;
+                      const loaderManager = element.__loaderManager;
+                      if (loaderManager) {
+                        loaderManager.hide().then(() => {
+                          if (loaderElement.parentNode) {
+                            loaderElement.parentNode.removeChild(loaderElement);
+                          }
+                        });
+                      } else {
+                        // Fallback if LoaderManager not available
+                        loaderElement.classList.add("fade-out");
+                        setTimeout(() => {
+                          if (loaderElement.parentNode) {
+                            loaderElement.parentNode.removeChild(loaderElement);
+                          }
+                        }, 500);
+                      }
+                    }
+                  };
+
+                  img.onerror = () => {
+                    loadedCount++;
+                    // Still remove loader even if some images fail
+                    if (loadedCount === totalImages && loaderElement) {
+                      const element = loaderElement as HTMLElement;
+                      const loaderManager = element.__loaderManager;
+                      if (loaderManager) {
+                        loaderManager.remove();
+                      }
+                    }
+                  };
+
+                  imageElements.push(img);
+                });
+
+                // Append all images after the loader
+                imageElements.forEach(img => imgContainer.appendChild(img));
+              } else {
+                // No photos, remove loader immediately
+                const loaderElement =
+                  imgContainer.querySelector(".image-loader");
+                if (loaderElement && loaderElement.parentNode) {
+                  loaderElement.parentNode.removeChild(loaderElement);
+                }
+              }
+
               imgContainer.classList.add("loaded");
-              observer.disconnect();
+            }
+          } else {
+            // dialog closed -> cleanup keydown handler
+            if (dialog._onDialogKeyDown) {
+              dialog.removeEventListener("keydown", dialog._onDialogKeyDown);
+              delete dialog._onDialogKeyDown;
             }
           }
         });
