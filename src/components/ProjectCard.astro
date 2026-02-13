@@ -1,13 +1,7 @@
 ---
 import { slugifyStr } from "@/utils/slugify";
+import { getTagHue, getIcon } from "@/utils/projectUtils";
 import ProjectDialog from "./ProjectDialog.astro";
-
-// Get all tags icons only
-const iconImports = import.meta.glob<string>("/src/assets/tags/*.svg", {
-  eager: true,
-  query: "?raw",
-  import: "default",
-});
 
 type Props = {
   project: {
@@ -30,26 +24,12 @@ const { project_name, short_desc, tags } = project;
 
 const projectId = slugifyStr(project_name);
 const dialogId = `dialog-${projectId}`;
-
-// Function to generate distinct colorful styles for tags
-const getTagHue = (tag: string) => {
-  let hash = 0;
-  for (let i = 0; i < tag.length; i++) {
-    hash = tag.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash % 360);
-};
-
-const getIcon = (name: string) => {
-  const path = `/src/assets/tags/${name}.svg`;
-  return iconImports[path];
-};
 ---
 
 <li class="mb-5 break-inside-avoid">
   <button
     onclick={`document.getElementById('${dialogId}').showModal()`}
-    class="group relative mx-0 flex w-full cursor-pointer flex-col rounded-xl border border-(--border)/60 bg-(--muted)/10 p-5 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-(--muted)/20 hover:shadow-[0_0_0_1px_var(--accent)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+    class="group relative mx-0 flex w-full cursor-pointer flex-col rounded-xl border border-border/60 bg-muted/10 p-5 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-muted/20 hover:shadow-[0_0_0_1px_var(--accent)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
   >
     <Heading
       class="text-lg font-semibold text-accent decoration-dashed underline-offset-4 group-hover:underline"
@@ -59,7 +39,7 @@ const getIcon = (name: string) => {
     </Heading>
 
     <div
-      class="mt-3 flex flex-wrap items-center gap-2 text-(--foreground)/60 group-hover:text-(--foreground)/80"
+      class="mt-3 flex flex-wrap items-center gap-2 text-foreground/60 group-hover:text-foreground/80"
     >
       {
         tags.icon.map(t => {
@@ -88,12 +68,12 @@ const getIcon = (name: string) => {
       }
     </div>
 
-    <p class="mt-2 line-clamp-3 text-sm text-(--foreground)/85">
+    <p class="mt-2 line-clamp-3 text-sm text-foreground/85">
       {short_desc}
     </p>
 
     <span
-      class="mt-auto pt-4 text-sm text-(--foreground)/60 group-hover:text-(--foreground)/80"
+      class="mt-auto pt-4 text-sm text-foreground/60 group-hover:text-foreground/80"
     >
       View details →
     </span>

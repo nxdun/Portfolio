@@ -1,15 +1,9 @@
 ---
 import { slugifyStr } from "@/utils/slugify";
+import { getTagHue, getIcon } from "@/utils/projectUtils";
 import LinkButton from "./LinkButton.astro";
 import IconX from "@/assets/icons/IconX.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
-
-// Get all icons
-const iconImports = import.meta.glob<string>("/src/assets/tags/*.svg", {
-  eager: true,
-  query: "?raw",
-  import: "default",
-});
 
 type Props = {
   project: {
@@ -39,20 +33,6 @@ const {
 
 const projectId = slugifyStr(project_name);
 const dialogId = `dialog-${projectId}`;
-
-// Function to generate distinct colorful styles
-const getTagHue = (tag: string) => {
-  let hash = 0;
-  for (let i = 0; i < tag.length; i++) {
-    hash = tag.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash % 360);
-};
-
-const getIcon = (name: string) => {
-  const path = `/src/assets/tags/${name}.svg`;
-  return iconImports[path];
-};
 ---
 
 <dialog
