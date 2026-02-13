@@ -41,7 +41,6 @@ const dialogId = `dialog-${projectId}`;
   tabindex="-1"
   aria-modal="true"
   class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
-  onclick="event.target === this && this.close()"
 >
   <div class="flex h-full max-h-full flex-col">
     <!-- Header -->
@@ -183,6 +182,13 @@ const dialogId = `dialog-${projectId}`;
 
     dialogs.forEach(d => {
       const dialog = d as DialogWithHandler;
+
+      // Close dialog when clicking on backdrop
+      dialog.addEventListener("click", (e: MouseEvent) => {
+        if (e.target === dialog) {
+          dialog.close();
+        }
+      });
 
       const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
