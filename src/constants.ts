@@ -26,7 +26,7 @@ export const SOCIALS: Social[] = [
   {
     name: "TeleGram",
     href: "https://t.me/DHNSA",
-    linkTitle: `${SITE.title} on TeleGram`,
+    linkTitle: `${SITE.title} on Telegram`,
     icon: IconNuuTelegram,
   },
   {
