@@ -4,7 +4,7 @@ export const SITE = {
   website: "https://nadzu.me/", // deployed domain
   author: "Nadun Lakshan", //me
   profile: "https://nadzu.me/",
-  desc: "i am nadun Lkashan, a software engineer with Exceptional DevOps skills i write Blogs about software development, DevOps, and cloud computing.",
+  desc: "i am nadun Lakshan, a software engineer with Exceptional DevOps skills i write Blogs about software development, DevOps, and cloud computing.",
   title: "~/nadzu",
   ogImage: "nadzu-og.jpg",
   lightAndDarkMode: true,
