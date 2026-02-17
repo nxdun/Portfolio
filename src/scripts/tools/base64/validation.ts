@@ -1,4 +1,7 @@
-import { validateToolTextInput, type ToolValidationResult } from "../validation";
+import {
+  validateToolTextInput,
+  type ToolValidationResult,
+} from "../validation";
 import type { Base64ToolAction } from "../types";
 
 export const BASE64_INPUT_MAX_LENGTH = 12000;
@@ -7,7 +10,7 @@ const BASE64_DECODE_PATTERN = /^[A-Za-z0-9+/]*={0,2}$/;
 
 export function validateBase64ActionInput(
   action: Base64ToolAction,
-  input: string,
+  input: string
 ): ToolValidationResult {
   if (action === "clear") {
     return { isValid: true };

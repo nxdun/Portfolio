@@ -1,12 +1,19 @@
 import { decodeBase64, encodeBase64 } from "@/utils/base64";
-import { createToolResponseDock, type ToolResponseState } from "../ui/responseDock";
-import type { Base64ToolAction, Base64ToolOptions, ToolMountUiSlots } from "../types";
+import {
+  createToolResponseDock,
+  type ToolResponseState,
+} from "../ui/responseDock";
+import type {
+  Base64ToolAction,
+  Base64ToolOptions,
+  ToolMountUiSlots,
+} from "../types";
 import { validateBase64ActionInput } from "./validation";
 
 export function mountBase64Tool(
   container: HTMLElement,
   options?: Base64ToolOptions,
-  slots?: ToolMountUiSlots,
+  slots?: ToolMountUiSlots
 ): void {
   container.innerHTML = `
     <section class="grid gap-5">
@@ -55,19 +62,23 @@ export function mountBase64Tool(
     </section>
   `;
 
-  const inputEl = container.querySelector("#base64-input") as HTMLTextAreaElement | null;
-  const outputEl = container.querySelector("#base64-output") as HTMLTextAreaElement | null;
-  const encodeBtn = container.querySelector("#base64-encode") as HTMLButtonElement | null;
-  const decodeBtn = container.querySelector("#base64-decode") as HTMLButtonElement | null;
-  const clearBtn = container.querySelector("#base64-clear") as HTMLButtonElement | null;
+  const inputEl = container.querySelector(
+    "#base64-input"
+  ) as HTMLTextAreaElement | null;
+  const outputEl = container.querySelector(
+    "#base64-output"
+  ) as HTMLTextAreaElement | null;
+  const encodeBtn = container.querySelector(
+    "#base64-encode"
+  ) as HTMLButtonElement | null;
+  const decodeBtn = container.querySelector(
+    "#base64-decode"
+  ) as HTMLButtonElement | null;
+  const clearBtn = container.querySelector(
+    "#base64-clear"
+  ) as HTMLButtonElement | null;
 
-  if (
-    !inputEl ||
-    !outputEl ||
-    !encodeBtn ||
-    !decodeBtn ||
-    !clearBtn
-  ) {
+  if (!inputEl || !outputEl || !encodeBtn || !decodeBtn || !clearBtn) {
     return;
   }
 
@@ -76,7 +87,9 @@ export function mountBase64Tool(
     return;
   }
 
-  const toolViewPanel = container.closest("#tool-view-panel") as HTMLElement | null;
+  const toolViewPanel = container.closest(
+    "#tool-view-panel"
+  ) as HTMLElement | null;
 
   const actionButtons = [encodeBtn, decodeBtn, clearBtn];
   let busy = false;
@@ -92,7 +105,11 @@ export function mountBase64Tool(
     },
   });
 
-  const setUiState = (state: ToolResponseState, message: string, setOptions?: { showWhenIdle?: boolean }) => {
+  const setUiState = (
+    state: ToolResponseState,
+    message: string,
+    setOptions?: { showWhenIdle?: boolean }
+  ) => {
     responseDock.setState(state, message, setOptions);
 
     const isDisabled = state === "disabled";

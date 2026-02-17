@@ -6,22 +6,50 @@ import { sanitizeSafeToken } from "./validation";
 function replaceUrlToolParam(toolKey: ToolKey): void {
   const url = new URL(window.location.href);
   url.searchParams.set("tool", toolKey);
-  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  window.history.replaceState(
+    {},
+    "",
+    `${url.pathname}${url.search}${url.hash}`
+  );
 }
 
 export function initToolsWorkbench(): void {
-  const workbench = document.querySelector("#tools-workbench") as HTMLElement | null;
+  const workbench = document.querySelector(
+    "#tools-workbench"
+  ) as HTMLElement | null;
   const host = document.querySelector("#tool-host") as HTMLElement | null;
-  const responseHost = document.querySelector("#tool-response-host") as HTMLElement | null;
-  const toolViewPanel = document.querySelector("#tool-view-panel") as HTMLElement | null;
+  const responseHost = document.querySelector(
+    "#tool-response-host"
+  ) as HTMLElement | null;
+  const toolViewPanel = document.querySelector(
+    "#tool-view-panel"
+  ) as HTMLElement | null;
   const titleEl = document.querySelector("#tool-title") as HTMLElement | null;
-  const subtitleEl = document.querySelector("#tool-subtitle") as HTMLElement | null;
-  const toggleBtn = document.querySelector("#selector-toggle") as HTMLButtonElement | null;
-  const selectorList = document.querySelector("#tool-selector-list") as HTMLElement | null;
-  const mobileSelect = document.querySelector("#tool-select-mobile") as HTMLSelectElement | null;
-  const toolButtons = Array.from(document.querySelectorAll(".tool-select-btn")) as HTMLButtonElement[];
+  const subtitleEl = document.querySelector(
+    "#tool-subtitle"
+  ) as HTMLElement | null;
+  const toggleBtn = document.querySelector(
+    "#selector-toggle"
+  ) as HTMLButtonElement | null;
+  const selectorList = document.querySelector(
+    "#tool-selector-list"
+  ) as HTMLElement | null;
+  const mobileSelect = document.querySelector(
+    "#tool-select-mobile"
+  ) as HTMLSelectElement | null;
+  const toolButtons = Array.from(
+    document.querySelectorAll(".tool-select-btn")
+  ) as HTMLButtonElement[];
 
-  if (!workbench || !host || !responseHost || !toolViewPanel || !titleEl || !subtitleEl || !toggleBtn) {
+  if (
+    !workbench ||
+    !host ||
+    !responseHost ||
+    !toolViewPanel ||
+    !titleEl ||
+    !subtitleEl ||
+    !toggleBtn
+  ) {
     return;
   }
 
@@ -74,7 +102,10 @@ export function initToolsWorkbench(): void {
     });
   };
 
-  const loadTool = async (toolKey: ToolKey, options?: { useUrlMountOptions?: boolean }) => {
+  const loadTool = async (
+    toolKey: ToolKey,
+    options?: { useUrlMountOptions?: boolean }
+  ) => {
     if (currentTool === toolKey) return;
     const requestId = ++loadRequestId;
     currentTool = toolKey;
@@ -108,7 +139,9 @@ export function initToolsWorkbench(): void {
 
   selectorList?.addEventListener("click", event => {
     const target = event.target as HTMLElement | null;
-    const button = target?.closest(".tool-select-btn") as HTMLButtonElement | null;
+    const button = target?.closest(
+      ".tool-select-btn"
+    ) as HTMLButtonElement | null;
     if (!button) return;
 
     const toolKey = sanitizeSafeToken(button.dataset.toolKey ?? null);

@@ -1,4 +1,9 @@
-export type ToolResponseState = "idle" | "pending" | "success" | "fail" | "disabled";
+export type ToolResponseState =
+  | "idle"
+  | "pending"
+  | "success"
+  | "fail"
+  | "disabled";
 
 type ToolResponseDockOptions = {
   title?: string;
@@ -24,7 +29,11 @@ const TOOL_RESPONSE_STATE_LABEL: Record<ToolResponseState, string> = {
 };
 
 export type ToolResponseDock = {
-  setState: (state: ToolResponseState, message: string, options?: { showWhenIdle?: boolean }) => void;
+  setState: (
+    state: ToolResponseState,
+    message: string,
+    options?: { showWhenIdle?: boolean }
+  ) => void;
   getState: () => ToolResponseState;
   hide: () => void;
   clear: () => void;
@@ -32,7 +41,7 @@ export type ToolResponseDock = {
 
 export function createToolResponseDock(
   host: HTMLElement,
-  options?: ToolResponseDockOptions,
+  options?: ToolResponseDockOptions
 ): ToolResponseDock {
   const title = options?.title ?? "Response";
   const hiddenOnIdle = options?.hiddenOnIdle ?? true;
@@ -64,10 +73,18 @@ export function createToolResponseDock(
     </section>
   `;
 
-  const statusEl = host.querySelector("#tool-response-status") as HTMLDivElement | null;
-  const labelEl = host.querySelector("#tool-response-label") as HTMLSpanElement | null;
-  const messageEl = host.querySelector("#tool-response-message") as HTMLParagraphElement | null;
-  const dismissBtn = host.querySelector("#tool-response-dismiss") as HTMLButtonElement | null;
+  const statusEl = host.querySelector(
+    "#tool-response-status"
+  ) as HTMLDivElement | null;
+  const labelEl = host.querySelector(
+    "#tool-response-label"
+  ) as HTMLSpanElement | null;
+  const messageEl = host.querySelector(
+    "#tool-response-message"
+  ) as HTMLParagraphElement | null;
+  const dismissBtn = host.querySelector(
+    "#tool-response-dismiss"
+  ) as HTMLButtonElement | null;
 
   if (!statusEl || !labelEl || !messageEl || !dismissBtn) {
     return {
@@ -84,19 +101,21 @@ export function createToolResponseDock(
   let currentState: ToolResponseState = "idle";
   let lastStateChangeAt = 0;
   let pendingStateTimer: number | null = null;
-  let pendingPayload:
-    | {
-        state: ToolResponseState;
-        message: string;
-        showWhenIdle: boolean;
-      }
-    | null = null;
+  let pendingPayload: {
+    state: ToolResponseState;
+    message: string;
+    showWhenIdle: boolean;
+  } | null = null;
 
   const setVisible = (visible: boolean) => {
     host.classList.toggle("hidden", !visible);
   };
 
-  const applyState = (state: ToolResponseState, message: string, showWhenIdle: boolean) => {
+  const applyState = (
+    state: ToolResponseState,
+    message: string,
+    showWhenIdle: boolean
+  ) => {
     currentState = state;
     lastStateChangeAt = Date.now();
     statusEl.className = `rounded-lg border px-3 py-2 text-sm transition-colors ${TOOL_RESPONSE_STATE_STYLE[state]}`;
@@ -113,7 +132,11 @@ export function createToolResponseDock(
     options?.onStateChange?.(state);
   };
 
-  const setState: ToolResponseDock["setState"] = (state, message, setOptions) => {
+  const setState: ToolResponseDock["setState"] = (
+    state,
+    message,
+    setOptions
+  ) => {
     const showWhenIdle = setOptions?.showWhenIdle ?? false;
 
     if (pendingStateTimer !== null) {
@@ -124,7 +147,11 @@ export function createToolResponseDock(
 
     const now = Date.now();
     const elapsed = now - lastStateChangeAt;
-    if (lastStateChangeAt > 0 && elapsed < minStateDurationMs && state !== "disabled") {
+    if (
+      lastStateChangeAt > 0 &&
+      elapsed < minStateDurationMs &&
+      state !== "disabled"
+    ) {
       pendingPayload = { state, message, showWhenIdle };
       pendingStateTimer = window.setTimeout(() => {
         if (!pendingPayload) return;

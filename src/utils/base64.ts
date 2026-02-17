@@ -61,5 +61,7 @@ export function decodeBase64(value: string): string {
     }
   }
 
-  return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(bytes));
+  return new TextDecoder("utf-8", { fatal: true }).decode(
+    Uint8Array.from(bytes)
+  );
 }

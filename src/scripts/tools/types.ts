@@ -15,5 +15,5 @@ export type ToolMountUiSlots = {
 export type ToolMount = (
   container: HTMLElement,
   options?: ToolMountOptions,
-  slots?: ToolMountUiSlots,
+  slots?: ToolMountUiSlots
 ) => void;

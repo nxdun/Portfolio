@@ -13,13 +13,19 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
     pageTitle="Tools"
     pageDesc="Pick a tool and load it instantly when needed."
   >
-    <section id="tools-workbench" data-collapsed="false" class="grid gap-4 sm:gap-5 lg:gap-6">
+    <section
+      id="tools-workbench"
+      data-collapsed="false"
+      class="grid gap-4 sm:gap-5 lg:gap-6"
+    >
       <aside
         id="tool-selector-panel"
         class="relative hidden rounded-2xl border border-border/70 bg-background p-4 lg:sticky lg:top-6 lg:flex lg:max-h-[70vh] lg:flex-col"
       >
         <h2 class="px-2 text-sm font-semibold tracking-wide">Tool Selector</h2>
-        <p class="px-2 pt-1 pb-3 text-xs opacity-75">Choose a utility to start.</p>
+        <p class="px-2 pt-1 pb-3 text-xs opacity-75">
+          Choose a utility to start.
+        </p>
         <ul id="tool-selector-list" class="grid gap-2 overflow-y-auto pr-1">
           {
             TOOL_CATALOG.map(tool => (
@@ -28,8 +34,12 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
                   data-tool-key={tool.key}
                   class="tool-select-btn w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-left"
                 >
-                  <span class="tool-select-title block text-sm font-semibold">{tool.title}</span>
-                  <span class="tool-select-desc mt-0.5 block text-xs opacity-75">{tool.description}</span>
+                  <span class="tool-select-title block text-sm font-semibold">
+                    {tool.title}
+                  </span>
+                  <span class="tool-select-desc mt-0.5 block text-xs opacity-75">
+                    {tool.description}
+                  </span>
                 </button>
               </li>
             ))
@@ -45,8 +55,12 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
         >
           <div class="mb-4 flex items-start justify-between gap-3">
             <div>
-              <h2 id="tool-title" class="text-xl font-semibold sm:text-2xl">Tool Workspace</h2>
-              <p id="tool-subtitle" class="mt-1 text-sm italic opacity-85">Select a tool to load.</p>
+              <h2 id="tool-title" class="text-xl font-semibold sm:text-2xl">
+                Tool Workspace
+              </h2>
+              <p id="tool-subtitle" class="mt-1 text-sm italic opacity-85">
+                Select a tool to load.
+              </p>
             </div>
 
             <button
@@ -60,7 +74,10 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
           </div>
 
           <section class="mb-4 border-b border-border/60 pb-4 lg:hidden">
-            <label for="tool-select-mobile" class="mb-2 block text-xs font-semibold tracking-wide opacity-80">
+            <label
+              for="tool-select-mobile"
+              class="mb-2 block text-xs font-semibold tracking-wide opacity-80"
+            >
               Tool Selector
             </label>
             <select
@@ -69,13 +86,18 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
             >
               {
                 TOOL_CATALOG.map(tool => (
-                  <option value={tool.key}>{tool.title} · {tool.description}</option>
+                  <option value={tool.key}>
+                    {tool.title} · {tool.description}
+                  </option>
                 ))
               }
             </select>
           </section>
 
-          <div id="tool-host" class="tool-host border-t border-border/60 pt-4 sm:pt-5">
+          <div
+            id="tool-host"
+            class="tool-host border-t border-border/60 pt-4 sm:pt-5"
+          >
             <p class="text-sm italic opacity-80">
               Choose a tool from the selector to load its functionality.
             </p>
@@ -291,7 +313,9 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
     background-position:
       calc(100% - 18px) calc(50% - 2px),
       calc(100% - 12px) calc(50% - 2px);
-    background-size: 6px 6px, 6px 6px;
+    background-size:
+      6px 6px,
+      6px 6px;
     background-repeat: no-repeat;
   }
 

@@ -1,4 +1,9 @@
-import { DEFAULT_TOOL_QUERY_KEYS, TOOL_CATALOG, type ToolCatalogItem, type ToolKey } from "./catalog";
+import {
+  DEFAULT_TOOL_QUERY_KEYS,
+  TOOL_CATALOG,
+  type ToolCatalogItem,
+  type ToolKey,
+} from "./catalog";
 import type { ToolMount, ToolMountOptions } from "./types";
 import { mountBase64Tool } from "./base64";
 import { getBase64MountOptions } from "./base64/urlOptions";
@@ -15,7 +20,9 @@ const TOOL_LOADERS: Record<ToolKey, ToolDefinition["loadMount"]> = {
   base64: async () => mountBase64Tool,
 };
 
-const TOOL_URL_OPTIONS_RESOLVERS: Partial<Record<ToolKey, ToolUrlOptionsResolver>> = {
+const TOOL_URL_OPTIONS_RESOLVERS: Partial<
+  Record<ToolKey, ToolUrlOptionsResolver>
+> = {
   base64: getBase64MountOptions,
 };
 
@@ -27,12 +34,14 @@ function createToolDefinition(item: ToolCatalogItem): ToolDefinition {
   };
 }
 
-export const TOOL_REGISTRY = TOOL_CATALOG.reduce<Record<ToolKey, ToolDefinition>>(
+export const TOOL_REGISTRY = TOOL_CATALOG.reduce<
+  Record<ToolKey, ToolDefinition>
+>(
   (registry, item) => {
     registry[item.key] = createToolDefinition(item);
     return registry;
   },
-  {} as Record<ToolKey, ToolDefinition>,
+  {} as Record<ToolKey, ToolDefinition>
 );
 
 export function isToolKey(value: string | null | undefined): value is ToolKey {

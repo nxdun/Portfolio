@@ -4,7 +4,9 @@ import { BASE64_INPUT_MAX_LENGTH } from "./validation";
 
 const BASE64_ACTIONS: Base64ToolAction[] = ["encode", "decode", "clear"];
 
-function getBase64Action(value: string | null | undefined): Base64ToolAction | undefined {
+function getBase64Action(
+  value: string | null | undefined
+): Base64ToolAction | undefined {
   const action = sanitizeSafeToken(value);
   if (!action) return undefined;
 
@@ -15,7 +17,9 @@ function getBase64Action(value: string | null | undefined): Base64ToolAction | u
   return undefined;
 }
 
-export function getBase64MountOptions(params: URLSearchParams): Base64ToolOptions {
+export function getBase64MountOptions(
+  params: URLSearchParams
+): Base64ToolOptions {
   const input = getQueryTextParam(params, ["input", "in"], {
     maxLength: BASE64_INPUT_MAX_LENGTH,
   });
@@ -26,6 +30,8 @@ export function getBase64MountOptions(params: URLSearchParams): Base64ToolOption
   return {
     input,
     output,
-    action: getBase64Action(getQueryTextParam(params, ["action", "act"], { maxLength: 16 })),
+    action: getBase64Action(
+      getQueryTextParam(params, ["action", "act"], { maxLength: 16 })
+    ),
   };
 }

@@ -13,13 +13,14 @@ export type ToolTextValidationOptions = {
   maxLength?: number;
 };
 
-const CONTROL_CHARS_WITHOUT_WHITESPACE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
+const CONTROL_CHARS_WITHOUT_WHITESPACE =
+  /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
 const SAFE_TOKEN_PATTERN = /^[a-z0-9-]+$/;
 
 export function getQueryTextParam(
   params: URLSearchParams,
   keys: readonly string[],
-  options?: QueryTextOptions,
+  options?: QueryTextOptions
 ): string | undefined {
   for (const key of keys) {
     const value = sanitizeText(params.get(key), options);
@@ -31,7 +32,10 @@ export function getQueryTextParam(
   return undefined;
 }
 
-export function sanitizeText(value: string | null | undefined, options?: QueryTextOptions): string | undefined {
+export function sanitizeText(
+  value: string | null | undefined,
+  options?: QueryTextOptions
+): string | undefined {
   if (typeof value !== "string") {
     return undefined;
   }
@@ -55,7 +59,7 @@ export function sanitizeText(value: string | null | undefined, options?: QueryTe
 
 export function sanitizeSafeToken(
   value: string | null | undefined,
-  options?: { maxLength?: number },
+  options?: { maxLength?: number }
 ): string | undefined {
   if (typeof value !== "string") {
     return undefined;
@@ -76,7 +80,7 @@ export function sanitizeSafeToken(
 
 export function validateToolTextInput(
   value: string,
-  options?: ToolTextValidationOptions,
+  options?: ToolTextValidationOptions
 ): ToolValidationResult {
   const label = options?.label ?? "Input";
   const required = options?.required ?? false;
