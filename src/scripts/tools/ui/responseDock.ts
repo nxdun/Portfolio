@@ -49,33 +49,31 @@ export function createToolResponseDock(
 
   host.classList.remove("hidden");
   host.innerHTML = `
-    <section class="rounded-2xl border border-border/70 bg-background p-3 sm:p-4">
-      <div id="tool-response-status" class="rounded-lg border px-3 py-2 text-sm transition-colors ${TOOL_RESPONSE_STATE_STYLE.idle}" aria-live="polite">
-        <div class="flex items-center gap-2 text-xs opacity-85">
-          <span class="h-px flex-1 bg-current/40"></span>
-          <span class="font-semibold tracking-wide uppercase">${title}</span>
-          <span class="h-px flex-1 bg-current/40"></span>
-          <button
-            id="tool-response-dismiss"
-            type="button"
-            class="rounded-md border border-current/35 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide opacity-85 transition-opacity hover:opacity-100"
-          >
-            Cancel
-          </button>
-        </div>
-
-        <div class="mt-2 flex items-start justify-between gap-2">
-          <span id="tool-response-label" class="text-xs font-semibold tracking-wide uppercase">${TOOL_RESPONSE_STATE_LABEL.idle}</span>
-          <span class="text-[11px] opacity-70">Tool Status</span>
-        </div>
-        <p id="tool-response-message" class="mt-1 text-xs opacity-90">Awaiting action.</p>
+    <section id="tool-response-status" class="rounded-2xl border px-3 py-2 text-sm transition-colors ${TOOL_RESPONSE_STATE_STYLE.idle}" aria-live="polite">
+      <div class="flex items-center gap-2 text-xs opacity-85">
+        <span class="h-px flex-1 bg-current/40"></span>
+        <span class="font-semibold tracking-wide uppercase">${title}</span>
+        <span class="h-px flex-1 bg-current/40"></span>
+        <button
+          id="tool-response-dismiss"
+          type="button"
+          class="rounded-md border border-current/35 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide opacity-85 transition-opacity hover:opacity-100"
+        >
+          Cancel
+        </button>
       </div>
+
+      <div class="mt-2 flex items-start justify-between gap-2">
+        <span id="tool-response-label" class="text-xs font-semibold tracking-wide uppercase">${TOOL_RESPONSE_STATE_LABEL.idle}</span>
+        <span class="text-[11px] opacity-70">Tool Status</span>
+      </div>
+      <p id="tool-response-message" class="mt-1 text-xs opacity-90">Awaiting action.</p>
     </section>
   `;
 
   const statusEl = host.querySelector(
     "#tool-response-status"
-  ) as HTMLDivElement | null;
+  ) as HTMLElement | null;
   const labelEl = host.querySelector(
     "#tool-response-label"
   ) as HTMLSpanElement | null;
@@ -118,7 +116,7 @@ export function createToolResponseDock(
   ) => {
     currentState = state;
     lastStateChangeAt = Date.now();
-    statusEl.className = `rounded-lg border px-3 py-2 text-sm transition-colors ${TOOL_RESPONSE_STATE_STYLE[state]}`;
+    statusEl.className = `rounded-2xl border px-3 py-2 text-sm transition-colors ${TOOL_RESPONSE_STATE_STYLE[state]}`;
     labelEl.textContent = TOOL_RESPONSE_STATE_LABEL[state];
     messageEl.textContent = message;
 
