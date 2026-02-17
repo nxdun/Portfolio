@@ -13,10 +13,16 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 
 ## Future updates - Backlog
 
-- _Design and implement a back-to-top navigation button_
+- _Design Changes for back-to-top navigation button_
 - _Update the Projects section to reflect the latest information; the current version is outdated._
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
+  <a name="v2.2.1"></a>
+
+## v2.2.1 - 2026-02-17
+
+- <a href="https://github.com/nxdun/Portfolio/pull/14" target="_blank"><code>#14</code></a> [Chore] Migrate to new Prototype
+  - Migrated to the new prototype, which is more stable and feature-rich, ensuring a smooth transition with old portfolio
 
 <a name="v2.2.0"></a>
 

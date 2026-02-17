@@ -1,5 +1,5 @@
 .PHONY: default dev build preview sync format format-check lint clean deploy d-p install check help test-env i c f guard-%
-.DELETE_ON_ERROR: $(NODE_MODULES)/.install-timestamp
+.DELETE_ON_ERROR:
 .PRECIOUS: $(DIST_DIR)/.build-timestamp $(NODE_MODULES)/.install-timestamp
 
 MAKEFLAGS += --warn-undefined-variables
