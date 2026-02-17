@@ -31,6 +31,15 @@ export function initToolsWorkbench(): void {
   const toggleBtn = document.querySelector(
     "#selector-toggle"
   ) as HTMLButtonElement | null;
+  const maximizeIcon = document.querySelector(
+    "#selector-maximize-icon"
+  ) as HTMLElement | null;
+  const minimizeIcon = document.querySelector(
+    "#selector-minimize-icon"
+  ) as HTMLElement | null;
+  const toggleText = document.querySelector(
+    "#selector-toggle-text"
+  ) as HTMLElement | null;
   const selectorList = document.querySelector(
     "#tool-selector-list"
   ) as HTMLElement | null;
@@ -157,9 +166,21 @@ export function initToolsWorkbench(): void {
 
   toggleBtn.addEventListener("click", () => {
     const isCollapsed = workbench.dataset.collapsed === "true";
-    workbench.dataset.collapsed = isCollapsed ? "false" : "true";
-    toggleBtn.setAttribute("aria-expanded", isCollapsed ? "true" : "false");
-    toggleBtn.textContent = isCollapsed ? "Hide Selector" : "Show Selector";
+    const nextCollapsed = isCollapsed ? "false" : "true";
+    const isExpanded = nextCollapsed === "false";
+    const nextLabel = isExpanded ? "Hide Selector" : "Show Selector";
+
+    workbench.dataset.collapsed = nextCollapsed;
+    toggleBtn.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    toggleBtn.setAttribute("aria-label", nextLabel);
+    toggleBtn.setAttribute("title", nextLabel);
+
+    if (toggleText) {
+      toggleText.textContent = nextLabel;
+    }
+
+    maximizeIcon?.classList.toggle("hidden", isExpanded);
+    minimizeIcon?.classList.toggle("hidden", !isExpanded);
 
     if (isCollapsed) {
       revealActiveTool();

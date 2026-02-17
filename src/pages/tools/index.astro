@@ -5,13 +5,15 @@ import Footer from "@/components/Footer.astro";
 import ToolsLayout from "@/layouts/ToolsLayout.astro";
 import { SITE } from "@/config";
 import { TOOL_CATALOG } from "@/scripts/tools/catalog";
+import IconMaximize from "@/assets/icons/IconMaximize.svg?raw";
+import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
 ---
 
 <Layout title={`Tools | ${SITE.title}`}>
   <Header activeNav="tools" />
   <ToolsLayout
     pageTitle="Tools"
-    pageDesc="Pick a tool and load it instantly when needed."
+    pageDesc="Pick Your digital Swiss Army knife."
   >
     <section
       id="tools-workbench"
@@ -66,10 +68,14 @@ import { TOOL_CATALOG } from "@/scripts/tools/catalog";
             <button
               id="selector-toggle"
               type="button"
-              class="hidden rounded-lg border border-border/70 bg-background px-3 py-2 text-xs font-medium transition-colors hover:text-accent lg:inline-flex"
+              class="hidden rounded-md bg-transparent p-0.5 text-xs font-medium transition-colors hover:text-accent focus:outline-none lg:inline-flex lg:items-center"
               aria-expanded="true"
+              aria-label="Hide Selector"
+              title="Hide Selector"
             >
-              Hide Selector
+              <span id="selector-minimize-icon" class="icon-container [&_svg]:size-3" set:html={IconMinimize} />
+              <span id="selector-maximize-icon" class="icon-container hidden [&_svg]:size-3" set:html={IconMaximize} />
+              <span class="sr-only" id="selector-toggle-text">Hide Selector</span>
             </button>
           </div>
 
