@@ -4,7 +4,7 @@ author: nadzu
 pubDatetime: 2024-06-06T04:06:31Z
 slug: example-featured-post
 featured: true
-draft: false
+draft: true
 tags:
   - Featured
   - nadun
