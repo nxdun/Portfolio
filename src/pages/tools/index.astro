@@ -11,10 +11,7 @@ import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
 
 <Layout title={`Tools | ${SITE.title}`}>
   <Header activeNav="tools" />
-  <ToolsLayout
-    pageTitle="Tools"
-    pageDesc="Pick Your digital Swiss Army knife."
-  >
+  <ToolsLayout pageTitle="Tools" pageDesc="Pick Your digital Swiss Army knife.">
     <section
       id="tools-workbench"
       data-collapsed="false"
@@ -73,9 +70,19 @@ import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
               aria-label="Hide Selector"
               title="Hide Selector"
             >
-              <span id="selector-minimize-icon" class="icon-container [&_svg]:size-3" set:html={IconMinimize} />
-              <span id="selector-maximize-icon" class="icon-container hidden [&_svg]:size-3" set:html={IconMaximize} />
-              <span class="sr-only" id="selector-toggle-text">Hide Selector</span>
+              <span
+                id="selector-minimize-icon"
+                class="icon-container [&_svg]:size-3"
+                set:html={IconMinimize}
+              />
+              <span
+                id="selector-maximize-icon"
+                class="icon-container hidden [&_svg]:size-3"
+                set:html={IconMaximize}
+              />
+              <span class="sr-only" id="selector-toggle-text"
+                >Hide Selector</span
+              >
             </button>
           </div>
 

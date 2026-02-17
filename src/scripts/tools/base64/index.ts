@@ -26,7 +26,7 @@ export function mountBase64Tool(
           ></textarea>
         </label>
 
-        <div class="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
+        <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           <button
             id="base64-encode"
             type="button"
@@ -47,6 +47,20 @@ export function mountBase64Tool(
             class="rounded-lg border border-border/70 bg-background px-3 py-2 text-center text-sm font-medium transition-colors hover:text-accent"
           >
             Clear
+          </button>
+          <button
+            id="base64-paste"
+            type="button"
+            class="rounded-lg border border-border/70 bg-background px-3 py-2 text-center text-sm font-medium transition-colors hover:text-accent"
+          >
+            Paste
+          </button>
+          <button
+            id="base64-copy"
+            type="button"
+            class="rounded-lg border border-border/70 bg-background px-3 py-2 text-center text-sm font-medium transition-colors hover:text-accent"
+          >
+            Copy
           </button>
         </div>
 
@@ -77,8 +91,22 @@ export function mountBase64Tool(
   const clearBtn = container.querySelector(
     "#base64-clear"
   ) as HTMLButtonElement | null;
+  const pasteBtn = container.querySelector(
+    "#base64-paste"
+  ) as HTMLButtonElement | null;
+  const copyBtn = container.querySelector(
+    "#base64-copy"
+  ) as HTMLButtonElement | null;
 
-  if (!inputEl || !outputEl || !encodeBtn || !decodeBtn || !clearBtn) {
+  if (
+    !inputEl ||
+    !outputEl ||
+    !encodeBtn ||
+    !decodeBtn ||
+    !clearBtn ||
+    !pasteBtn ||
+    !copyBtn
+  ) {
     return;
   }
 
@@ -91,7 +119,7 @@ export function mountBase64Tool(
     "#tool-view-panel"
   ) as HTMLElement | null;
 
-  const actionButtons = [encodeBtn, decodeBtn, clearBtn];
+  const actionButtons = [encodeBtn, decodeBtn, clearBtn, pasteBtn, copyBtn];
   let busy = false;
 
   const responseDock = createToolResponseDock(responseHost, {
@@ -172,6 +200,54 @@ export function mountBase64Tool(
 
   clearBtn.addEventListener("click", () => {
     runAction("clear");
+  });
+
+  pasteBtn.addEventListener("click", async () => {
+    if (busy) return;
+
+    if (!navigator.clipboard || !window.isSecureContext) {
+      setUiState("fail", "Clipboard access is unavailable.");
+      return;
+    }
+
+    busy = true;
+    setUiState("pending", "Reading from clipboard...");
+
+    try {
+      const text = await navigator.clipboard.readText();
+      inputEl.value = text;
+      busy = false;
+      setUiState("success", "Pasted from clipboard.");
+    } catch {
+      busy = false;
+      setUiState("fail", "Clipboard read failed.");
+    }
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    if (busy) return;
+
+    if (!outputEl.value.trim()) {
+      setUiState("fail", "Output is empty.");
+      return;
+    }
+
+    if (!navigator.clipboard || !window.isSecureContext) {
+      setUiState("fail", "Clipboard access is unavailable.");
+      return;
+    }
+
+    busy = true;
+    setUiState("pending", "Copying to clipboard...");
+
+    try {
+      await navigator.clipboard.writeText(outputEl.value);
+      busy = false;
+      setUiState("success", "Copied to clipboard.");
+    } catch {
+      busy = false;
+      setUiState("fail", "Clipboard write failed.");
+    }
   });
 
   if (typeof options?.input === "string") {
