@@ -1,0 +1,19 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ToolsLayout from "@/layouts/ToolsLayout.astro";
+import Base64Tool from "@/components/tools/Base64Tool.astro";
+import { SITE } from "@/config";
+---
+
+<Layout title={`Base64 Tool | ${SITE.title}`}>
+  <Header activeNav="tools" />
+  <ToolsLayout
+    pageTitle="Base64"
+    pageDesc="Encode and decode Base64 safely with UTF-8 support."
+  >
+    <Base64Tool />
+  </ToolsLayout>
+  <Footer />
+</Layout>

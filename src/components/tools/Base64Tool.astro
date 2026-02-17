@@ -1,0 +1,20 @@
+<section id="base64-tool-host"></section>
+<section id="base64-response-host" class="hidden"></section>
+
+<script>
+  import { mountBase64Tool } from "@/scripts/tools/base64";
+
+  function initBase64Tool() {
+    const toolHost = document.querySelector("#base64-tool-host") as HTMLElement | null;
+    const responseHost = document.querySelector("#base64-response-host") as HTMLElement | null;
+
+    if (!toolHost || !responseHost || toolHost.dataset.initialized === "true") {
+      return;
+    }
+
+    mountBase64Tool(toolHost, undefined, { responseHost });
+    toolHost.dataset.initialized = "true";
+  }
+
+  document.addEventListener("astro:page-load", initBase64Tool);
+</script>

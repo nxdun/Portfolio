@@ -89,6 +89,12 @@ const isActive = (path: string) => {
         </li>
 
         <li class="col-span-2">
+          <a href="/tools" class:list={{ "active-nav": isActive("/tools") }}>
+            Tools
+          </a>
+        </li>
+
+        <li class="col-span-2">
           <a href="/tags" class:list={{ "active-nav": isActive("/tags") }}>
             Tags
           </a>
@@ -170,12 +176,13 @@ const isActive = (path: string) => {
 
 <script>
   function toggleNav() {
-    const menuBtn = document.querySelector("#menu-btn");
-    const menuItems = document.querySelector("#menu-items");
-    const menuIcon = document.querySelector("#menu-icon");
-    const closeIcon = document.querySelector("#close-icon");
+    const menuBtn = document.querySelector<HTMLButtonElement>("#menu-btn");
+    const menuItems = document.querySelector<HTMLElement>("#menu-items");
+    const menuIcon = document.querySelector<HTMLElement>("#menu-icon");
+    const closeIcon = document.querySelector<HTMLElement>("#close-icon");
 
     if (!menuBtn || !menuItems || !menuIcon || !closeIcon) return;
+    if (menuBtn.dataset.listenerAttached === "true") return;
 
     menuBtn.addEventListener("click", () => {
       const openMenu = menuBtn.getAttribute("aria-expanded") === "true";
@@ -187,6 +194,8 @@ const isActive = (path: string) => {
       menuIcon.classList.toggle("hidden");
       closeIcon.classList.toggle("hidden");
     });
+
+    menuBtn.dataset.listenerAttached = "true";
   }
 
   toggleNav();

@@ -1,0 +1,14 @@
+---
+import Main from "@/layouts/Main.astro";
+
+type Props = {
+  pageTitle: string;
+  pageDesc?: string;
+};
+
+const { pageTitle, pageDesc } = Astro.props;
+---
+
+<Main pageTitle={pageTitle} pageDesc={pageDesc}>
+  <slot />
+</Main>
