@@ -8,5 +8,17 @@
   ],
 	"observability": {
     "enabled": true
+  },
+  "env": {
+    "preview": {
+      "vars": {
+        "ASTRO_TELEMETRY_DISABLED": "true"
+      }
+    },
+    "production": {
+      "vars": {
+        "ASTRO_TELEMETRY_DISABLED": "true"    
+      }
+    }
   }
 }
