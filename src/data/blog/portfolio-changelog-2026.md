@@ -24,7 +24,7 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - <a href="https://github.com/nxdun/Portfolio/pull/15" target="_blank"><code>#15</code></a> [Feature] Implemented Logic For Developer Tool Functionality
   - Added tools page - Mobile Responsive, Modular, Response System For Fast Tool Development
   - Added tool - Base64 encoder/decoder - Encode and decode Base64 strings for data handling
-  - Implemented Quick tool Exection Mechansim via URL query parameters - Execute tools directly through URL query parameters for faster access
+  - Implemented Quick tool Execution Mechanism via URL query parameters - Execute tools directly through URL query parameters for faster access
   - Minor UI enhancements - Improved user interface for better usability and aesthetics
 
 <a name="v2.2.1"></a>
