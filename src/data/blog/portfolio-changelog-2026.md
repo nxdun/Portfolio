@@ -20,7 +20,7 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Add ytdl tool_
   <a name="v2.3.0"></a>
 
-## v2.3.0 - 2026-02-18
+## v2.3.0 - 2026-02-20
 
 - <a href="https://github.com/nxdun/Portfolio/pull/15" target="_blank"><code>#15</code></a> [Feature] Implemented Logic For Developer Tool Functionality
   - Added tools page - Mobile Responsive, Modular, Response System For Fast Tool Development
