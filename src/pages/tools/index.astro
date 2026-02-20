@@ -362,6 +362,17 @@ import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
 <script>
   import { initToolsWorkbench } from "@/scripts/tools/workbench";
 
-  initToolsWorkbench();
-  document.addEventListener("astro:page-load", initToolsWorkbench);
+  const startWorkbench = () => {
+    initToolsWorkbench();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startWorkbench, {
+      once: true,
+    });
+  } else {
+    startWorkbench();
+  }
+
+  document.addEventListener("astro:page-load", startWorkbench);
 </script>
