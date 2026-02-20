@@ -17,6 +17,7 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Update the Projects section to reflect the latest information; the current version is outdated._
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
+- _Add ytdl tool_
   <a name="v2.3.0"></a>
 
 ## v2.3.0 - 2026-02-18
