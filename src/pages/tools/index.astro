@@ -1,0 +1,365 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ToolsLayout from "@/layouts/ToolsLayout.astro";
+import { SITE } from "@/config";
+import { TOOL_CATALOG } from "@/scripts/tools/catalog";
+import IconMaximize from "@/assets/icons/IconMaximize.svg?raw";
+import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
+---
+
+<Layout title={`Tools | ${SITE.title}`}>
+  <Header activeNav="tools" />
+  <ToolsLayout pageTitle="Tools" pageDesc="Pick Your digital Swiss Army knife.">
+    <section
+      id="tools-workbench"
+      data-collapsed="false"
+      class="grid gap-4 sm:gap-5 lg:gap-6"
+    >
+      <aside
+        id="tool-selector-panel"
+        class="relative hidden rounded-2xl border border-border/70 bg-background p-4 lg:sticky lg:top-6 lg:flex lg:max-h-[70vh] lg:flex-col"
+      >
+        <h2 class="px-2 text-sm font-semibold tracking-wide">Tool Selector</h2>
+        <p class="px-2 pt-1 pb-3 text-xs opacity-75">
+          Choose a utility to start.
+        </p>
+        <ul id="tool-selector-list" class="grid gap-2 overflow-y-auto pr-1">
+          {
+            TOOL_CATALOG.map(tool => (
+              <li>
+                <button
+                  data-tool-key={tool.key}
+                  class="tool-select-btn w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-left"
+                >
+                  <span class="tool-select-title block text-sm font-semibold">
+                    {tool.title}
+                  </span>
+                  <span class="tool-select-desc mt-0.5 block text-xs opacity-75">
+                    {tool.description}
+                  </span>
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+
+      <div id="tool-stage" class="grid gap-4 sm:gap-5">
+        <section
+          id="tool-view-panel"
+          data-response-state="idle"
+          class="rounded-2xl border border-border/70 bg-background p-4 sm:p-6"
+        >
+          <div class="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <h2 id="tool-title" class="text-xl font-semibold sm:text-2xl">
+                Tool Workspace
+              </h2>
+              <p id="tool-subtitle" class="mt-1 text-sm italic opacity-85">
+                Select a tool to load.
+              </p>
+            </div>
+
+            <button
+              id="selector-toggle"
+              type="button"
+              class="hidden rounded-md bg-transparent p-0.5 text-xs font-medium transition-colors hover:text-accent focus:outline-none lg:inline-flex lg:items-center"
+              aria-expanded="true"
+              aria-label="Hide Selector"
+              title="Hide Selector"
+            >
+              <span
+                id="selector-minimize-icon"
+                class="icon-container [&_svg]:size-3"
+                set:html={IconMinimize}
+              />
+              <span
+                id="selector-maximize-icon"
+                class="icon-container hidden [&_svg]:size-3"
+                set:html={IconMaximize}
+              />
+              <span class="sr-only" id="selector-toggle-text"
+                >Hide Selector</span
+              >
+            </button>
+          </div>
+
+          <section class="mb-4 border-b border-border/60 pb-4 lg:hidden">
+            <label
+              for="tool-select-mobile"
+              class="mb-2 block text-xs font-semibold tracking-wide opacity-80"
+            >
+              Tool Selector
+            </label>
+            <select
+              id="tool-select-mobile"
+              class="w-full rounded-lg border border-border/70 bg-muted/20 px-3 py-2 text-sm"
+            >
+              {
+                TOOL_CATALOG.map(tool => (
+                  <option value={tool.key}>
+                    {tool.title} · {tool.description}
+                  </option>
+                ))
+              }
+            </select>
+          </section>
+
+          <div
+            id="tool-host"
+            class="tool-host border-t border-border/60 pt-4 sm:pt-5"
+          >
+            <p class="text-sm italic opacity-80">
+              Choose a tool from the selector to load its functionality.
+            </p>
+          </div>
+        </section>
+
+        <section id="tool-response-host" class="hidden"></section>
+      </div>
+    </section>
+  </ToolsLayout>
+  <Footer />
+</Layout>
+
+<style>
+  @media (min-width: 1024px) {
+    #tools-workbench {
+      position: relative;
+      grid-template-columns: minmax(16rem, 18rem) minmax(0, 1fr);
+      align-items: start;
+      column-gap: 1.5rem;
+      transition: grid-template-columns 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #tools-workbench[data-collapsed="true"] {
+      grid-template-columns: 0.9rem minmax(0, 1fr);
+      column-gap: 0.85rem;
+    }
+
+    #tool-selector-panel {
+      will-change: width, transform, opacity;
+      transition:
+        width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        min-width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #tool-selector-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 50%;
+      width: 2px;
+      border-radius: 999px;
+      background: color-mix(in oklab, var(--accent) 84%, transparent);
+      opacity: 0;
+      transform: translateX(-50%) scaleY(0.96);
+      transform-origin: center;
+      transition:
+        opacity 0.2s ease,
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    #tools-workbench[data-collapsed="true"] #tool-selector-panel {
+      width: 0.9rem;
+      min-width: 0.9rem;
+      align-self: stretch;
+      padding-inline: 0;
+      padding-block: 0;
+      border-color: transparent;
+      background: transparent;
+    }
+
+    #tools-workbench[data-collapsed="true"] #tool-selector-panel > * {
+      opacity: 0;
+      transform: translateX(-8px);
+      pointer-events: none;
+      position: absolute;
+      transition:
+        opacity 0.12s ease,
+        transform 0.16s ease;
+    }
+
+    #tools-workbench:not([data-collapsed="true"]) #tool-selector-panel > * {
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    #tools-workbench[data-collapsed="true"] #tool-selector-panel::after {
+      opacity: 1;
+      transform: translateX(-50%) scaleY(1);
+    }
+  }
+
+  .tool-select-btn {
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .tool-select-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: color-mix(in oklab, var(--muted) 20%, transparent);
+    box-shadow: 0 0 0 1px var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .tool-select-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: color-mix(in oklab, var(--muted) 24%, transparent);
+  }
+
+  @media (min-width: 1024px) {
+    #tool-selector-panel {
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in oklab, var(--muted) 10%, transparent) 0%,
+          transparent 24%
+        ),
+        var(--background);
+    }
+
+    #tool-selector-list {
+      scrollbar-width: thin;
+    }
+
+    #tool-selector-panel .tool-select-btn {
+      position: relative;
+      border-color: color-mix(in oklab, var(--border) 82%, transparent);
+      background: transparent;
+      padding: 0.7rem 0.75rem 0.72rem 0.95rem;
+      border-radius: 0.82rem;
+      transform: none;
+    }
+
+    #tool-selector-panel .tool-select-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0.48rem auto 0.48rem 0.48rem;
+      width: 2px;
+      border-radius: 999px;
+      background: transparent;
+      transition: background-color 0.2s ease;
+    }
+
+    #tool-selector-panel .tool-select-btn:hover {
+      border-color: color-mix(in oklab, var(--accent) 64%, var(--border));
+      color: var(--foreground);
+      background: color-mix(in oklab, var(--muted) 18%, transparent);
+      transform: none;
+      box-shadow: none;
+    }
+
+    #tool-selector-panel .tool-select-btn:hover::before {
+      background: color-mix(in oklab, var(--accent) 70%, transparent);
+    }
+
+    #tool-selector-panel .tool-select-btn.active {
+      border-color: color-mix(in oklab, var(--accent) 78%, var(--border));
+      color: var(--foreground);
+      background: color-mix(in oklab, var(--accent) 10%, var(--muted));
+      box-shadow: none;
+    }
+
+    #tool-selector-panel .tool-select-btn.active::before {
+      background: var(--accent);
+    }
+
+    #tool-selector-panel .tool-select-title {
+      letter-spacing: 0.01em;
+      line-height: 1.25;
+    }
+
+    #tool-selector-panel .tool-select-desc {
+      line-height: 1.35;
+      opacity: 0.7;
+    }
+
+    #tool-selector-panel .tool-select-btn.active .tool-select-title {
+      color: var(--accent);
+    }
+
+    #tool-selector-panel .tool-select-btn.reveal-focus {
+      animation: selector-reveal 360ms ease-out;
+    }
+  }
+
+  @keyframes selector-reveal {
+    0% {
+      background: color-mix(in oklab, var(--accent) 20%, var(--muted));
+    }
+    100% {
+      background: color-mix(in oklab, var(--accent) 10%, var(--muted));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #tools-workbench,
+    #tool-selector-panel,
+    #tool-selector-panel::after,
+    #tools-workbench #tool-selector-panel > * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  #tool-select-mobile {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--accent) 50%),
+      linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+    background-position:
+      calc(100% - 18px) calc(50% - 2px),
+      calc(100% - 12px) calc(50% - 2px);
+    background-size:
+      6px 6px,
+      6px 6px;
+    background-repeat: no-repeat;
+  }
+
+  #tool-view-panel {
+    transition:
+      border-color 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+
+  #tool-view-panel[data-response-state="pending"] {
+    border-color: color-mix(in oklab, #f59e0b 62%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, #f59e0b 32%, transparent);
+  }
+
+  #tool-view-panel[data-response-state="success"] {
+    border-color: color-mix(in oklab, #10b981 58%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, #10b981 30%, transparent);
+  }
+
+  #tool-view-panel[data-response-state="fail"] {
+    border-color: color-mix(in oklab, #f43f5e 60%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, #f43f5e 30%, transparent);
+  }
+
+  #tool-view-panel[data-response-state="disabled"] {
+    border-color: color-mix(in oklab, #64748b 62%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, #64748b 34%, transparent);
+  }
+</style>
+
+<script>
+  import { initToolsWorkbench } from "@/scripts/tools/workbench";
+  document.addEventListener("astro:page-load", initToolsWorkbench);
+</script>

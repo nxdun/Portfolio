@@ -6,3 +6,10 @@ node_modules/
 
 # Ignore build output
 dist/
+
+# Ignore git files
+.git/
+.github/
+
+# Ignore vscode settings
+.vscode/
