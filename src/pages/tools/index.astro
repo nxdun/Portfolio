@@ -7,6 +7,10 @@ import { SITE } from "@/config";
 import { TOOL_CATALOG } from "@/scripts/tools/catalog";
 import IconMaximize from "@/assets/icons/IconMaximize.svg?raw";
 import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
+
+const defaultTool = TOOL_CATALOG.find(
+  tool => tool.key === SITE.tools.defaultKey
+);
 ---
 
 <Layout title={`Tools | ${SITE.title}`}>
@@ -55,10 +59,10 @@ import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
           <div class="mb-4 flex items-start justify-between gap-3">
             <div>
               <h2 id="tool-title" class="text-xl font-semibold sm:text-2xl">
-                Tool Workspace
+                {defaultTool?.title ?? "Tool Workspace"}
               </h2>
               <p id="tool-subtitle" class="mt-1 text-sm italic opacity-85">
-                Select a tool to load.
+                {defaultTool?.subtitle ?? "Loading tool..."}
               </p>
             </div>
 
@@ -112,7 +116,7 @@ import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
             class="tool-host border-t border-border/60 pt-4 sm:pt-5"
           >
             <p class="text-sm italic opacity-80">
-              Choose a tool from the selector to load its functionality.
+              Loading {defaultTool?.title ?? "tool"}...
             </p>
           </div>
         </section>

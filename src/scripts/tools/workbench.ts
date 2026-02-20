@@ -2,6 +2,7 @@ import { TOOL_REGISTRY, getInitialToolKey, isToolKey } from "./registry";
 import { TOOL_CATALOG, type ToolKey } from "./catalog";
 import type { ToolMount } from "./types";
 import { sanitizeSafeToken } from "./validation";
+import { SITE } from "@/config";
 
 function replaceUrlToolParam(toolKey: ToolKey): void {
   const url = new URL(window.location.href);
@@ -187,7 +188,15 @@ export function initToolsWorkbench(): void {
     }
   });
 
-  const defaultTool = initialTool ?? TOOL_CATALOG[0]?.key ?? null;
+  const configuredDefaultTool = sanitizeSafeToken(
+    SITE.tools?.defaultKey ?? null
+  );
+  const fallbackDefaultTool = TOOL_CATALOG[0]?.key ?? null;
+  const defaultTool =
+    initialTool ??
+    (isToolKey(configuredDefaultTool) ? configuredDefaultTool : null) ??
+    fallbackDefaultTool;
+
   if (defaultTool) {
     loadTool(defaultTool, { useUrlMountOptions: Boolean(initialTool) });
   }

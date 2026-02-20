@@ -19,6 +19,9 @@ export const SITE = {
     url: "https://github.com/nxdun/portfolio/edit/main/",
   },
   dynamicOgImage: true,
+  tools: {
+    defaultKey: "base64",
+  },
   dir: "auto", // "rtl" | "auto"
   lang: "en", // html lang code. Set this empty and default will be "en"
   timezone: "Asia/Colombo", // Default global timezone (IANA format)
