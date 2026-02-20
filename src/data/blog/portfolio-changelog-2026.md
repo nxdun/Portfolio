@@ -30,6 +30,14 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 
 <a name="v2.2.1"></a>
 
+<a name="v2.3.1"></a>
+
+## v2.3.1 - 2026-02-20
+
+- <a href="https://github.com/nxdun/Portfolio/pull/16" target="_blank"><code>#16</code></a> [BugFix] Fixed issues with the Base64 tool and improved error handling
+  - Resolved bugs in Astro lifecycle.
+  - fixed hero animation bug.
+
 ## v2.2.1 - 2026-02-17
 
 - <a href="https://github.com/nxdun/Portfolio/pull/14" target="_blank"><code>#14</code></a> [Chore] Migrate to new Prototype

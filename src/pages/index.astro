@@ -70,6 +70,11 @@ const recentProjects = projectsData.slice(0, 3);
           All Projects
           <IconArrowRight class="inline-block rtl:-rotate-180" />
         </LinkButton>
+
+        <LinkButton href="/tools/" class="whitespace-nowrap">
+          All Tools
+          <IconArrowRight class="inline-block rtl:-rotate-180" />
+        </LinkButton>
       </div>
 
       {
@@ -144,6 +149,13 @@ const recentProjects = projectsData.slice(0, 3);
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>
+
+    <div class="my-8 text-center">
+      <LinkButton href="/tools/">
+        All Tools
+        <IconArrowRight class="inline-block rtl:-rotate-180" />
+      </LinkButton>
+    </div>
   </main>
   <Footer />
 </Layout>
@@ -151,7 +163,7 @@ const recentProjects = projectsData.slice(0, 3);
 <script>
   import { startTypingAnimation } from "@/utils/typingAnimation";
 
-  document.addEventListener("astro:page-load", () => {
+  const initHomePage = () => {
     const indexLayout = (document.querySelector("#main-content") as HTMLElement)
       ?.dataset?.layout;
     if (indexLayout) {
@@ -163,5 +175,8 @@ const recentProjects = projectsData.slice(0, 3);
       "a Software Engineer",
       "a Cloud Architect",
     ]);
-  });
+  };
+
+  initHomePage();
+  document.addEventListener("astro:page-load", initHomePage);
 </script>

@@ -147,7 +147,7 @@ const dialogId = `dialog-${projectId}`;
 
 <script>
   // Add focus management and image lazy-loading for dialogs
-  document.addEventListener("astro:page-load", () => {
+  const initProjectDialogs = () => {
     const dialogs = document.querySelectorAll("dialog.project-dialog");
 
     const focusableSelector = [
@@ -182,6 +182,10 @@ const dialogId = `dialog-${projectId}`;
 
     dialogs.forEach(d => {
       const dialog = d as DialogWithHandler;
+      if (dialog.dataset.initialized === "true") {
+        return;
+      }
+      dialog.dataset.initialized = "true";
 
       // Close dialog when clicking on backdrop
       dialog.addEventListener("click", (e: MouseEvent) => {
@@ -334,5 +338,8 @@ const dialogId = `dialog-${projectId}`;
 
       observer.observe(dialog, { attributes: true });
     });
-  });
+  };
+
+  initProjectDialogs();
+  document.addEventListener("astro:page-load", initProjectDialogs);
 </script>

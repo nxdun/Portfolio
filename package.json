@@ -1,7 +1,7 @@
 {
   "name": "Nuus Portfolio",
   "type": "module",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "astro dev --host",
