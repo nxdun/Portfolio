@@ -122,12 +122,15 @@ const sizeClasses = {
     window.LoaderManager = LoaderManager;
   }
 
-  document.addEventListener("astro:page-load", () => {
+  const initLoaders = () => {
     const loaders = document.querySelectorAll("[data-loader]");
     loaders.forEach(loader => {
       const element = loader as HTMLElement;
       const manager = new LoaderManager(element);
       element.__loaderManager = manager;
     });
-  });
+  };
+
+  initLoaders();
+  document.addEventListener("astro:page-load", initLoaders);
 </script>
