@@ -18,11 +18,20 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 - _Add ytdl tool_
-  <a name="v2.3.0"></a>
+
+<a name="2.3.1"></a>
+
+## v2.3.1 - 2026-02-21
+
+- <a href="https://github.com/nxdun/Portfolio/pull/17" target="_blank"><code>#17</code></a> [feat] Redesign Base64 tool and integrate as workspace default
+  - Redesigned the Base64 tool with a new user interface for improved usability and aesthetics.
+  - Updated Dependancies
+
+<a name="v2.3.0"></a>
 
 ## v2.3.0 - 2026-02-20
 
-- <a href="https://github.com/nxdun/Portfolio/pull/15" target="_blank"><code>#15</code></a> [Feature] Implemented Logic For Developer Tool Functionality
+- <a href="https://github.com/nxdun/Portfolio/pull/16" target="_blank"><code>#16</code></a> [Feature] Implemented Logic For Developer Tool Functionality
   - Added tools page - Mobile Responsive, Modular, Response System For Fast Tool Development
   - Added tool - Base64 encoder/decoder - Encode and decode Base64 strings for data handling
   - Implemented Quick tool Execution Mechanism via URL query parameters - Execute tools directly through URL query parameters for faster access
@@ -34,7 +43,7 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 
 ## v2.3.1 - 2026-02-20
 
-- <a href="https://github.com/nxdun/Portfolio/pull/16" target="_blank"><code>#16</code></a> [BugFix] Fixed issues with the Base64 tool and improved error handling
+- <a href="https://github.com/nxdun/Portfolio/pull/15" target="_blank"><code>#15</code></a> [BugFix] Fixed issues with the Base64 tool and improved error handling
   - Resolved bugs in Astro lifecycle.
   - fixed hero animation bug.
 
