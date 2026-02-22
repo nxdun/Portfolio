@@ -19,13 +19,23 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Add GTAG Functionality_
 - _Add ytdl tool_
 
+<a name="v2.3.2"></a>
+
+## v2.3.2 - 2026-02-22
+
+- <a href="https://github.com/nxdun/Portfolio/pull/19" target="_blank"><code>#19</code></a> [feat] Added YouTube Downloader Tool
+  - Added a YouTube Downloader tool that allows users to download YouTube videos in various formats and resolutions.
+  - Integrated the tool with the existing workspace for seamless access.
+  - Recaptcha integration for security and abuse prevention.
+
 <a name="2.3.1"></a>
 
 ## v2.3.1 - 2026-02-21
 
-- <a href="https://github.com/nxdun/Portfolio/pull/17" target="_blank"><code>#17</code></a> [feat] Redesign Base64 tool and integrate as workspace default
+- <a href="https://github.com/nxdun/Portfolio/pull/17" target="_blank"><code>#17</code></a> <a href="https://github.com/nxdun/Portfolio/pull/18" target="_blank"><code>#18</code></a> [feat] Redesign Base64 tool and integrate as workspace default
   - Redesigned the Base64 tool with a new user interface for improved usability and aesthetics.
   - Updated Dependancies
+  - Bug fixes and performance improvements in the Base64 tool.
 
 <a name="v2.3.0"></a>
 
