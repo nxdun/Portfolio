@@ -72,6 +72,16 @@ export default defineConfig({
         context: "client",
         optional: true,
       }),
+      PUBLIC_RECAPTCHA_SITE_KEY: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      PUBLIC_TOOLS_BACKEND_URL: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
     },
   },
 
