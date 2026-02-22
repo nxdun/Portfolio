@@ -6,15 +6,18 @@ import {
 import type {
   Base64ToolAction,
   Base64ToolOptions,
+  ToolMountOptions,
   ToolMountUiSlots,
 } from "../types";
 import { validateBase64ActionInput } from "./validation";
 
 export function mountBase64Tool(
   container: HTMLElement,
-  options?: Base64ToolOptions,
+  options?: ToolMountOptions,
   slots?: ToolMountUiSlots
 ): void {
+  const base64Options = options as Base64ToolOptions | undefined;
+
   container.innerHTML = `
     <section class="grid gap-6">
         <div class="grid gap-2 relative group/input">
@@ -316,16 +319,16 @@ export function mountBase64Tool(
     }
   });
 
-  if (typeof options?.input === "string") {
-    inputEl.value = options.input;
+  if (typeof base64Options?.input === "string") {
+    inputEl.value = base64Options.input;
   }
 
-  if (typeof options?.output === "string") {
-    outputEl.value = options.output;
+  if (typeof base64Options?.output === "string") {
+    outputEl.value = base64Options.output;
   }
 
-  if (options?.action) {
-    runAction(options.action);
+  if (base64Options?.action) {
+    runAction(base64Options.action);
   } else {
     setUiState("idle", "Awaiting action.");
   }
