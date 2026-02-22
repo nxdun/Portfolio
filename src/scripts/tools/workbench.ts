@@ -8,7 +8,7 @@ function replaceUrlToolParam(toolKey: ToolKey): void {
   const url = new URL(window.location.href);
   url.searchParams.set("tool", toolKey);
   window.history.replaceState(
-    {},
+    { ...window.history.state },
     "",
     `${url.pathname}${url.search}${url.hash}`
   );
