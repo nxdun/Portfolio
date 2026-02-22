@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import ToolsLayout from "@/layouts/ToolsLayout.astro";
+import RecaptchaConfig from "@/components/tools/RecaptchaConfig.astro";
 import { SITE } from "@/config";
 import { TOOL_CATALOG } from "@/scripts/tools/catalog";
 import IconMaximize from "@/assets/icons/IconMaximize.svg?raw";
@@ -124,6 +125,7 @@ const defaultTool = TOOL_CATALOG.find(
         <section id="tool-response-host" class="hidden"></section>
       </div>
     </section>
+    <RecaptchaConfig />
   </ToolsLayout>
   <Footer />
 </Layout>
