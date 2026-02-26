@@ -1,4 +1,5 @@
-const BASE64_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const BASE64_TABLE =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 // note: Precompute reverse lookup for O(1) decoding
 const REVERSE_LOOKUP = new Uint8Array(256);

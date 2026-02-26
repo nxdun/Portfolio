@@ -18,8 +18,10 @@ export type ToolMountUiSlots = {
   responseHost?: HTMLElement | null;
 };
 
+export type ToolTeardown = () => void;
+
 export type ToolMount = (
   container: HTMLElement,
   options?: ToolMountOptions,
   slots?: ToolMountUiSlots
-) => void;
+) => void | ToolTeardown;
