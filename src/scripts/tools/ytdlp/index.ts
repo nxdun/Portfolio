@@ -256,11 +256,13 @@ export function mountYtdlpTool(
     if (stage === "submit") {
       submitBtn.textContent = "Submit Download";
       submitBtn.classList.remove(
-        "bg-accent",
+        "bg-green-600",
+        "border-green-600",
         "text-white",
-        "hover:bg-accent/90"
+        "hover:bg-green-700"
       );
       submitBtn.classList.add(
+        "border-accent",
         "bg-accent/5",
         "text-accent",
         "hover:bg-accent",
@@ -272,11 +274,13 @@ export function mountYtdlpTool(
     if (stage === "pending") {
       submitBtn.textContent = "Downloading... Please wait";
       submitBtn.classList.remove(
-        "bg-accent",
+        "bg-green-600",
+        "border-green-600",
         "text-white",
-        "hover:bg-accent/90"
+        "hover:bg-green-700"
       );
       submitBtn.classList.add(
+        "border-accent",
         "bg-accent/5",
         "text-accent",
         "hover:bg-accent",
@@ -285,14 +289,20 @@ export function mountYtdlpTool(
       return;
     }
 
-    submitBtn.textContent = "Download";
+    submitBtn.textContent = "Save File";
     submitBtn.classList.remove(
+      "border-accent",
       "bg-accent/5",
       "text-accent",
       "hover:bg-accent",
       "hover:text-white"
     );
-    submitBtn.classList.add("bg-accent", "text-white", "hover:bg-accent/90");
+    submitBtn.classList.add(
+      "bg-green-600",
+      "border-green-600",
+      "text-white",
+      "hover:bg-green-700"
+    );
   };
 
   const openCaptchaModal = () => {
@@ -562,7 +572,7 @@ export function mountYtdlpTool(
               const downloadUrl = `${normalizeBaseUrl(backendUrl)}/${YTDLP_DOWNLOAD_PATH.replace(/^\//, "")}/${encodeURIComponent(jobId)}`;
               readyDownloadUrl = downloadUrl;
               setPrimaryStage("download");
-              setUiState("success", "Download is ready. Click Download.");
+              setUiState("success", "Download is ready.");
             }
           } catch {
             // Keep polling to tolerate transient errors.
