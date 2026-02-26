@@ -147,6 +147,10 @@ export class YtdlpToolController {
       this.ui.closeCaptchaModal();
     });
 
+    this.addEventListener(this.refs.captchaModal, "keydown", event => {
+      this.ui.handleCaptchaModalKeydown(event as KeyboardEvent);
+    });
+
     this.addEventListener(this.refs.captchaModal, "click", event => {
       if (event.target === this.refs.captchaModal) {
         this.ui.closeCaptchaModal();
@@ -255,6 +259,7 @@ export class YtdlpToolController {
     }
 
     this.ui.openCaptchaModal();
+    this.ui.transition("LOADING_CAPTCHA", "Loading verification challenge...");
 
     const signal = this.beginOperation();
 

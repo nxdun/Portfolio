@@ -28,6 +28,10 @@ type CaptchaManagerOptions = {
   onError?: () => void;
 };
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError";
+}
+
 function getTheme(): "light" | "dark" {
   return document.firstElementChild?.getAttribute("data-theme") === "dark"
     ? "dark"
@@ -88,7 +92,15 @@ export class CaptchaManager {
         return true;
       }
 
-      await this.sleep(180, signal);
+      try {
+        await this.sleep(180, signal);
+      } catch (error) {
+        if (isAbortError(error)) {
+          return false;
+        }
+
+        throw error;
+      }
     }
 
     return false;

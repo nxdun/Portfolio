@@ -50,6 +50,11 @@ export const YTDLP_TOOL_TEMPLATE = `
     <div
       id="ytdlp-captcha-modal"
       aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ytdlp-captcha-title"
+      aria-describedby="ytdlp-captcha-description"
+      tabindex="-1"
       class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4 backdrop:backdrop-blur-sm"
     >
       <section class="w-full max-w-xl overflow-visible rounded-xl border border-border bg-background p-0 text-foreground shadow-2xl outline-none">
@@ -57,8 +62,8 @@ export const YTDLP_TOOL_TEMPLATE = `
           <div class="sticky top-0 z-10 rounded-t-xl border-b border-border bg-background px-6 py-4">
             <div class="flex items-start justify-between">
               <div class="mr-4">
-                <h2 class="text-xl font-bold text-accent sm:text-2xl">Captcha Verification</h2>
-                <div class="mt-1 text-sm text-foreground/70">Confirm you are human to start download</div>
+                <h2 id="ytdlp-captcha-title" class="text-xl font-bold text-accent sm:text-2xl">Captcha Verification</h2>
+                <div id="ytdlp-captcha-description" class="mt-1 text-sm text-foreground/70">Confirm you are human to start download</div>
               </div>
 
               <button

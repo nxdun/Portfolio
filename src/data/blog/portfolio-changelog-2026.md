@@ -29,11 +29,11 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 ## v2.3.2 - 2026-02-26
 
 - <a href="https://github.com/nxdun/Portfolio/pull/18" target="_blank"><code>#18</code></a> [feat] Add YouTube downloader tool with reCAPTCHA integration
-  - Added a YouTube Downloader tool that allows users to download YouTube videos and shorts.
+  - Added a YouTube Downloader tool that allows users to download YouTube videos and shorts in avilable mp4 format.
   - Refactored tool architecture for more modular and maintainable codebase, including speed and performance improvements.
   - Recaptcha integration for security and abuse prevention.
   - Base64 Tool Reworked
-  - Updated Dependancies
+  - Updated Astro Dependency.
 
 <a name="2.3.1"></a>
 
