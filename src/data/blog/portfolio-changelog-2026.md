@@ -17,16 +17,23 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Update the Projects section to reflect the latest information; the current version is outdated._
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
-- _Add ytdl tool_
+
+<!-- <a name="v2.3.3"></a>
+
+## v2.3.3 - 2026-02-26
+
+- <a href="https://github.com/nxdun/Portfolio/pull/20" target="_blank"><code>#20</code></a> -->
 
 <a name="v2.3.2"></a>
 
-## v2.3.2 - 2026-02-22
+## v2.3.2 - 2026-02-26
 
-- <a href="https://github.com/nxdun/Portfolio/pull/19" target="_blank"><code>#19</code></a> [feat] Added YouTube Downloader Tool
-  - Added a YouTube Downloader tool that allows users to download YouTube videos in various formats and resolutions.
-  - Integrated the tool with the existing workspace for seamless access.
+- <a href="https://github.com/nxdun/Portfolio/pull/18" target="_blank"><code>#18</code></a> [feat] Add YouTube downloader tool with reCAPTCHA integration
+  - Added a YouTube Downloader tool that allows users to download YouTube videos and shorts.
+  - Refactored tool architecture for more modular and maintainable codebase, including speed and performance improvements.
   - Recaptcha integration for security and abuse prevention.
+  - Base64 Tool Reworked
+  - Updated Dependancies
 
 <a name="2.3.1"></a>
 
