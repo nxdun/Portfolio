@@ -8,7 +8,10 @@ import type {
   ToolMountUiSlots,
   YtdlpToolOptions,
 } from "../types";
-import { validateYtdlpActionInput } from "./validation";
+import {
+  validateYtdlpActionInput,
+  validateYtdlpConfigInput,
+} from "./validation";
 
 type CaptchaApi = {
   ready: (callback: () => void) => void;
@@ -238,7 +241,20 @@ export function mountYtdlpTool(
     }
   );
 
-  const actionButtons = [pasteBtn, clearBtn, submitBtn, verifyCaptchaBtn];
+  const configValidation = validateYtdlpConfigInput({
+    backendUrl,
+    recaptchaSiteKey,
+  });
+  const isCaptchaFeatureEnabled = configValidation.isValid;
+  const resolvedBackendUrl = configValidation.isValid
+    ? configValidation.normalized.backendUrl
+    : undefined;
+  const resolvedRecaptchaSiteKey = configValidation.isValid
+    ? configValidation.normalized.recaptchaSiteKey
+    : undefined;
+
+  const helperButtons = [pasteBtn, clearBtn];
+  const gatedButtons = [submitBtn, verifyCaptchaBtn];
 
   let busy = false;
   let captchaToken = "";
@@ -333,8 +349,11 @@ export function mountYtdlpTool(
     responseDock.setState(state, message, setOptions);
 
     const isDisabled = state === "disabled";
-    actionButtons.forEach(button => {
-      button.disabled = isDisabled || busy;
+    helperButtons.forEach(button => {
+      button.disabled = busy;
+    });
+    gatedButtons.forEach(button => {
+      button.disabled = isDisabled || busy || !isCaptchaFeatureEnabled;
     });
 
     if (primaryStage === "pending") {
@@ -342,8 +361,11 @@ export function mountYtdlpTool(
     }
 
     verifyCaptchaBtn.disabled =
-      isDisabled || busy || captchaToken.trim().length === 0;
-    inputEl.toggleAttribute("readonly", isDisabled);
+      isDisabled ||
+      busy ||
+      !isCaptchaFeatureEnabled ||
+      captchaToken.trim().length === 0;
+    inputEl.toggleAttribute("readonly", isDisabled && isCaptchaFeatureEnabled);
   };
 
   const waitForCaptchaApi = (): Promise<boolean> => {
@@ -365,7 +387,11 @@ export function mountYtdlpTool(
   };
 
   const openCaptchaDialog = async () => {
-    if (!recaptchaSiteKey || !backendUrl) {
+    if (
+      !isCaptchaFeatureEnabled ||
+      !resolvedRecaptchaSiteKey ||
+      !resolvedBackendUrl
+    ) {
       setUiState("disabled", "Verification service is unavailable right now.");
       return;
     }
@@ -398,7 +424,7 @@ export function mountYtdlpTool(
       }
 
       captchaWidgetId = window.grecaptcha.render(captchaHostEl, {
-        sitekey: recaptchaSiteKey,
+        sitekey: resolvedRecaptchaSiteKey,
         theme:
           document.firstElementChild?.getAttribute("data-theme") === "dark"
             ? "dark"
@@ -431,7 +457,7 @@ export function mountYtdlpTool(
 
   const verifyCaptchaAndQueue = async () => {
     const captchaValidation = validateYtdlpActionInput("verify-captcha", {
-      backendUrl,
+      backendUrl: resolvedBackendUrl,
       captchaToken,
     });
 
@@ -441,7 +467,7 @@ export function mountYtdlpTool(
     }
 
     const urlValidation = validateYtdlpActionInput("enqueue", {
-      backendUrl,
+      backendUrl: resolvedBackendUrl,
       url: pendingUrl,
     });
 
@@ -523,7 +549,7 @@ export function mountYtdlpTool(
       stopPolling();
       pollTimer = window.setInterval(() => {
         void (async () => {
-          if (!backendUrl) {
+          if (!resolvedBackendUrl) {
             stopPolling();
             setPrimaryStage("submit");
             setUiState("fail", "Download service is unavailable.");
@@ -543,7 +569,7 @@ export function mountYtdlpTool(
 
           try {
             const response = await fetch(
-              `${normalizeBaseUrl(backendUrl)}/${YTDLP_JOB_PATH.replace(/^\//, "")}/${encodeURIComponent(jobId)}`,
+              `${normalizeBaseUrl(resolvedBackendUrl)}/${YTDLP_JOB_PATH.replace(/^\//, "")}/${encodeURIComponent(jobId)}`,
               { method: "GET" }
             );
 
@@ -569,7 +595,7 @@ export function mountYtdlpTool(
               )
             ) {
               stopPolling();
-              const downloadUrl = `${normalizeBaseUrl(backendUrl)}/${YTDLP_DOWNLOAD_PATH.replace(/^\//, "")}/${encodeURIComponent(jobId)}`;
+              const downloadUrl = `${normalizeBaseUrl(resolvedBackendUrl)}/${YTDLP_DOWNLOAD_PATH.replace(/^\//, "")}/${encodeURIComponent(jobId)}`;
               readyDownloadUrl = downloadUrl;
               setPrimaryStage("download");
               setUiState("success", "Download is ready.");
@@ -614,11 +640,16 @@ export function mountYtdlpTool(
     }
 
     const urlValidation = validateYtdlpActionInput("enqueue", {
-      backendUrl,
+      backendUrl: resolvedBackendUrl,
       url: inputEl.value,
     });
 
     if (!urlValidation.isValid) {
+      if (!isCaptchaFeatureEnabled) {
+        setUiState("disabled", configValidation.message);
+        return;
+      }
+
       setUiState("fail", urlValidation.message);
       return;
     }
@@ -680,6 +711,11 @@ export function mountYtdlpTool(
   }
 
   setPrimaryStage("submit");
+
+  if (!isCaptchaFeatureEnabled) {
+    setUiState("disabled", configValidation.message);
+    return;
+  }
 
   setUiState("idle", "Paste a YouTube URL and click Submit Download.", {
     showWhenIdle: true,

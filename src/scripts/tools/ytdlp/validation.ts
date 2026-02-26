@@ -7,6 +7,7 @@ import type { YtdlpToolAction } from "../types";
 
 export const YTDLP_URL_MAX_LENGTH = 2048;
 export const YTDLP_BACKEND_URL_MAX_LENGTH = 512;
+export const YTDLP_RECAPTCHA_SITE_KEY_MAX_LENGTH = 256;
 export const YTDLP_CAPTCHA_TOKEN_MAX_LENGTH = 4096;
 
 const YOUTUBE_HOSTS = new Set([
@@ -30,6 +31,24 @@ export type YtdlpActionValidationResult =
         url?: string;
         backendUrl?: string;
         captchaToken?: string;
+      };
+    }
+  | {
+      isValid: false;
+      message: string;
+    };
+
+export type YtdlpConfigInput = {
+  backendUrl?: string;
+  recaptchaSiteKey?: string;
+};
+
+export type YtdlpConfigValidationResult =
+  | {
+      isValid: true;
+      normalized: {
+        backendUrl: string;
+        recaptchaSiteKey: string;
       };
     }
   | {
@@ -226,5 +245,55 @@ export function validateYtdlpActionInput(
   return {
     isValid: false,
     message: "Invalid action.",
+  };
+}
+
+export function validateYtdlpConfigInput(
+  input: YtdlpConfigInput
+): YtdlpConfigValidationResult {
+  const backendUrl = sanitizeText(input.backendUrl, {
+    maxLength: YTDLP_BACKEND_URL_MAX_LENGTH,
+    preserveWhitespace: false,
+  });
+  const recaptchaSiteKey = sanitizeText(input.recaptchaSiteKey, {
+    maxLength: YTDLP_RECAPTCHA_SITE_KEY_MAX_LENGTH,
+    preserveWhitespace: false,
+  });
+
+  const backendValidation = validateToolTextInput(backendUrl ?? "", {
+    label: "Backend URL",
+    required: true,
+    maxLength: YTDLP_BACKEND_URL_MAX_LENGTH,
+  });
+
+  if (!backendValidation.isValid) {
+    return backendValidation;
+  }
+
+  const backendUrlValidation = validateHttpUrl(backendUrl ?? "", "Backend URL");
+  if (!backendUrlValidation.isValid) {
+    return backendUrlValidation;
+  }
+
+  const recaptchaValidation = validateToolTextInput(recaptchaSiteKey ?? "", {
+    label: "reCAPTCHA site key",
+    required: true,
+    maxLength: YTDLP_RECAPTCHA_SITE_KEY_MAX_LENGTH,
+  });
+
+  if (!recaptchaValidation.isValid) {
+    return {
+      isValid: false,
+      message:
+        "Captcha configuration is missing. Download submission is disabled.",
+    };
+  }
+
+  return {
+    isValid: true,
+    normalized: {
+      backendUrl: backendUrl ?? "",
+      recaptchaSiteKey: recaptchaSiteKey ?? "",
+    },
   };
 }
