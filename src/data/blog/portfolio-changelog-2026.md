@@ -18,12 +18,6 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
-<!-- <a name="v2.3.3"></a>
-
-## v2.3.3 - 2026-02-26
-
-- <a href="https://github.com/nxdun/Portfolio/pull/20" target="_blank"><code>#20</code></a> -->
-
 <a name="v2.3.2"></a>
 
 ## v2.3.2 - 2026-02-26
@@ -54,11 +48,9 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
   - Implemented Quick tool Execution Mechanism via URL query parameters - Execute tools directly through URL query parameters for faster access
   - Minor UI enhancements - Improved user interface for better usability and aesthetics
 
-<a name="v2.2.1"></a>
+<a name="v2.2.2"></a>
 
-<a name="v2.3.1"></a>
-
-## v2.3.1 - 2026-02-20
+## v2.2.2 - 2026-02-20
 
 - <a href="https://github.com/nxdun/Portfolio/pull/15" target="_blank"><code>#15</code></a> [BugFix] Fixed issues with the Base64 tool and improved error handling
   - Resolved bugs in Astro lifecycle.
