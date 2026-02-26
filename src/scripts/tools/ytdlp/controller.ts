@@ -2,9 +2,10 @@ import { createToolResponseDock } from "../ui/responseDock";
 import { readClipboardText } from "../clipboard";
 import type { ToolTeardown, YtdlpToolOptions } from "../types";
 import { validateYtdlpActionInput } from "./validation";
-import { asyncPoll } from "../../utils/asyncPoll";
+import { asyncPoll } from "../../../utils/asyncPoll";
 import { YtdlpApiClient } from "./apiClient";
-import { CaptchaManager } from "../../utils/captchaManager";
+import { CaptchaManager } from "../../../utils/captchaManager";
+import type { ApiResult } from "../../../utils/CoreApiClient";
 import type { YtdlpDomRefs } from "./dom";
 import { YtdlpUiController } from "./uiController";
 
@@ -153,6 +154,61 @@ export class YtdlpToolController {
     });
   }
 
+  private handleApiFailure<TData>(
+    result: Extract<ApiResult<TData>, { ok: false }>,
+    options?: { shouldResetCaptcha?: boolean }
+  ): "silent" | "handled" {
+    if (result.errorType === "ABORTED") {
+      return "silent";
+    }
+
+    this.ui.setPrimaryStage("submit");
+
+    switch (result.errorType) {
+      case "NETWORK_DOWN":
+      case "SERVER_ERROR":
+        this.ui.transition(
+          "DISABLED",
+          "Service unreachable. Please try later."
+        );
+        return "handled";
+
+      case "RATE_LIMITED":
+        this.ui.transition(
+          "ERROR",
+          "Too many requests. Please wait before trying again."
+        );
+        return "handled";
+
+      case "UNAUTHORIZED":
+        if (options?.shouldResetCaptcha) {
+          this.captchaManager?.reset();
+        }
+
+        this.ui.transition(
+          "ERROR",
+          "Verification failed. Please retry captcha and submit again."
+        );
+        return "handled";
+
+      case "BAD_REQUEST":
+        this.ui.transition(
+          "ERROR",
+          result.message ||
+            "Invalid request. Please check the input and try again."
+        );
+        return "handled";
+
+      case "UNKNOWN":
+      default:
+        this.ui.transition(
+          "ERROR",
+          result.message || "Request failed. Please try again."
+        );
+        return "handled";
+    }
+  }
+
   private async handleSubmitClick(): Promise<void> {
     const stage = this.ui.getPrimaryStage();
 
@@ -199,7 +255,6 @@ export class YtdlpToolController {
     }
 
     this.ui.openCaptchaModal();
-    this.ui.transition("LOADING_CAPTCHA", "Loading reCAPTCHA widget...");
 
     const signal = this.beginOperation();
 
@@ -266,31 +321,39 @@ export class YtdlpToolController {
 
     try {
       this.ui.transition("SUBMITTING", "Verifying...");
-      const verified = await this.apiClient.verifyCaptcha(
+      const verifiedResult = await this.apiClient.verifyCaptcha(
         captchaValidation.normalized?.captchaToken ?? "",
         signal
       );
 
-      if (!verified) {
-        this.captchaManager.reset();
-        this.ui.transition("ERROR", "Verification failed. Please try again.");
+      if (!verifiedResult.ok) {
+        if (
+          this.handleApiFailure(verifiedResult, {
+            shouldResetCaptcha: true,
+          }) === "silent"
+        ) {
+          return;
+        }
+
         return;
       }
 
       this.ui.transition("SUBMITTING", "Starting download...");
 
-      const jobId = await this.apiClient.enqueue(
+      const enqueueResult = await this.apiClient.enqueue(
         urlValidation.normalized?.url ?? "",
         signal
       );
 
-      if (!jobId) {
-        this.ui.transition(
-          "ERROR",
-          "Could not start download. Please try again."
-        );
+      if (!enqueueResult.ok) {
+        if (this.handleApiFailure(enqueueResult) === "silent") {
+          return;
+        }
+
         return;
       }
+
+      const jobId = enqueueResult.data;
 
       this.refs.inputEl.value =
         urlValidation.normalized?.url ?? this.refs.inputEl.value;
@@ -301,30 +364,33 @@ export class YtdlpToolController {
       this.ui.setPrimaryStage("pending");
       this.ui.transition("POLLING", "Downloading... Please wait.");
 
-      const result = await asyncPoll<"success" | "fail">({
+      const result = await asyncPoll<"success" | "fail" | "handled-error">({
         intervalMs: POLL_INTERVAL_MS,
         maxAttempts: MAX_POLL_ATTEMPTS,
         signal,
         step: async () => {
-          try {
-            const status = await this.apiClient.checkJobStatus(jobId, signal);
+          const statusResult = await this.apiClient.checkJobStatus(
+            jobId,
+            signal
+          );
 
-            if (status === "fail") {
-              return { done: true, value: "fail" };
+          if (!statusResult.ok) {
+            if (this.handleApiFailure(statusResult) === "silent") {
+              return { done: true, value: "handled-error" };
             }
 
-            if (status === "success") {
-              return { done: true, value: "success" };
-            }
-
-            return { done: false };
-          } catch (error) {
-            if (isAbortError(error)) {
-              throw error;
-            }
-
-            return { done: false };
+            return { done: true, value: "handled-error" };
           }
+
+          if (statusResult.data === "fail") {
+            return { done: true, value: "fail" };
+          }
+
+          if (statusResult.data === "success") {
+            return { done: true, value: "success" };
+          }
+
+          return { done: false };
         },
       });
 
@@ -341,6 +407,10 @@ export class YtdlpToolController {
         return;
       }
 
+      if (result === "handled-error") {
+        return;
+      }
+
       this.ui.setPrimaryStage("submit");
       this.ui.transition(
         "ERROR",
@@ -349,7 +419,10 @@ export class YtdlpToolController {
     } catch (error) {
       if (!isAbortError(error)) {
         this.ui.setPrimaryStage("submit");
-        this.ui.transition("ERROR", "Unable to start download right now.");
+        this.ui.transition(
+          "DISABLED",
+          "Service unreachable. Please try later."
+        );
       }
     }
   }

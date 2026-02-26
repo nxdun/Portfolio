@@ -1,5 +1,5 @@
 import { sanitizeText } from "../validation";
-import { CoreApiClient } from "../../utils/CoreApiClient";
+import { CoreApiClient, type ApiResult } from "../../../utils/CoreApiClient";
 
 const YTDLP_ENQUEUE_PATH = "/api/v1/ytdlp";
 const YTDLP_JOB_PATH = "/api/v1/ytdlp/jobs";
@@ -17,7 +17,7 @@ function readStatus(job: Record<string, unknown>): string {
 }
 
 export class YtdlpApiClient extends CoreApiClient {
-  async enqueue(url: string, signal?: AbortSignal): Promise<string | null> {
+  async enqueue(url: string, signal?: AbortSignal): Promise<ApiResult<string>> {
     const response = await this.postJson(
       YTDLP_ENQUEUE_PATH,
       {
@@ -28,6 +28,10 @@ export class YtdlpApiClient extends CoreApiClient {
       signal
     );
 
+    if (!response.ok) {
+      return response;
+    }
+
     const payload = this.asObject(response.data);
     const job = this.asObject(payload?.job);
     const jobId = sanitizeText(typeof job?.id === "string" ? job.id : null, {
@@ -35,42 +39,57 @@ export class YtdlpApiClient extends CoreApiClient {
       preserveWhitespace: false,
     });
 
-    if (response.status !== 202 || !jobId) {
-      return null;
+    if (!jobId) {
+      return {
+        ok: false,
+        errorType: "BAD_REQUEST",
+        message: "Could not start download.",
+      };
     }
 
-    return jobId;
+    return {
+      ok: true,
+      data: jobId,
+    };
   }
 
   async checkJobStatus(
     jobId: string,
     signal?: AbortSignal
-  ): Promise<YtdlpJobState> {
+  ): Promise<ApiResult<YtdlpJobState>> {
     const response = await this.getJson(
       `${YTDLP_JOB_PATH}/${encodeURIComponent(jobId)}`,
       signal
     );
 
+    if (!response.ok) {
+      return response;
+    }
+
     const payload = this.asObject(response.data);
     const job = this.asObject(payload?.job);
 
-    if (!response.ok || !job) {
-      return "unknown";
+    if (!job) {
+      return {
+        ok: false,
+        errorType: "UNKNOWN",
+        message: "Unexpected status response.",
+      };
     }
 
     const status = readStatus(job);
 
     if (["failed", "error", "cancelled", "canceled"].includes(status)) {
-      return "fail";
+      return { ok: true, data: "fail" };
     }
 
     if (
       ["completed", "complete", "done", "finished", "success"].includes(status)
     ) {
-      return "success";
+      return { ok: true, data: "success" };
     }
 
-    return "pending";
+    return { ok: true, data: "pending" };
   }
 
   getDownloadUrl(jobId: string): string {

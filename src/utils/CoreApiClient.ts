@@ -7,12 +7,18 @@ type RequestJsonOptions = {
   signal?: AbortSignal;
 };
 
-export type CoreApiResponse<TData = unknown> = {
-  ok: boolean;
-  status: number;
-  data: TData | null;
-  error?: string;
-};
+export type ApiErrorType =
+  | "NETWORK_DOWN"
+  | "RATE_LIMITED"
+  | "UNAUTHORIZED"
+  | "BAD_REQUEST"
+  | "SERVER_ERROR"
+  | "ABORTED"
+  | "UNKNOWN";
+
+export type ApiResult<TData> =
+  | { ok: true; data: TData }
+  | { ok: false; errorType: ApiErrorType; message: string };
 
 const CAPTCHA_VERIFY_PATH = "/api/v1/captcha/verify";
 
@@ -24,19 +30,44 @@ function normalizePath(path: string): string {
   return path.startsWith("/") ? path : `/${path}`;
 }
 
-function readErrorMessage(payload: unknown): string | undefined {
-  if (typeof payload !== "object" || payload === null) {
-    return undefined;
+function mapHttpStatusToErrorType(status: number): ApiErrorType {
+  if (status === 429) {
+    return "RATE_LIMITED";
   }
 
-  const objectValue = payload as Record<string, unknown>;
-  const message = objectValue.message;
-  if (typeof message !== "string") {
-    return undefined;
+  if (status === 401 || status === 403) {
+    return "UNAUTHORIZED";
   }
 
-  const trimmed = message.trim();
-  return trimmed.length > 0 ? trimmed.slice(0, 240) : undefined;
+  if (status === 400 || status === 422) {
+    return "BAD_REQUEST";
+  }
+
+  if (status >= 500) {
+    return "SERVER_ERROR";
+  }
+
+  return "UNKNOWN";
+}
+
+function getErrorMessage(errorType: ApiErrorType): string {
+  switch (errorType) {
+    case "NETWORK_DOWN":
+      return "Service unreachable.";
+    case "RATE_LIMITED":
+      return "Too many requests. Please try again later.";
+    case "UNAUTHORIZED":
+      return "Authorization failed.";
+    case "BAD_REQUEST":
+      return "The request was invalid.";
+    case "SERVER_ERROR":
+      return "Server error. Please try again later.";
+    case "ABORTED":
+      return "Request was canceled.";
+    case "UNKNOWN":
+    default:
+      return "Request failed.";
+  }
 }
 
 export class CoreApiClient {
@@ -49,7 +80,7 @@ export class CoreApiClient {
   protected async getJson<TData = unknown>(
     path: string,
     signal?: AbortSignal
-  ): Promise<CoreApiResponse<TData>> {
+  ): Promise<ApiResult<TData>> {
     return this.requestJson<TData>({
       method: "GET",
       path,
@@ -61,7 +92,7 @@ export class CoreApiClient {
     path: string,
     body: unknown,
     signal?: AbortSignal
-  ): Promise<CoreApiResponse<TData>> {
+  ): Promise<ApiResult<TData>> {
     return this.requestJson<TData>({
       method: "POST",
       path,
@@ -73,7 +104,7 @@ export class CoreApiClient {
   async verifyCaptcha(
     captchaToken: string,
     signal?: AbortSignal
-  ): Promise<boolean> {
+  ): Promise<ApiResult<boolean>> {
     const response = await this.postJson(
       CAPTCHA_VERIFY_PATH,
       {
@@ -83,11 +114,19 @@ export class CoreApiClient {
     );
 
     if (!response.ok) {
-      return false;
+      return response;
     }
 
     const payload = this.asObject(response.data);
-    return payload?.success === true;
+    if (payload?.success === true) {
+      return { ok: true, data: true };
+    }
+
+    return {
+      ok: false,
+      errorType: "UNAUTHORIZED",
+      message: "Verification failed.",
+    };
   }
 
   protected asObject(value: unknown): Record<string, unknown> | null {
@@ -108,7 +147,7 @@ export class CoreApiClient {
 
   private async requestJson<TData = unknown>(
     options: RequestJsonOptions
-  ): Promise<CoreApiResponse<TData>> {
+  ): Promise<ApiResult<TData>> {
     try {
       const response = await fetch(this.getUrl(options.path), {
         method: options.method,
@@ -125,25 +164,41 @@ export class CoreApiClient {
         signal: options.signal,
       });
 
+      if (!response.ok) {
+        const errorType = mapHttpStatusToErrorType(response.status);
+        return {
+          ok: false,
+          errorType,
+          message: getErrorMessage(errorType),
+        };
+      }
+
       const data = await this.parseJsonSafe(response);
       return {
-        ok: response.ok,
-        status: response.status,
-        data: data as TData | null,
-        error: response.ok
-          ? undefined
-          : (readErrorMessage(data) ?? "Request failed."),
+        ok: true,
+        data: data as TData,
       };
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
-        throw error;
+        return {
+          ok: false,
+          errorType: "ABORTED",
+          message: getErrorMessage("ABORTED"),
+        };
+      }
+
+      if (error instanceof TypeError) {
+        return {
+          ok: false,
+          errorType: "NETWORK_DOWN",
+          message: getErrorMessage("NETWORK_DOWN"),
+        };
       }
 
       return {
         ok: false,
-        status: 0,
-        data: null,
-        error: "Network request failed.",
+        errorType: "UNKNOWN",
+        message: getErrorMessage("UNKNOWN"),
       };
     }
   }

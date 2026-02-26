@@ -7,7 +7,7 @@ import type {
 } from "../types";
 import { validateYtdlpConfigInput } from "./validation";
 import { YtdlpApiClient } from "./apiClient";
-import { CaptchaManager } from "../../utils/captchaManager";
+import { CaptchaManager } from "../../../utils/captchaManager";
 import { YtdlpToolController } from "./controller";
 import { resolveYtdlpDomRefs } from "./dom";
 import { YTDLP_TOOL_TEMPLATE } from "./template";
