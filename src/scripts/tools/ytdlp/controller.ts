@@ -297,6 +297,8 @@ export class YtdlpToolController {
       return;
     }
 
+    const apiClient = this.apiClient;
+
     const captchaValidation = validateYtdlpActionInput("verify-captcha", {
       backendUrl: this.backendUrl,
       captchaToken: this.captchaManager.getToken(),
@@ -321,7 +323,7 @@ export class YtdlpToolController {
 
     try {
       this.ui.transition("SUBMITTING", "Verifying...");
-      const verifiedResult = await this.apiClient.verifyCaptcha(
+      const verifiedResult = await apiClient.verifyCaptcha(
         captchaValidation.normalized?.captchaToken ?? "",
         signal
       );
@@ -340,7 +342,7 @@ export class YtdlpToolController {
 
       this.ui.transition("SUBMITTING", "Starting download...");
 
-      const enqueueResult = await this.apiClient.enqueue(
+      const enqueueResult = await apiClient.enqueue(
         urlValidation.normalized?.url ?? "",
         signal
       );
@@ -369,10 +371,7 @@ export class YtdlpToolController {
         maxAttempts: MAX_POLL_ATTEMPTS,
         signal,
         step: async () => {
-          const statusResult = await this.apiClient.checkJobStatus(
-            jobId,
-            signal
-          );
+          const statusResult = await apiClient.checkJobStatus(jobId, signal);
 
           if (!statusResult.ok) {
             if (this.handleApiFailure(statusResult) === "silent") {
@@ -395,7 +394,7 @@ export class YtdlpToolController {
       });
 
       if (result === "success") {
-        this.readyDownloadUrl = this.apiClient.getDownloadUrl(jobId);
+        this.readyDownloadUrl = apiClient.getDownloadUrl(jobId);
         this.ui.setPrimaryStage("download");
         this.ui.transition("READY", "Download is ready.");
         return;
