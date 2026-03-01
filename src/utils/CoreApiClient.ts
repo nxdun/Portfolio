@@ -124,6 +124,22 @@ export class CoreApiClient {
     };
   }
 
+  async checkHealth(
+    path = "/health",
+    signal?: AbortSignal
+  ): Promise<ApiResult<boolean>> {
+    const response = await this.getJson(path, signal);
+
+    if (!response.ok) {
+      return response;
+    }
+
+    return {
+      ok: true,
+      data: true,
+    };
+  }
+
   protected errorResultFromStatus<TData = never>(
     status: number
   ): Extract<ApiResult<TData>, { ok: false }> {

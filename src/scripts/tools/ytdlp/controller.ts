@@ -5,13 +5,17 @@ import { validateYtdlpActionInput } from "./validation";
 import { asyncPoll } from "../../../utils/asyncPoll";
 import { YtdlpApiClient } from "./apiClient";
 import { CaptchaManager } from "../../../utils/captchaManager";
-import type { ApiResult } from "../../../utils/CoreApiClient";
+import type { ApiErrorType, ApiResult } from "../../../utils/CoreApiClient";
 import type { YtdlpDomRefs } from "./dom";
 import { YtdlpUiController } from "./uiController";
 import type { CaptchaDialogController } from "../ui/captchaDialog";
 
 const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 60;
+const SERVICE_UNAVAILABLE_MESSAGE =
+  "Download service is currently unavailable due to maintenance. Please try again later.";
+const SERVICE_UNREACHABLE_MESSAGE =
+  "Download service is currently unreachable. It may be under maintenance. Please try again later.";
 
 function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
@@ -39,6 +43,7 @@ export class YtdlpToolController {
 
   private pendingUrl = "";
   private readyJobId: string | null = null;
+  private serviceDisabledMessage: string | null = null;
   private disposed = false;
 
   private readonly refs: YtdlpDomRefs;
@@ -110,13 +115,12 @@ export class YtdlpToolController {
       }
     );
 
+    void this.ensureServiceHealth();
+
     return () => this.destroy();
   }
 
   handleCaptchaSolved(): void {
-    const captchaToken = this.captchaManager?.getToken() ?? "";
-    window["console"]?.info(captchaToken);
-
     this.ui.transition(
       "AWAITING_CAPTCHA",
       "Captcha solved. Click Verify and Continue.",
@@ -165,10 +169,7 @@ export class YtdlpToolController {
     switch (result.errorType) {
       case "NETWORK_DOWN":
       case "SERVER_ERROR":
-        this.ui.transition(
-          "DISABLED",
-          "Service unreachable. Please try later."
-        );
+        this.disableService(result.errorType);
         return "handled";
 
       case "RATE_LIMITED":
@@ -219,6 +220,10 @@ export class YtdlpToolController {
       return;
     }
 
+    if (this.isServiceDisabled()) {
+      return;
+    }
+
     const urlValidation = validateYtdlpActionInput("enqueue", {
       backendUrl: this.backendUrl,
       url: this.refs.inputEl.value,
@@ -248,6 +253,10 @@ export class YtdlpToolController {
       !this.isCaptchaFeatureEnabled
     ) {
       this.ui.transition("DISABLED", this.disabledReason);
+      return;
+    }
+
+    if (this.isServiceDisabled()) {
       return;
     }
 
@@ -292,6 +301,10 @@ export class YtdlpToolController {
       !this.isCaptchaFeatureEnabled
     ) {
       this.ui.transition("DISABLED", this.disabledReason);
+      return;
+    }
+
+    if (this.isServiceDisabled()) {
       return;
     }
 
@@ -411,16 +424,17 @@ export class YtdlpToolController {
     } catch (error) {
       if (!isAbortError(error)) {
         this.readyJobId = null;
-        this.ui.setPrimaryStage("submit");
-        this.ui.transition(
-          "DISABLED",
-          "Service unreachable. Please try later."
-        );
+        this.disableService("NETWORK_DOWN");
       }
     }
   }
 
   private async handleDownloadClick(): Promise<void> {
+    if (this.isServiceDisabled()) {
+      this.ui.setPrimaryStage("submit");
+      return;
+    }
+
     if (!this.apiClient || !this.readyJobId) {
       this.ui.setPrimaryStage("submit");
       this.ui.transition("ERROR", "Download is no longer ready. Submit again.");
@@ -521,6 +535,43 @@ export class YtdlpToolController {
     this.captchaDialog.close();
     this.captchaManager?.reset();
     this.ui.transition("READY", "Fields cleared.");
+  }
+
+  private async ensureServiceHealth(): Promise<void> {
+    if (this.disposed || !this.isCaptchaFeatureEnabled || !this.apiClient) {
+      return;
+    }
+
+    const result = await this.apiClient.checkHealth("/health");
+
+    if (this.disposed) {
+      return;
+    }
+
+    if (!result.ok || !result.data) {
+      this.disableService(result.ok ? undefined : result.errorType);
+    }
+  }
+
+  private isServiceDisabled(): boolean {
+    if (!this.serviceDisabledMessage) {
+      return false;
+    }
+
+    this.ui.transition("DISABLED", this.serviceDisabledMessage);
+    return true;
+  }
+
+  private disableService(errorType?: ApiErrorType): void {
+    this.serviceDisabledMessage =
+      errorType === "NETWORK_DOWN"
+        ? SERVICE_UNREACHABLE_MESSAGE
+        : SERVICE_UNAVAILABLE_MESSAGE;
+
+    this.ui.setPrimaryStage("submit");
+    this.captchaDialog.close();
+    this.captchaManager?.reset();
+    this.ui.transition("DISABLED", this.serviceDisabledMessage);
   }
 
   private beginOperation(): AbortSignal {
