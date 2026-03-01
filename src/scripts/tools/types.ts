@@ -6,7 +6,7 @@ export type Base64ToolOptions = {
   action?: Base64ToolAction;
 };
 
-export type YtdlpToolAction = "verify-captcha" | "enqueue" | "clear";
+export type YtdlpToolAction = "verify-captcha" | "enqueue";
 
 export type YtdlpToolOptions = {
   url?: string;

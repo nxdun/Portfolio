@@ -24,23 +24,10 @@ type ResponseBridge = {
 export class YtdlpUiController {
   private state: YtdlpUiState = "IDLE";
   private primaryStage: PrimaryStage = "submit";
-  private previouslyFocusedElement: HTMLElement | null = null;
-
-  private static readonly focusableSelector = [
-    "a[href]",
-    "area[href]",
-    'input:not([disabled]):not([type="hidden"])',
-    "select:not([disabled])",
-    "textarea:not([disabled])",
-    "button:not([disabled])",
-    "iframe",
-    "object",
-    "embed",
-    '[tabindex]:not([tabindex="-1"])',
-  ].join(",");
 
   constructor(
     private readonly refs: YtdlpDomRefs,
+    private readonly verifyCaptchaBtn: HTMLButtonElement,
     private readonly responseState: ResponseBridge,
     private readonly isCaptchaEnabled: boolean,
     private readonly hasCaptchaToken: () => boolean
@@ -107,99 +94,6 @@ export class YtdlpUiController {
     return this.primaryStage;
   }
 
-  openCaptchaModal(): void {
-    this.previouslyFocusedElement =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
-
-    this.refs.captchaModal.classList.remove("hidden");
-    this.refs.captchaModal.classList.add("flex");
-    this.refs.captchaModal.setAttribute("aria-hidden", "false");
-
-    queueMicrotask(() => {
-      if (this.refs.closeDialogBtn.disabled) {
-        this.refs.captchaModal.focus({ preventScroll: true });
-        return;
-      }
-
-      this.refs.closeDialogBtn.focus({ preventScroll: true });
-    });
-  }
-
-  closeCaptchaModal(): void {
-    this.refs.captchaModal.classList.add("hidden");
-    this.refs.captchaModal.classList.remove("flex");
-    this.refs.captchaModal.setAttribute("aria-hidden", "true");
-
-    const target = this.previouslyFocusedElement;
-    this.previouslyFocusedElement = null;
-
-    if (target && target.isConnected) {
-      target.focus({ preventScroll: true });
-    }
-  }
-
-  handleCaptchaModalKeydown(event: KeyboardEvent): void {
-    if (this.refs.captchaModal.classList.contains("hidden")) {
-      return;
-    }
-
-    if (event.key === "Escape") {
-      event.preventDefault();
-      this.closeCaptchaModal();
-      return;
-    }
-
-    if (event.key !== "Tab") {
-      return;
-    }
-
-    const focusables = this.getFocusableElements();
-    if (focusables.length === 0) {
-      event.preventDefault();
-      this.refs.captchaModal.focus({ preventScroll: true });
-      return;
-    }
-
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    const active = document.activeElement as HTMLElement | null;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus({ preventScroll: true });
-      return;
-    }
-
-    if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus({ preventScroll: true });
-    }
-  }
-
-  private getFocusableElements(): HTMLElement[] {
-    const elements = Array.from(
-      this.refs.captchaModal.querySelectorAll(
-        YtdlpUiController.focusableSelector
-      )
-    ) as HTMLElement[];
-
-    return elements.filter(element => {
-      if (element.getAttribute("aria-hidden") === "true") {
-        return false;
-      }
-
-      if (element.hasAttribute("disabled")) {
-        return false;
-      }
-
-      return (
-        element.offsetParent !== null || element === document.activeElement
-      );
-    });
-  }
-
   transition(
     nextState: YtdlpUiState,
     message: string,
@@ -246,7 +140,7 @@ export class YtdlpUiController {
       this.refs.submitBtn.disabled = true;
     }
 
-    this.refs.verifyCaptchaBtn.disabled =
+    this.verifyCaptchaBtn.disabled =
       isDisabled || isBusy || !this.isCaptchaEnabled || !this.hasCaptchaToken();
 
     this.refs.inputEl.toggleAttribute(

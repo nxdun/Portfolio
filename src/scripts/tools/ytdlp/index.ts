@@ -11,6 +11,7 @@ import { CaptchaManager } from "../../../utils/captchaManager";
 import { YtdlpToolController } from "./controller";
 import { resolveYtdlpDomRefs } from "./dom";
 import { YTDLP_TOOL_TEMPLATE } from "./template";
+import { createCaptchaDialog } from "../ui/captchaDialog";
 
 export function mountYtdlpTool(
   container: HTMLElement,
@@ -28,6 +29,19 @@ export function mountYtdlpTool(
 
   const refs = resolveYtdlpDomRefs(container);
   if (!refs) {
+    return () => {};
+  }
+
+  const captchaDialog = createCaptchaDialog(container, {
+    idPrefix: "ytdlp",
+    labels: {
+      title: "Captcha Verification",
+      description: "Confirm you are human to start download",
+      verifyButtonText: "Verify and Continue",
+    },
+  });
+
+  if (!captchaDialog) {
     return () => {};
   }
 
@@ -64,7 +78,7 @@ export function mountYtdlpTool(
 
   const captchaManager = configValidation.isValid
     ? new CaptchaManager({
-        host: refs.captchaHostEl,
+        host: captchaDialog.refs.captchaHostEl,
         siteKey: configValidation.normalized.recaptchaSiteKey,
         onSolved: () => {
           controller?.handleCaptchaSolved();
@@ -92,6 +106,7 @@ export function mountYtdlpTool(
       : undefined,
     apiClient,
     captchaManager,
+    captchaDialog,
   });
 
   return controller.init();

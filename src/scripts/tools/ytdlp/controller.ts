@@ -8,6 +8,7 @@ import { CaptchaManager } from "../../../utils/captchaManager";
 import type { ApiResult } from "../../../utils/CoreApiClient";
 import type { YtdlpDomRefs } from "./dom";
 import { YtdlpUiController } from "./uiController";
+import type { CaptchaDialogController } from "../ui/captchaDialog";
 
 const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 60;
@@ -26,6 +27,7 @@ export type YtdlpControllerConfig = {
   backendUrl?: string;
   apiClient?: YtdlpApiClient;
   captchaManager?: CaptchaManager;
+  captchaDialog: CaptchaDialogController;
 };
 
 export class YtdlpToolController {
@@ -36,7 +38,7 @@ export class YtdlpToolController {
   private activeAbortController: AbortController | null = null;
 
   private pendingUrl = "";
-  private readyDownloadUrl: string | null = null;
+  private readyJobId: string | null = null;
   private disposed = false;
 
   private readonly refs: YtdlpDomRefs;
@@ -48,6 +50,7 @@ export class YtdlpToolController {
   private readonly backendUrl?: string;
   private readonly apiClient?: YtdlpApiClient;
   private readonly captchaManager?: CaptchaManager;
+  private readonly captchaDialog: CaptchaDialogController;
 
   constructor(config: YtdlpControllerConfig) {
     this.refs = config.refs;
@@ -59,6 +62,7 @@ export class YtdlpToolController {
     this.backendUrl = config.backendUrl;
     this.apiClient = config.apiClient;
     this.captchaManager = config.captchaManager;
+    this.captchaDialog = config.captchaDialog;
 
     this.responseDock = createToolResponseDock(this.responseHost, {
       title: "YouTube Downloader Response",
@@ -73,6 +77,7 @@ export class YtdlpToolController {
 
     this.ui = new YtdlpUiController(
       this.refs,
+      this.captchaDialog.refs.verifyBtn,
       {
         setDockState: (state, message, options) => {
           this.responseDock.setState(state, message, options);
@@ -109,6 +114,9 @@ export class YtdlpToolController {
   }
 
   handleCaptchaSolved(): void {
+    const captchaToken = this.captchaManager?.getToken() ?? "";
+    window["console"]?.info(captchaToken);
+
     this.ui.transition(
       "AWAITING_CAPTCHA",
       "Captcha solved. Click Verify and Continue.",
@@ -139,22 +147,8 @@ export class YtdlpToolController {
       this.clearForm();
     });
 
-    this.addEventListener(this.refs.verifyCaptchaBtn, "click", () => {
+    this.addEventListener(this.captchaDialog.refs.verifyBtn, "click", () => {
       void this.handleVerifyCaptchaClick();
-    });
-
-    this.addEventListener(this.refs.closeDialogBtn, "click", () => {
-      this.ui.closeCaptchaModal();
-    });
-
-    this.addEventListener(this.refs.captchaModal, "keydown", event => {
-      this.ui.handleCaptchaModalKeydown(event as KeyboardEvent);
-    });
-
-    this.addEventListener(this.refs.captchaModal, "click", event => {
-      if (event.target === this.refs.captchaModal) {
-        this.ui.closeCaptchaModal();
-      }
     });
   }
 
@@ -220,9 +214,8 @@ export class YtdlpToolController {
       return;
     }
 
-    if (stage === "download" && this.readyDownloadUrl) {
-      window.open(this.readyDownloadUrl, "_blank", "noopener,noreferrer");
-      this.ui.transition("READY", "Download started.");
+    if (stage === "download" && this.readyJobId) {
+      await this.handleDownloadClick();
       return;
     }
 
@@ -242,7 +235,7 @@ export class YtdlpToolController {
     }
 
     this.pendingUrl = urlValidation.normalized?.url ?? this.refs.inputEl.value;
-    this.readyDownloadUrl = null;
+    this.readyJobId = null;
     this.ui.setPrimaryStage("submit");
 
     await this.openCaptchaDialog();
@@ -258,7 +251,7 @@ export class YtdlpToolController {
       return;
     }
 
-    this.ui.openCaptchaModal();
+    this.captchaDialog.open();
     this.ui.transition("LOADING_CAPTCHA", "Loading verification challenge...");
 
     const signal = this.beginOperation();
@@ -325,35 +318,23 @@ export class YtdlpToolController {
     }
 
     const signal = this.beginOperation();
+    const captchaToken = captchaValidation.normalized?.captchaToken ?? "";
 
     try {
-      this.ui.transition("SUBMITTING", "Verifying...");
-      const verifiedResult = await apiClient.verifyCaptcha(
-        captchaValidation.normalized?.captchaToken ?? "",
-        signal
-      );
-
-      if (!verifiedResult.ok) {
-        if (
-          this.handleApiFailure(verifiedResult, {
-            shouldResetCaptcha: true,
-          }) === "silent"
-        ) {
-          return;
-        }
-
-        return;
-      }
-
       this.ui.transition("SUBMITTING", "Starting download...");
 
       const enqueueResult = await apiClient.enqueue(
         urlValidation.normalized?.url ?? "",
+        captchaToken,
         signal
       );
 
       if (!enqueueResult.ok) {
-        if (this.handleApiFailure(enqueueResult) === "silent") {
+        if (
+          this.handleApiFailure(enqueueResult, {
+            shouldResetCaptcha: true,
+          }) === "silent"
+        ) {
           return;
         }
 
@@ -365,9 +346,9 @@ export class YtdlpToolController {
       this.refs.inputEl.value =
         urlValidation.normalized?.url ?? this.refs.inputEl.value;
       this.captchaManager.reset();
-      this.ui.closeCaptchaModal();
+      this.captchaDialog.close();
 
-      this.readyDownloadUrl = null;
+      this.readyJobId = null;
       this.ui.setPrimaryStage("pending");
       this.ui.transition("POLLING", "Downloading... Please wait.");
 
@@ -379,7 +360,11 @@ export class YtdlpToolController {
           const statusResult = await apiClient.checkJobStatus(jobId, signal);
 
           if (!statusResult.ok) {
-            if (this.handleApiFailure(statusResult) === "silent") {
+            if (
+              this.handleApiFailure(statusResult, {
+                shouldResetCaptcha: true,
+              }) === "silent"
+            ) {
               return { done: true, value: "handled-error" };
             }
 
@@ -399,22 +384,25 @@ export class YtdlpToolController {
       });
 
       if (result === "success") {
-        this.readyDownloadUrl = apiClient.getDownloadUrl(jobId);
+        this.readyJobId = jobId;
         this.ui.setPrimaryStage("download");
         this.ui.transition("READY", "Download is ready.");
         return;
       }
 
       if (result === "fail") {
+        this.readyJobId = null;
         this.ui.setPrimaryStage("submit");
         this.ui.transition("ERROR", "Download failed. Try another URL.");
         return;
       }
 
       if (result === "handled-error") {
+        this.readyJobId = null;
         return;
       }
 
+      this.readyJobId = null;
       this.ui.setPrimaryStage("submit");
       this.ui.transition(
         "ERROR",
@@ -422,6 +410,7 @@ export class YtdlpToolController {
       );
     } catch (error) {
       if (!isAbortError(error)) {
+        this.readyJobId = null;
         this.ui.setPrimaryStage("submit");
         this.ui.transition(
           "DISABLED",
@@ -429,6 +418,63 @@ export class YtdlpToolController {
         );
       }
     }
+  }
+
+  private async handleDownloadClick(): Promise<void> {
+    if (!this.apiClient || !this.readyJobId) {
+      this.ui.setPrimaryStage("submit");
+      this.ui.transition("ERROR", "Download is no longer ready. Submit again.");
+      return;
+    }
+
+    const signal = this.beginOperation();
+
+    this.ui.transition("SUBMITTING", "Preparing file download...");
+
+    const downloadResult = await this.apiClient.downloadFile(
+      this.readyJobId,
+      signal
+    );
+
+    if (!downloadResult.ok) {
+      this.readyJobId = null;
+
+      if (
+        this.handleApiFailure(downloadResult, {
+          shouldResetCaptcha: true,
+        }) === "silent"
+      ) {
+        return;
+      }
+
+      return;
+    }
+
+    this.triggerBrowserDownload(
+      downloadResult.data.blob,
+      downloadResult.data.fileName
+    );
+
+    this.readyJobId = null;
+    this.ui.setPrimaryStage("submit");
+    this.ui.transition("READY", "Download started.");
+  }
+
+  private triggerBrowserDownload(blob: Blob, fileName: string): void {
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = objectUrl;
+    anchor.download = fileName;
+    anchor.rel = "noopener";
+
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(objectUrl);
+    }, 5000);
   }
 
   private async handlePasteClick(): Promise<void> {
@@ -470,9 +516,9 @@ export class YtdlpToolController {
     this.abortActiveOperation();
     this.refs.inputEl.value = "";
     this.pendingUrl = "";
-    this.readyDownloadUrl = null;
+    this.readyJobId = null;
     this.ui.setPrimaryStage("submit");
-    this.ui.closeCaptchaModal();
+    this.captchaDialog.close();
     this.captchaManager?.reset();
     this.ui.transition("READY", "Fields cleared.");
   }
@@ -511,7 +557,8 @@ export class YtdlpToolController {
     this.cleanupCallbacks.forEach(cleanup => cleanup());
     this.cleanupCallbacks.length = 0;
     this.captchaManager?.dispose();
-    this.ui.closeCaptchaModal();
+    this.captchaDialog.close();
+    this.captchaDialog.destroy();
     this.responseDock.clear();
 
     if (this.toolViewPanel) {

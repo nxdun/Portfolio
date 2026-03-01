@@ -173,10 +173,6 @@ export function validateYtdlpActionInput(
   action: YtdlpToolAction,
   input: YtdlpActionInput
 ): YtdlpActionValidationResult {
-  if (action === "clear") {
-    return { isValid: true };
-  }
-
   const backendUrl = sanitizeText(input.backendUrl, {
     maxLength: YTDLP_BACKEND_URL_MAX_LENGTH,
     preserveWhitespace: false,

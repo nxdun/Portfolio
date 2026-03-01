@@ -46,50 +46,5 @@ export const YTDLP_TOOL_TEMPLATE = `
         Submit Download
       </button>
     </div>
-
-    <div
-      id="ytdlp-captcha-modal"
-      aria-hidden="true"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="ytdlp-captcha-title"
-      aria-describedby="ytdlp-captcha-description"
-      tabindex="-1"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4 backdrop:backdrop-blur-sm"
-    >
-      <section class="w-full max-w-xl overflow-visible rounded-xl border border-border bg-background p-0 text-foreground shadow-2xl outline-none">
-        <div class="flex h-full max-h-full flex-col">
-          <div class="sticky top-0 z-10 rounded-t-xl border-b border-border bg-background px-6 py-4">
-            <div class="flex items-start justify-between">
-              <div class="mr-4">
-                <h2 id="ytdlp-captcha-title" class="text-xl font-bold text-accent sm:text-2xl">Captcha Verification</h2>
-                <div id="ytdlp-captcha-description" class="mt-1 text-sm text-foreground/70">Confirm you are human to start download</div>
-              </div>
-
-              <button
-                id="ytdlp-dialog-close"
-                type="button"
-                class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
-                aria-label="Close modal"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-
-          <div class="flex-1 space-y-4 overflow-visible p-6">
-            <div id="ytdlp-captcha-host" class="min-h-20 flex justify-center overflow-visible"></div>
-            <button
-              id="ytdlp-verify-captcha"
-              type="button"
-              class="h-10 w-full rounded-lg border border-accent/70 bg-accent/5 px-4 text-sm font-semibold text-accent transition-all hover:bg-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
-              disabled
-            >
-              Verify and Continue
-            </button>
-          </div>
-        </div>
-      </section>
-    </div>
   </section>
 `;

@@ -1,10 +1,13 @@
 type RequestMethod = "GET" | "POST";
 
+export const CAPTCHA_TOKEN_HEADER = "x-captcha-token";
+
 type RequestJsonOptions = {
   method: RequestMethod;
   path: string;
   body?: unknown;
   signal?: AbortSignal;
+  headers?: Record<string, string>;
 };
 
 export type ApiErrorType =
@@ -19,8 +22,6 @@ export type ApiErrorType =
 export type ApiResult<TData> =
   | { ok: true; data: TData }
   | { ok: false; errorType: ApiErrorType; message: string };
-
-const CAPTCHA_VERIFY_PATH = "/api/v1/captcha/verify";
 
 function normalizeBaseUrl(value: string): string {
   return value.replace(/\/+$/, "");
@@ -79,54 +80,30 @@ export class CoreApiClient {
 
   protected async getJson<TData = unknown>(
     path: string,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    headers?: Record<string, string>
   ): Promise<ApiResult<TData>> {
     return this.requestJson<TData>({
       method: "GET",
       path,
       signal,
+      headers,
     });
   }
 
   protected async postJson<TData = unknown>(
     path: string,
     body: unknown,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    headers?: Record<string, string>
   ): Promise<ApiResult<TData>> {
     return this.requestJson<TData>({
       method: "POST",
       path,
       body,
       signal,
+      headers,
     });
-  }
-
-  async verifyCaptcha(
-    captchaToken: string,
-    signal?: AbortSignal
-  ): Promise<ApiResult<boolean>> {
-    const response = await this.postJson(
-      CAPTCHA_VERIFY_PATH,
-      {
-        captcha: captchaToken,
-      },
-      signal
-    );
-
-    if (!response.ok) {
-      return response;
-    }
-
-    const payload = this.asObject(response.data);
-    if (payload?.success === true) {
-      return { ok: true, data: true };
-    }
-
-    return {
-      ok: false,
-      errorType: "UNAUTHORIZED",
-      message: "Verification failed.",
-    };
   }
 
   protected asObject(value: unknown): Record<string, unknown> | null {
@@ -141,6 +118,23 @@ export class CoreApiClient {
     return this.getUrl(path);
   }
 
+  protected getCaptchaHeaders(captchaToken: string): Record<string, string> {
+    return {
+      [CAPTCHA_TOKEN_HEADER]: captchaToken,
+    };
+  }
+
+  protected errorResultFromStatus<TData = never>(
+    status: number
+  ): Extract<ApiResult<TData>, { ok: false }> {
+    const errorType = mapHttpStatusToErrorType(status);
+    return {
+      ok: false,
+      errorType,
+      message: getErrorMessage(errorType),
+    };
+  }
+
   private getUrl(path: string): string {
     return `${this.baseUrl}${normalizePath(path)}`;
   }
@@ -149,14 +143,18 @@ export class CoreApiClient {
     options: RequestJsonOptions
   ): Promise<ApiResult<TData>> {
     try {
+      const headers: Record<string, string> = {
+        ...(options.method === "POST"
+          ? {
+              "Content-Type": "application/json",
+            }
+          : {}),
+        ...(options.headers ?? {}),
+      };
+
       const response = await fetch(this.getUrl(options.path), {
         method: options.method,
-        headers:
-          options.method === "POST"
-            ? {
-                "Content-Type": "application/json",
-              }
-            : undefined,
+        headers: Object.keys(headers).length > 0 ? headers : undefined,
         body:
           options.method === "POST" && options.body !== undefined
             ? JSON.stringify(options.body)
@@ -165,12 +163,7 @@ export class CoreApiClient {
       });
 
       if (!response.ok) {
-        const errorType = mapHttpStatusToErrorType(response.status);
-        return {
-          ok: false,
-          errorType,
-          message: getErrorMessage(errorType),
-        };
+        return this.errorResultFromStatus(response.status);
       }
 
       const data = await this.parseJsonSafe(response);

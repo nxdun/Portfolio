@@ -7,6 +7,11 @@ const YTDLP_DOWNLOAD_PATH = "/api/v1/ytdlp/download";
 
 export type YtdlpJobState = "pending" | "success" | "fail" | "unknown";
 
+export type YtdlpDownloadFile = {
+  blob: Blob;
+  fileName: string;
+};
+
 function readStatus(job: Record<string, unknown>): string {
   return (
     sanitizeText(typeof job.status === "string" ? job.status : null, {
@@ -17,7 +22,11 @@ function readStatus(job: Record<string, unknown>): string {
 }
 
 export class YtdlpApiClient extends CoreApiClient {
-  async enqueue(url: string, signal?: AbortSignal): Promise<ApiResult<string>> {
+  async enqueue(
+    url: string,
+    captchaToken: string,
+    signal?: AbortSignal
+  ): Promise<ApiResult<string>> {
     const response = await this.postJson(
       YTDLP_ENQUEUE_PATH,
       {
@@ -25,7 +34,8 @@ export class YtdlpApiClient extends CoreApiClient {
         quality: "best",
         format: "mp4",
       },
-      signal
+      signal,
+      this.getCaptchaHeaders(captchaToken)
     );
 
     if (!response.ok) {
@@ -92,9 +102,79 @@ export class YtdlpApiClient extends CoreApiClient {
     return { ok: true, data: "pending" };
   }
 
-  getDownloadUrl(jobId: string): string {
-    return this.resolveUrl(
-      `${YTDLP_DOWNLOAD_PATH}/${encodeURIComponent(jobId)}`
-    );
+  async downloadFile(
+    jobId: string,
+    signal?: AbortSignal
+  ): Promise<ApiResult<YtdlpDownloadFile>> {
+    try {
+      const response = await fetch(
+        this.resolveUrl(`${YTDLP_DOWNLOAD_PATH}/${encodeURIComponent(jobId)}`),
+        {
+          method: "GET",
+          signal,
+        }
+      );
+
+      if (!response.ok) {
+        return this.errorResultFromStatus(response.status);
+      }
+
+      const blob = await response.blob();
+      const contentDisposition = response.headers.get("content-disposition");
+      const fileName =
+        this.extractFileName(contentDisposition) ?? `${jobId}.mp4`;
+
+      return {
+        ok: true,
+        data: {
+          blob,
+          fileName,
+        },
+      };
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return {
+          ok: false,
+          errorType: "ABORTED",
+          message: "Request was canceled.",
+        };
+      }
+
+      if (error instanceof TypeError) {
+        return {
+          ok: false,
+          errorType: "NETWORK_DOWN",
+          message: "Service unreachable.",
+        };
+      }
+
+      return {
+        ok: false,
+        errorType: "UNKNOWN",
+        message: "Request failed.",
+      };
+    }
+  }
+  private extractFileName(contentDisposition: string | null): string | null {
+    const text = sanitizeText(contentDisposition, {
+      maxLength: 512,
+      preserveWhitespace: false,
+    });
+
+    if (!text) {
+      return null;
+    }
+
+    const utf8Match = text.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utf8Match?.[1]) {
+      try {
+        return decodeURIComponent(utf8Match[1]);
+      } catch {
+        return utf8Match[1];
+      }
+    }
+
+    const fileNameMatch = text.match(/filename="?([^";]+)"?/i);
+    return fileNameMatch?.[1] ?? null;
   }
 }
