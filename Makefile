@@ -3,7 +3,7 @@
 .PRECIOUS: $(DIST_DIR)/.build-timestamp $(NODE_MODULES)/.install-timestamp
 
 MAKEFLAGS += --warn-undefined-variables
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := dev
 
 PROJECT_NAME ?= $(shell node -e "console.log(require('./package.json').name)")
 PROJECT_VERSION ?= $(shell node -e "console.log(require('./package.json').version)")

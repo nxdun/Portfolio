@@ -1,23 +1,30 @@
 const BASE64_TABLE =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+// note: Precompute reverse lookup for O(1) decoding
+const REVERSE_LOOKUP = new Uint8Array(256);
+for (let i = 0; i < BASE64_TABLE.length; i++) {
+  REVERSE_LOOKUP[BASE64_TABLE.charCodeAt(i)] = i;
+}
+
 export function encodeBase64(value: string): string {
   if (!value) return "";
 
   const bytes = new TextEncoder().encode(value);
   let output = "";
+  const len = bytes.length;
 
-  for (let i = 0; i < bytes.length; i += 3) {
-    const first = bytes[i] ?? 0;
-    const second = bytes[i + 1] ?? 0;
-    const third = bytes[i + 2] ?? 0;
+  for (let i = 0; i < len; i += 3) {
+    const first = bytes[i];
+    const second = i + 1 < len ? bytes[i + 1] : 0;
+    const third = i + 2 < len ? bytes[i + 2] : 0;
 
     const chunk = (first << 16) | (second << 8) | third;
 
     output += BASE64_TABLE[(chunk >> 18) & 63];
     output += BASE64_TABLE[(chunk >> 12) & 63];
-    output += i + 1 < bytes.length ? BASE64_TABLE[(chunk >> 6) & 63] : "=";
-    output += i + 2 < bytes.length ? BASE64_TABLE[chunk & 63] : "=";
+    output += i + 1 < len ? BASE64_TABLE[(chunk >> 6) & 63] : "=";
+    output += i + 2 < len ? BASE64_TABLE[chunk & 63] : "=";
   }
 
   return output;
@@ -35,33 +42,29 @@ export function decodeBase64(value: string): string {
     throw new Error("Invalid Base64 characters");
   }
 
-  const bytes: number[] = [];
+  // pre-allocate Uint8Array
+  let padding = 0;
+  if (normalized.endsWith("==")) padding = 2;
+  else if (normalized.endsWith("=")) padding = 1;
+
+  const byteLength = (normalized.length * 3) / 4 - padding;
+  const bytes = new Uint8Array(byteLength);
+  let byteIndex = 0;
 
   for (let i = 0; i < normalized.length; i += 4) {
-    const chars = normalized.slice(i, i + 4);
-    const sextets = chars.split("").map(char => {
-      if (char === "=") return 64;
-      const index = BASE64_TABLE.indexOf(char);
-      if (index < 0) {
-        throw new Error("Invalid Base64 character");
-      }
-      return index;
-    });
+    const a = REVERSE_LOOKUP[normalized.charCodeAt(i)];
+    const b = REVERSE_LOOKUP[normalized.charCodeAt(i + 1)];
+    const cCode = normalized.charCodeAt(i + 2);
+    const dCode = normalized.charCodeAt(i + 3);
 
-    const [a, b, c, d] = sextets;
+    // 61 is '='
+    const c = cCode === 61 ? 0 : REVERSE_LOOKUP[cCode];
+    const d = dCode === 61 ? 0 : REVERSE_LOOKUP[dCode];
 
-    bytes.push((a << 2) | (b >> 4));
-
-    if (c !== 64) {
-      bytes.push(((b & 15) << 4) | (c >> 2));
-    }
-
-    if (d !== 64) {
-      bytes.push(((c & 3) << 6) | d);
-    }
+    bytes[byteIndex++] = (a << 2) | (b >> 4);
+    if (cCode !== 61) bytes[byteIndex++] = ((b & 15) << 4) | (c >> 2);
+    if (dCode !== 61) bytes[byteIndex++] = ((c & 3) << 6) | d;
   }
 
-  return new TextDecoder("utf-8", { fatal: true }).decode(
-    Uint8Array.from(bytes)
-  );
+  return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
 }
