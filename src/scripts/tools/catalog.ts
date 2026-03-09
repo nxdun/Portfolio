@@ -5,6 +5,12 @@ export const TOOL_CATALOG = [
     description: "Encode / Decode",
     subtitle: "Encode plain text or decode Base64 values.",
   },
+  {
+    key: "ytdlp",
+    title: "YouTube Downloader",
+    description: "Queue video download",
+    subtitle: "Submit a YouTube video URL after reCAPTCHA verification.",
+  },
 ] as const;
 
 export type ToolCatalogItem = (typeof TOOL_CATALOG)[number];

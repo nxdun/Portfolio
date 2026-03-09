@@ -7,6 +7,8 @@ import {
 import type { ToolMount, ToolMountOptions } from "./types";
 import { mountBase64Tool } from "./base64";
 import { getBase64MountOptions } from "./base64/urlOptions";
+import { mountYtdlpTool } from "./ytdlp";
+import { getYtdlpMountOptions } from "./ytdlp/urlOptions";
 import { getQueryTextParam, sanitizeSafeToken } from "./validation";
 
 type ToolUrlOptionsResolver = (params: URLSearchParams) => ToolMountOptions;
@@ -18,12 +20,14 @@ export type ToolDefinition = ToolCatalogItem & {
 
 const TOOL_LOADERS: Record<ToolKey, ToolDefinition["loadMount"]> = {
   base64: async () => mountBase64Tool,
+  ytdlp: async () => mountYtdlpTool,
 };
 
 const TOOL_URL_OPTIONS_RESOLVERS: Partial<
   Record<ToolKey, ToolUrlOptionsResolver>
 > = {
   base64: getBase64MountOptions,
+  ytdlp: getYtdlpMountOptions,
 };
 
 function createToolDefinition(item: ToolCatalogItem): ToolDefinition {

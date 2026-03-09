@@ -1,6 +1,6 @@
 import { TOOL_REGISTRY, getInitialToolKey, isToolKey } from "./registry";
 import { TOOL_CATALOG, type ToolKey } from "./catalog";
-import type { ToolMount } from "./types";
+import type { ToolMount, ToolTeardown } from "./types";
 import { sanitizeSafeToken } from "./validation";
 import { SITE } from "@/config";
 
@@ -8,7 +8,7 @@ function replaceUrlToolParam(toolKey: ToolKey): void {
   const url = new URL(window.location.href);
   url.searchParams.set("tool", toolKey);
   window.history.replaceState(
-    {},
+    { ...window.history.state },
     "",
     `${url.pathname}${url.search}${url.hash}`
   );
@@ -72,6 +72,7 @@ export function initToolsWorkbench(): void {
 
   let currentTool: ToolKey | null = null;
   let loadRequestId = 0;
+  let activeTeardown: ToolTeardown | null = null;
   const mountCache = new Map<ToolKey, ToolMount>();
   const buttonsByTool = new Map<ToolKey, HTMLButtonElement[]>();
   let activeButtons: HTMLButtonElement[] = [];
@@ -127,6 +128,11 @@ export function initToolsWorkbench(): void {
     subtitleEl.textContent = definition.subtitle;
     replaceUrlToolParam(toolKey);
 
+    if (activeTeardown) {
+      activeTeardown();
+      activeTeardown = null;
+    }
+
     host.innerHTML = '<p class="text-sm opacity-80">Loading tool...</p>';
     responseHost.innerHTML = "";
     responseHost.classList.add("hidden");
@@ -140,11 +146,15 @@ export function initToolsWorkbench(): void {
     mountCache.set(toolKey, mountTool);
 
     if (options?.useUrlMountOptions && definition.getMountOptions) {
-      mountTool(host, definition.getMountOptions(params), { responseHost });
+      const teardown = mountTool(host, definition.getMountOptions(params), {
+        responseHost,
+      });
+      activeTeardown = typeof teardown === "function" ? teardown : null;
       return;
     }
 
-    mountTool(host, undefined, { responseHost });
+    const teardown = mountTool(host, undefined, { responseHost });
+    activeTeardown = typeof teardown === "function" ? teardown : null;
   };
 
   selectorList?.addEventListener("click", event => {
