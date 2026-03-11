@@ -368,8 +368,43 @@ const defaultTool = TOOL_CATALOG.find(
 <script>
   import { initToolsWorkbench } from "@/scripts/tools/workbench";
 
+  const BOOT_RETRY_DELAY_MS = 80;
+  const BOOT_MAX_ATTEMPTS = 30;
+
+  let bootTimer: number | null = null;
+  let bootAttempt = 0;
+
+  const clearBootTimer = () => {
+    if (bootTimer !== null) {
+      window.clearTimeout(bootTimer);
+      bootTimer = null;
+    }
+  };
+
+  const attemptWorkbenchStart = () => {
+    const mounted = initToolsWorkbench();
+    if (mounted) {
+      clearBootTimer();
+      return;
+    }
+
+    if (bootAttempt >= BOOT_MAX_ATTEMPTS) {
+      clearBootTimer();
+      return;
+    }
+
+    bootAttempt += 1;
+    bootTimer = window.setTimeout(attemptWorkbenchStart, BOOT_RETRY_DELAY_MS);
+  };
+
   const startWorkbench = () => {
-    initToolsWorkbench();
+    bootAttempt = 0;
+    clearBootTimer();
+
+    // Start after current render tasks; retries handle delayed DOM hydration/swaps.
+    window.requestAnimationFrame(() => {
+      attemptWorkbenchStart();
+    });
   };
 
   if (document.readyState === "loading") {
@@ -380,5 +415,6 @@ const defaultTool = TOOL_CATALOG.find(
     startWorkbench();
   }
 
+  document.addEventListener("astro:after-swap", startWorkbench);
   document.addEventListener("astro:page-load", startWorkbench);
 </script>

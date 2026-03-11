@@ -14,7 +14,7 @@ function replaceUrlToolParam(toolKey: ToolKey): void {
   );
 }
 
-export function initToolsWorkbench(): void {
+export function initToolsWorkbench(): boolean {
   const workbench = document.querySelector(
     "#tools-workbench"
   ) as HTMLElement | null;
@@ -60,11 +60,11 @@ export function initToolsWorkbench(): void {
     !subtitleEl ||
     !toggleBtn
   ) {
-    return;
+    return false;
   }
 
   if (workbench.dataset.initialized === "true") {
-    return;
+    return true;
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -212,4 +212,5 @@ export function initToolsWorkbench(): void {
   }
 
   workbench.dataset.initialized = "true";
+  return true;
 }
