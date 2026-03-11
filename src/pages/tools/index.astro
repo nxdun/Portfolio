@@ -368,8 +368,70 @@ const defaultTool = TOOL_CATALOG.find(
 <script>
   import { initToolsWorkbench } from "@/scripts/tools/workbench";
 
+  const BOOT_RETRY_DELAY_MS = 80;
+  const BOOT_MAX_ATTEMPTS = 30;
+  const WORKBENCH_SELECTOR = "#tools-workbench";
+
+  let bootTimer: number | null = null;
+  let bootAttempt = 0;
+
+  const hasWorkbench = (): boolean =>
+    document.querySelector(WORKBENCH_SELECTOR) !== null;
+
+  const clearBootTimer = () => {
+    if (bootTimer !== null) {
+      window.clearTimeout(bootTimer);
+      bootTimer = null;
+    }
+  };
+
+  const attemptWorkbenchStart = () => {
+    if (!hasWorkbench()) {
+      clearBootTimer();
+      return;
+    }
+
+    const mounted = initToolsWorkbench();
+    if (mounted) {
+      clearBootTimer();
+      return;
+    }
+
+    if (bootAttempt >= BOOT_MAX_ATTEMPTS) {
+      clearBootTimer();
+      return;
+    }
+
+    bootAttempt += 1;
+    bootTimer = window.setTimeout(attemptWorkbenchStart, BOOT_RETRY_DELAY_MS);
+  };
+
   const startWorkbench = () => {
-    initToolsWorkbench();
+    if (!hasWorkbench()) {
+      clearBootTimer();
+      return;
+    }
+
+    bootAttempt = 0;
+    clearBootTimer();
+
+    window.requestAnimationFrame(() => {
+      if (!hasWorkbench()) {
+        clearBootTimer();
+        return;
+      }
+
+      attemptWorkbenchStart();
+    });
+  };
+
+  const cleanupWorkbenchBoot = () => {
+    clearBootTimer();
+
+    document.removeEventListener("DOMContentLoaded", startWorkbench);
+    document.removeEventListener("astro:after-swap", startWorkbench);
+    document.removeEventListener("astro:page-load", startWorkbench);
+    document.removeEventListener("astro:before-swap", cleanupWorkbenchBoot);
   };
 
   if (document.readyState === "loading") {
@@ -380,5 +442,7 @@ const defaultTool = TOOL_CATALOG.find(
     startWorkbench();
   }
 
+  document.addEventListener("astro:after-swap", startWorkbench);
   document.addEventListener("astro:page-load", startWorkbench);
+  document.addEventListener("astro:before-swap", cleanupWorkbenchBoot);
 </script>
