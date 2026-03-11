@@ -401,7 +401,6 @@ const defaultTool = TOOL_CATALOG.find(
     bootAttempt = 0;
     clearBootTimer();
 
-    // Start after current render tasks; retries handle delayed DOM hydration/swaps.
     window.requestAnimationFrame(() => {
       attemptWorkbenchStart();
     });
