@@ -24,7 +24,6 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
   - Added Cloudflare WARP Tunnel For Outbound Requests.
     - Implement SOCKS proxy support.
 
-
 ## v0.1.0 - 2024-03-01
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/3" target="_blank"><code>#3</code></a>[DevOps] Add GHCR publishing and DigitalOcean Terraform infrastructure

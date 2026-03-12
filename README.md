@@ -18,6 +18,7 @@ Achieves near-perfect PageSpeed scores with heavily chunked CSS and optimized DO
 ## Modular Tool Workspace
 
 A mobile-responsive, built-in developer toolkit:
+
 - **YouTube Downloader:** Securely fetch MP4s and Shorts with reCAPTCHA.
 - **Base64 Toolkit:** Fast encoder/decoder with a streamlined UI.
 - **Quick Execution:** Run tools instantly via URL query parameters.
@@ -34,15 +35,15 @@ Rebuilt for stability and ease of use with **Astro + TypeScript**, managed by `p
 
 ## Tech Stack
 
-| Layer | Tool |
-|---|---|
-| **Framework** | [Astro](https://astro.build/) |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) |
-| **Styling** | [TailwindCSS](https://tailwindcss.com/) |
-| **Search** | [Pagefind](https://pagefind.app/) |
-| **Icons** | [Icones](https://icones.js.org/) |
-| **Formatting** | [Prettier](https://prettier.io/) |
-| **Linting** | [ESLint](https://eslint.org) |
+| Layer          | Tool                                              |
+| -------------- | ------------------------------------------------- |
+| **Framework**  | [Astro](https://astro.build/)                     |
+| **Language**   | [TypeScript](https://www.typescriptlang.org/)     |
+| **Styling**    | [TailwindCSS](https://tailwindcss.com/)           |
+| **Search**     | [Pagefind](https://pagefind.app/)                 |
+| **Icons**      | [Icones](https://icones.js.org/)                  |
+| **Formatting** | [Prettier](https://prettier.io/)                  |
+| **Linting**    | [ESLint](https://eslint.org)                      |
 | **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/) |
 
 ---
@@ -57,3 +58,4 @@ brew install make
 
 # Windows
 choco install make
+```
