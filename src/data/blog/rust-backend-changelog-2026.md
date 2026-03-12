@@ -16,7 +16,16 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 
 - _Separate CAPTCHA Verification endpoint_
 
-## v0.1.0 - 2024-01-01
+## v0.1.1 - 2024-03-12
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/4" target="_blank"><code>#4</code></a>[feat(core)] Add build caching and SOCKS proxy support
+  - Add GitHub Actions caching layer, improving build speed by over 440%.
+  - Updated DockerImage With Fixed Issues and Optimized Caching.
+  - Added Cloudflare WARP Tunnel For Outbound Requests.
+    - Implement SOCKS proxy support.
+
+
+## v0.1.0 - 2024-03-01
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/3" target="_blank"><code>#3</code></a>[DevOps] Add GHCR publishing and DigitalOcean Terraform infrastructure
   - Complete CI Validation per Commit
