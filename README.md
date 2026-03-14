@@ -50,7 +50,7 @@ Rebuilt for stability and ease of use with **Astro + TypeScript**, managed by `p
 
 ## ⚙️ Running Locally
 
-> Requires `make`. Install it first if you haven't:
+> Requires `make`. Install it first if you haven't: Check MakeFile for available commands.
 
 ```bash
 # macOS
