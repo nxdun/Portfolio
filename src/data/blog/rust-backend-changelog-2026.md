@@ -23,6 +23,8 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
   - Updated DockerImage With Fixed Issues and Optimized Caching.
   - Added Cloudflare WARP Tunnel For Outbound Requests.
     - Implement SOCKS proxy support.
+  - Production Infrastructure Run on Docker Compose with WARP Tunnel for outbound traffic.
+  - ENFORCED Capital ENV Variable Names for Interoperability.
 
 ## v0.1.0 - 2024-03-01
 
