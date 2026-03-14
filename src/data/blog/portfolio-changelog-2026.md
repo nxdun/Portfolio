@@ -18,6 +18,13 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
+<a name="v2.3.3"></a>
+
+## v2.3.3 - 2026-03-11
+
+- <a href="https://github.com/nxdun/Portfolio/pull/20" target="_blank"><code>#20</code></a>[fix(tools)]: resolve workbench init failure on navigation and delayed DOM hydration
+  - Fixed Reported Issue <a href="https://github.com/nxdun/Portfolio/issues/19" target="_blank">(#19)</a>
+
 <a name="v2.3.2"></a>
 
 ## v2.3.2 - 2026-02-26
