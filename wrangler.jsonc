@@ -12,12 +12,15 @@
   "env": {
     "preview": {
       "vars": {
-        "ASTRO_TELEMETRY_DISABLED": "true"
+        "ASTRO_TELEMETRY_DISABLED": "true",
+        "NODE_ENV": "development"
       }
     },
     "production": {
       "vars": {
-        "ASTRO_TELEMETRY_DISABLED": "true"    
+        "ASTRO_TELEMETRY_DISABLED": "true",
+        "NODE_ENV": "production"
+
       }
     }
   }
