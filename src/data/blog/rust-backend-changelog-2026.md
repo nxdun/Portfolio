@@ -21,7 +21,7 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 - <a href="https://github.com/nxdun/rust-codebase/pull/5" target="_blank"><code>#5</code></a>[infra] Add Cloudflare DNS integration and wildcard CORS
   - Implemented Cloudflare DNS management (`api.nadzu.me`) and IP-restricted DigitalOcean firewall.
   - Added HTTPS support via Caddy reverse proxy with automated TLS certificate provisioning.
-  - Upgraded WARP proxy with WARP+ license key support, container hardening, and `NO_PROXY` routing rules.
+  - Migrated WARP proxy to custom [nxdun/docker-warp-proxy](https://github.com/nxdun/docker-warp-proxy) image, adding WARP+ license key support, container hardening (`NET_ADMIN`), and `NO_PROXY` routing rules.
   - Enhanced Rust CORS middleware to safely support wildcard origins using pre-computed matchers.
   - Updated CI/CD workflows (Actions v4/v5) and added an isolated `tft` testing target in Makefile.
 
