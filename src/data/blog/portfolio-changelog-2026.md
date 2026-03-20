@@ -18,6 +18,15 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
+<a name="v2.3.4"></a>
+
+## v2.3.4 - 2026-03-20
+
+- <a href="https://github.com/nxdun/Portfolio/pull/23" target="_blank"><code>#23</code></a> [docs] Update changelog with minor patch dependency security release
+- pnpm overrides to force patched transitive versions.
+- <a href="https://github.com/nxdun/Portfolio/pull/20" target="_blank">(#20)</a> Add v0.1.2 rust changelog entry with infra changes and CORS enhancements
+- <a href="https://github.com/nxdun/Portfolio/pull/21" target="_blank">(#21)</a> Remodified README with new changelog and updated dependencies.
+
 <a name="v2.3.3"></a>
 
 ## v2.3.3 - 2026-03-11
