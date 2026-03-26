@@ -1,15 +1,49 @@
 import { sanitizeText } from "../validation";
 import { CoreApiClient, type ApiResult } from "../../../utils/CoreApiClient";
+import {
+  toYtdlpTerminalState,
+  normalizeYtdlpJobStatus,
+} from "../../../utils/ytdlpStatus";
 
 const YTDLP_ENQUEUE_PATH = "/api/v1/ytdlp";
 const YTDLP_JOB_PATH = "/api/v1/ytdlp/jobs";
+const YTDLP_STREAM_SUFFIX = "/stream";
 const YTDLP_DOWNLOAD_PATH = "/api/v1/ytdlp/download";
+const YTDLP_SITES_PATH = "/api/v1/ytdlp/sites";
 
 export type YtdlpJobState = "pending" | "success" | "fail" | "unknown";
 
 export type YtdlpDownloadFile = {
   blob: Blob;
   fileName: string;
+};
+
+export type YtdlpJobSnapshot = {
+  status: string;
+  progressPercent: number | null;
+  progressTotal: string | null;
+  progressSpeed: string | null;
+  progressEta: string | null;
+  progressMessage: string | null;
+  updatedAtUnix: number | null;
+};
+
+export type YtdlpStreamProgress = YtdlpJobSnapshot;
+
+export type YtdlpStreamError = {
+  errorType: "NETWORK_DOWN" | "BAD_REQUEST" | "UNKNOWN";
+  message: string;
+  shouldFallbackToPolling: boolean;
+};
+
+export type YtdlpStreamSubscription = {
+  close: () => void;
+};
+
+type YtdlpStreamCallbacks = {
+  onProgress: (progress: YtdlpStreamProgress) => void;
+  onDone: () => void;
+  onError: (error: YtdlpStreamError) => void;
 };
 
 function readStatus(job: Record<string, unknown>): string {
@@ -21,7 +55,210 @@ function readStatus(job: Record<string, unknown>): string {
   ).toLowerCase();
 }
 
+function readOptionalText(value: unknown, maxLength = 256): string | null {
+  return (
+    sanitizeText(typeof value === "string" ? value : null, {
+      maxLength,
+      preserveWhitespace: false,
+    }) ?? null
+  );
+}
+
+function readOptionalPercent(value: unknown): number | null {
+  const numberValue = typeof value === "number" ? value : Number.NaN;
+  if (!Number.isFinite(numberValue)) {
+    return null;
+  }
+
+  const clamped = Math.max(0, Math.min(100, numberValue));
+  return Math.round(clamped * 10) / 10;
+}
+
+function readOptionalUnix(value: unknown): number | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return Math.trunc(value);
+}
+
+function toSnapshot(job: Record<string, unknown>): YtdlpJobSnapshot {
+  return {
+    status: normalizeYtdlpJobStatus(readStatus(job)),
+    progressPercent: readOptionalPercent(job.progress_percent),
+    progressTotal: readOptionalText(job.progress_total, 64),
+    progressSpeed: readOptionalText(job.progress_speed, 64),
+    progressEta: readOptionalText(job.progress_eta, 64),
+    progressMessage: readOptionalText(job.progress_message, 512),
+    updatedAtUnix: readOptionalUnix(job.updated_at_unix),
+  };
+}
+
+function readJobId(job: Record<string, unknown>): string | null {
+  return (
+    sanitizeText(typeof job.id === "string" ? job.id : null, {
+      maxLength: 128,
+      preserveWhitespace: false,
+    }) ?? null
+  );
+}
+
+function resolveJobPayload(
+  payload: Record<string, unknown> | null | undefined
+): Record<string, unknown> | null {
+  if (!payload) {
+    return null;
+  }
+
+  // Support both SSE/API shapes: { job: {...} } and flat { status, progress_* }.
+  const wrapped =
+    payload && typeof payload === "object" ? (payload.job as unknown) : null;
+  if (wrapped && typeof wrapped === "object") {
+    return wrapped as Record<string, unknown>;
+  }
+
+  if (typeof payload.status === "string") {
+    return payload;
+  }
+
+  return null;
+}
+
 export class YtdlpApiClient extends CoreApiClient {
+  private async fetchJob(
+    jobId: string,
+    signal?: AbortSignal
+  ): Promise<ApiResult<Record<string, unknown>>> {
+    const response = await this.getJson(
+      `${YTDLP_JOB_PATH}/${encodeURIComponent(jobId)}`,
+      signal
+    );
+
+    if (!response.ok) {
+      return response;
+    }
+
+    const payload = this.asObject(response.data);
+    const job = resolveJobPayload(payload);
+
+    if (!job) {
+      return {
+        ok: false,
+        errorType: "UNKNOWN",
+        message: "Unexpected status response.",
+      };
+    }
+
+    return {
+      ok: true,
+      data: job,
+    };
+  }
+
+  openJobStream(
+    jobId: string,
+    callbacks: YtdlpStreamCallbacks
+  ): ApiResult<YtdlpStreamSubscription> {
+    const target = `${YTDLP_JOB_PATH}/${encodeURIComponent(jobId)}${YTDLP_STREAM_SUFFIX}`;
+
+    let eventSource: EventSource;
+
+    try {
+      eventSource = new EventSource(this.resolveUrl(target));
+    } catch {
+      return {
+        ok: false,
+        errorType: "UNKNOWN",
+        message: "Could not start progress stream.",
+      };
+    }
+
+    const close = (): void => {
+      eventSource.close();
+    };
+
+    let handledCustomError = false;
+
+    const onProgress = (event: MessageEvent): void => {
+      try {
+        const payload = this.asObject(JSON.parse(event.data));
+        const job = resolveJobPayload(payload);
+        if (!job) {
+          return;
+        }
+
+        callbacks.onProgress(toSnapshot(job));
+      } catch {
+        callbacks.onError({
+          errorType: "UNKNOWN",
+          message: "Progress update was malformed.",
+          shouldFallbackToPolling: true,
+        });
+      }
+    };
+
+    const onDone = (): void => {
+      callbacks.onDone();
+    };
+
+    const onCustomError = (event: Event): void => {
+      if (!(event instanceof MessageEvent)) {
+        return;
+      }
+
+      handledCustomError = true;
+
+      try {
+        const payload = this.asObject(JSON.parse(event.data));
+        const status =
+          typeof payload?.status === "number" ? payload.status : undefined;
+        const message =
+          readOptionalText(payload?.message, 160) ??
+          "Progress stream failed for this job.";
+
+        callbacks.onError({
+          errorType: status === 404 ? "BAD_REQUEST" : "UNKNOWN",
+          message,
+          shouldFallbackToPolling: false,
+        });
+      } catch {
+        callbacks.onError({
+          errorType: "UNKNOWN",
+          message: "Progress stream failed for this job.",
+          shouldFallbackToPolling: false,
+        });
+      }
+    };
+
+    const onTransportError = (): void => {
+      if (handledCustomError) {
+        return;
+      }
+
+      if (eventSource.readyState === EventSource.CONNECTING) {
+        return;
+      }
+
+      callbacks.onError({
+        errorType: "NETWORK_DOWN",
+        message: "Live progress interrupted. Switching to backup checks.",
+        shouldFallbackToPolling: true,
+      });
+    };
+
+    eventSource.addEventListener("progress", onProgress as EventListener);
+    eventSource.addEventListener("done", onDone as EventListener);
+    eventSource.addEventListener("error", onCustomError as EventListener);
+    eventSource.onerror = onTransportError;
+
+    return {
+      ok: true,
+      data: {
+        close,
+      },
+    };
+  }
+
   async enqueue(
     url: string,
     captchaToken: string,
@@ -44,10 +281,7 @@ export class YtdlpApiClient extends CoreApiClient {
 
     const payload = this.asObject(response.data);
     const job = this.asObject(payload?.job);
-    const jobId = sanitizeText(typeof job?.id === "string" ? job.id : null, {
-      maxLength: 128,
-      preserveWhitespace: false,
-    });
+    const jobId = job ? readJobId(job) : null;
 
     if (!jobId) {
       return {
@@ -63,43 +297,57 @@ export class YtdlpApiClient extends CoreApiClient {
     };
   }
 
-  async checkJobStatus(
-    jobId: string,
-    signal?: AbortSignal
-  ): Promise<ApiResult<YtdlpJobState>> {
-    const response = await this.getJson(
-      `${YTDLP_JOB_PATH}/${encodeURIComponent(jobId)}`,
-      signal
-    );
+  async getSites(signal?: AbortSignal): Promise<ApiResult<string[]>> {
+    const response = await this.getJson(YTDLP_SITES_PATH, signal);
 
     if (!response.ok) {
       return response;
     }
 
     const payload = this.asObject(response.data);
-    const job = this.asObject(payload?.job);
+    const sites = Array.isArray(payload?.sites) ? payload.sites : [];
 
-    if (!job) {
-      return {
-        ok: false,
-        errorType: "UNKNOWN",
-        message: "Unexpected status response.",
-      };
+    return {
+      ok: true,
+      data: sites.map(site => String(site)),
+    };
+  }
+
+  async checkJobStatus(
+    jobId: string,
+    signal?: AbortSignal
+  ): Promise<ApiResult<YtdlpJobState>> {
+    const jobResult = await this.fetchJob(jobId, signal);
+    if (!jobResult.ok) {
+      return jobResult;
     }
 
-    const status = readStatus(job);
-
-    if (["failed", "error", "cancelled", "canceled"].includes(status)) {
+    const status = normalizeYtdlpJobStatus(readStatus(jobResult.data));
+    const terminal = toYtdlpTerminalState(status);
+    if (terminal === "fail") {
       return { ok: true, data: "fail" };
     }
 
-    if (
-      ["completed", "complete", "done", "finished", "success"].includes(status)
-    ) {
+    if (terminal === "success") {
       return { ok: true, data: "success" };
     }
 
     return { ok: true, data: "pending" };
+  }
+
+  async getJobSnapshot(
+    jobId: string,
+    signal?: AbortSignal
+  ): Promise<ApiResult<YtdlpJobSnapshot>> {
+    const jobResult = await this.fetchJob(jobId, signal);
+    if (!jobResult.ok) {
+      return jobResult;
+    }
+
+    return {
+      ok: true,
+      data: toSnapshot(jobResult.data),
+    };
   }
 
   async downloadFile(

@@ -16,6 +16,13 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 
 - _Separate CAPTCHA Verification endpoint_
 
+## v0.1.3 - 2026-03-22
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/7" target="_blank"><code>#7</code></a>[feat(infra)] Add dev environment and refactor yt-dlp selector
+  - Added local Docker Compose stack (`Dockerfile.dev`, `Caddy`, `cargo-watch`).
+  - [#6](https://github.com/nxdun/rust-codebase/issues/6). Fixed `yt-dlp` format and sort flag logic for better media extraction.
+  - Streamlined Makefile targets and secured `.dockerignore`.
+
 ## v0.1.2 - 2024-03-17
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/5" target="_blank"><code>#5</code></a>[infra] Add Cloudflare DNS integration and wildcard CORS

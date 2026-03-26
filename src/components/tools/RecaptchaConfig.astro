@@ -16,14 +16,3 @@ const toolsBackendUrl = (PUBLIC_TOOLS_BACKEND_URL ?? "").trim();
   data-ytdlp-backend-url={toolsBackendUrl}
 >
 </div>
-
-{
-  recaptchaSiteKey && (
-    <script
-      src="https://www.google.com/recaptcha/api.js?render=explicit"
-      is:inline
-      async
-      defer
-    />
-  )
-}
