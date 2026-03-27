@@ -16,6 +16,15 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 
 - _Separate CAPTCHA Verification endpoint_
 
+## v0.2.0 - 2026-03-27
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/8" target="_blank"><code>#8</code></a>[feat(ytdlp)] Add streaming progress and supported sites API
+  - SSE endpoint for live yt-dlp job download progress updates.
+  - Added supported sites endpoint listing all available download platforms.
+  - Replaced bgutil/POT provider with `aria2c` for faster multi-connection downloading.
+  - Introduced `MASTER_API_KEY` auth middleware; replaces dev bypass header.
+  - **Breaking:** `YTDLP_COOKIES_FILE`, `YTDLP_POT_PROVIDER_URL`, and `YTDLP_PRESIGNED_URL` env vars removed. YouTube Shorts URL normalization removed.
+
 ## v0.1.3 - 2026-03-22
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/7" target="_blank"><code>#7</code></a>[feat(infra)] Add dev environment and refactor yt-dlp selector
