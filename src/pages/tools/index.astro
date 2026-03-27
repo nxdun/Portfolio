@@ -350,8 +350,13 @@ const defaultTool = TOOL_CATALOG.find(
   }
 
   #tool-view-panel[data-response-state="downloading"] {
-    border-color: color-mix(in oklab, #f59e0b 70%, var(--border));
-    box-shadow: 0 0 0 1px color-mix(in oklab, #f59e0b 38%, transparent);
+    border-color: color-mix(in oklab, var(--accent) 70%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 38%, transparent);
+  }
+
+  #tool-view-panel[data-response-state="browser-downloading"] {
+    border-color: color-mix(in oklab, var(--accent) 78%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 44%, transparent);
   }
 
   #tool-view-panel[data-response-state="success"] {

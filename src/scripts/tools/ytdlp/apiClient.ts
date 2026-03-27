@@ -18,6 +18,17 @@ export type YtdlpDownloadFile = {
   fileName: string;
 };
 
+export type YtdlpBrowserDownloadProgress = {
+  loadedBytes: number;
+  totalBytes: number | null;
+  percent: number | null;
+  bytesPerSecond: number | null;
+};
+
+type YtdlpDownloadOptions = {
+  onProgress?: (progress: YtdlpBrowserDownloadProgress) => void;
+};
+
 export type YtdlpJobSnapshot = {
   status: string;
   progressPercent: number | null;
@@ -352,7 +363,8 @@ export class YtdlpApiClient extends CoreApiClient {
 
   async downloadFile(
     jobId: string,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    options?: YtdlpDownloadOptions
   ): Promise<ApiResult<YtdlpDownloadFile>> {
     try {
       const response = await fetch(
@@ -367,7 +379,83 @@ export class YtdlpApiClient extends CoreApiClient {
         return this.errorResultFromStatus(response.status);
       }
 
-      const blob = await response.blob();
+      const totalBytesHeader = response.headers.get("content-length");
+      const parsedTotalBytes = totalBytesHeader
+        ? Number.parseInt(totalBytesHeader, 10)
+        : Number.NaN;
+      const totalBytes =
+        Number.isFinite(parsedTotalBytes) && parsedTotalBytes > 0
+          ? parsedTotalBytes
+          : null;
+
+      const onProgress = options?.onProgress;
+      const reader = response.body?.getReader();
+
+      let blob: Blob;
+
+      if (!reader) {
+        blob = await response.blob();
+        onProgress?.({
+          loadedBytes: blob.size,
+          totalBytes,
+          percent:
+            totalBytes && totalBytes > 0
+              ? Math.max(0, Math.min(100, (blob.size / totalBytes) * 100))
+              : null,
+          bytesPerSecond: null,
+        });
+      } else {
+        const contentType = response.headers.get("content-type") ?? undefined;
+        const chunks: BlobPart[] = [];
+        let loadedBytes = 0;
+        const startedAt = performance.now();
+
+        onProgress?.({
+          loadedBytes,
+          totalBytes,
+          percent: totalBytes ? 0 : null,
+          bytesPerSecond: null,
+        });
+
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            break;
+          }
+
+          if (!value) {
+            continue;
+          }
+
+          chunks.push(value);
+          loadedBytes += value.byteLength;
+
+          const elapsedSeconds = Math.max(
+            (performance.now() - startedAt) / 1000,
+            0.001
+          );
+          const bytesPerSecond = loadedBytes / elapsedSeconds;
+
+          onProgress?.({
+            loadedBytes,
+            totalBytes,
+            percent:
+              totalBytes && totalBytes > 0
+                ? Math.max(0, Math.min(100, (loadedBytes / totalBytes) * 100))
+                : null,
+            bytesPerSecond: Number.isFinite(bytesPerSecond)
+              ? bytesPerSecond
+              : null,
+          });
+        }
+
+        blob = new Blob(
+          chunks,
+          contentType ? { type: contentType } : undefined
+        );
+      }
+
       const contentDisposition = response.headers.get("content-disposition");
       const fileName =
         this.extractFileName(contentDisposition) ?? `${jobId}.mp4`;
