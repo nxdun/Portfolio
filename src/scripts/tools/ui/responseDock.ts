@@ -15,6 +15,7 @@ type ToolResponseDockOptions = {
   onStateChange?: (state: ToolResponseState) => void;
   minStateDurationMs?: number;
   progressVariant?: "bar" | "meta";
+  hideProgressBarStates?: ToolResponseState[];
 };
 
 type ToolResponseTone = {
@@ -87,12 +88,13 @@ export function createToolResponseDock(
   const hiddenOnIdle = options?.hiddenOnIdle ?? true;
   const minStateDurationMs = options?.minStateDurationMs ?? 180;
   const progressVariant = options?.progressVariant ?? "bar";
+  const hideProgressBarStates = new Set(options?.hideProgressBarStates ?? []);
   const tones = DEFAULT_TOOL_RESPONSE_TONES;
 
   const progressInnerMarkup =
     progressVariant === "bar"
       ? `
-        <div class="h-2 w-full overflow-hidden rounded-full bg-current/15">
+        <div id="tool-response-progress-track" class="h-2 w-full overflow-hidden rounded-full bg-current/15">
           <div
             id="tool-response-progress-bar"
             class="h-full w-0 rounded-full ${tones.idle.progressClass} transition-[width] duration-200 ease-linear"
@@ -155,6 +157,9 @@ export function createToolResponseDock(
   const progressBarEl = host.querySelector(
     "#tool-response-progress-bar"
   ) as HTMLElement | null;
+  const progressTrackEl = host.querySelector(
+    "#tool-response-progress-track"
+  ) as HTMLElement | null;
   const progressMetaEl = host.querySelector(
     "#tool-response-progress-meta"
   ) as HTMLElement | null;
@@ -166,7 +171,7 @@ export function createToolResponseDock(
     !dismissBtn ||
     !progressWrapEl ||
     !progressMetaEl ||
-    (progressVariant === "bar" && !progressBarEl)
+    (progressVariant === "bar" && (!progressBarEl || !progressTrackEl))
   ) {
     return {
       setState: () => {},
@@ -215,6 +220,16 @@ export function createToolResponseDock(
     progressBarEl.classList.add(tones[state].progressClass);
   };
 
+  const applyProgressTrackVisibility = (state: ToolResponseState): void => {
+    if (!progressTrackEl) {
+      return;
+    }
+
+    const shouldHideTrack =
+      progressVariant !== "bar" || hideProgressBarStates.has(state);
+    progressTrackEl.classList.toggle("hidden", shouldHideTrack);
+  };
+
   const resetProgress = (): void => {
     if (barProgress) {
       barProgress.reset();
@@ -259,6 +274,7 @@ export function createToolResponseDock(
     labelEl.textContent = TOOL_RESPONSE_STATE_LABEL[state];
     messageEl.textContent = message;
     applyProgressTone(state);
+    applyProgressTrackVisibility(state);
 
     if (
       state !== "pending" &&

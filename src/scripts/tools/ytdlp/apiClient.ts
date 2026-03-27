@@ -428,9 +428,7 @@ export class YtdlpApiClient extends CoreApiClient {
             continue;
           }
 
-          const chunk = new Uint8Array(value.byteLength);
-          chunk.set(value);
-          chunks.push(chunk);
+          chunks.push(value);
           loadedBytes += value.byteLength;
 
           const elapsedSeconds = Math.max(

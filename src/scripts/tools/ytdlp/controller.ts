@@ -111,7 +111,8 @@ export class YtdlpToolController {
       title: "AIO Downloader Response",
       hiddenOnIdle: true,
       minStateDurationMs: 220,
-      progressVariant: "meta",
+      progressVariant: "bar",
+      hideProgressBarStates: ["browser-downloading"],
       onStateChange: state => {
         if (this.toolViewPanel) {
           this.toolViewPanel.dataset.responseState = state;
@@ -490,13 +491,13 @@ export class YtdlpToolController {
 
     this.ui.setPrimaryStage("pending");
     this.ui.transition("BROWSER_DOWNLOADING", "Saving file to your browser...");
+    this.ui.setPendingProgress("Saving to browser", null);
 
     const downloadResult = await this.apiClient.downloadFile(
       this.readyJobId,
       signal,
       {
         onProgress: progress => {
-          this.ui.setPendingProgress("Saving to browser", null);
           this.ui.setPendingDetails(formatBrowserDownloadMeta(progress));
         },
       }
@@ -525,7 +526,7 @@ export class YtdlpToolController {
     this.ui.setPrimaryStage("submit");
     this.ui.transition(
       "READY",
-      "Saved to browser downloads. You can start another download."
+      "Download Complete! Paste another URL to download more media."
     );
   }
 
