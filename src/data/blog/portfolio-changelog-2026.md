@@ -18,7 +18,7 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
-## v2.3.5 - 2026-03-27
+## v2.4.0 - 2026-03-27
 
 - <a href="https://github.com/nxdun/Portfolio/pull/24" target="_blank"><code>#24</code></a> [feat(tools)] Improve downloader experience and expand supported platforms
   - Upgraded the downloader from YouTube-only to a broader AIO downloader experience with support for many platforms.
