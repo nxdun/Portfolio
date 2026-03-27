@@ -82,6 +82,8 @@ export class CaptchaManager {
       return true;
     }
 
+    this.injectScriptIfNeeded();
+
     const startedAt = Date.now();
     while (Date.now() - startedAt <= this.timeoutMs) {
       if (signal?.aborted || this.disposed) {
@@ -156,6 +158,20 @@ export class CaptchaManager {
       window.clearTimeout(timeoutId);
     });
     this.pendingTimeouts.clear();
+  }
+
+  private injectScriptIfNeeded(): void {
+    const SCRIPT_URL =
+      "https://www.google.com/recaptcha/api.js?render=explicit";
+    if (document.querySelector(`script[src="${SCRIPT_URL}"]`)) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = SCRIPT_URL;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
   }
 
   private sleep(ms: number, signal?: AbortSignal): Promise<void> {

@@ -7,9 +7,9 @@ export const TOOL_CATALOG = [
   },
   {
     key: "ytdlp",
-    title: "YouTube Downloader",
-    description: "Queue video download",
-    subtitle: "Submit a YouTube video URL after reCAPTCHA verification.",
+    title: "AIO Downloader",
+    description: "Multi-site video downloader",
+    subtitle: "Submit a video URL from one of 2000+ supported sites.",
   },
 ] as const;
 

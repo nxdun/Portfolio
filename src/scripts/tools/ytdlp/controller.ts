@@ -2,16 +2,15 @@ import { createToolResponseDock } from "../ui/responseDock";
 import { readClipboardText } from "../clipboard";
 import type { ToolTeardown, YtdlpToolOptions } from "../types";
 import { validateYtdlpActionInput } from "./validation";
-import { asyncPoll } from "../../../utils/asyncPoll";
-import { YtdlpApiClient } from "./apiClient";
+import type { YtdlpApiClient } from "./apiClient";
 import { CaptchaManager } from "../../../utils/captchaManager";
 import type { ApiErrorType, ApiResult } from "../../../utils/CoreApiClient";
 import type { YtdlpDomRefs } from "./dom";
 import { YtdlpUiController } from "./uiController";
 import type { CaptchaDialogController } from "../ui/captchaDialog";
+import { YtdlpSitesController } from "./sitesController";
+import { YtdlpJobMonitor, type StreamMonitorResult } from "./jobMonitor";
 
-const POLL_INTERVAL_MS = 5000;
-const MAX_POLL_ATTEMPTS = 60;
 const SERVICE_UNAVAILABLE_MESSAGE =
   "Download service is currently unavailable due to maintenance. Please try again later.";
 const SERVICE_UNREACHABLE_MESSAGE =
@@ -37,6 +36,8 @@ export type YtdlpControllerConfig = {
 export class YtdlpToolController {
   private readonly responseDock: ReturnType<typeof createToolResponseDock>;
   private readonly ui: YtdlpUiController;
+  private readonly sitesController: YtdlpSitesController;
+  private readonly jobMonitor: YtdlpJobMonitor;
 
   private readonly cleanupCallbacks: Array<() => void> = [];
   private activeAbortController: AbortController | null = null;
@@ -70,7 +71,7 @@ export class YtdlpToolController {
     this.captchaDialog = config.captchaDialog;
 
     this.responseDock = createToolResponseDock(this.responseHost, {
-      title: "YouTube Downloader Response",
+      title: "AIO Downloader Response",
       hiddenOnIdle: true,
       minStateDurationMs: 220,
       onStateChange: state => {
@@ -87,14 +88,29 @@ export class YtdlpToolController {
         setDockState: (state, message, options) => {
           this.responseDock.setState(state, message, options);
         },
+        setDockProgress: (percent, meta) => {
+          this.responseDock.setProgress(percent, meta);
+        },
+        clearDockProgress: () => {
+          this.responseDock.clearProgress();
+        },
       },
       this.isCaptchaFeatureEnabled,
       () => (this.captchaManager?.getToken().trim().length ?? 0) > 0
+    );
+
+    this.sitesController = new YtdlpSitesController(this.refs, this.apiClient);
+
+    this.jobMonitor = new YtdlpJobMonitor(
+      this.apiClient,
+      this.ui,
+      this.handleApiFailure.bind(this)
     );
   }
 
   init(): ToolTeardown {
     this.bindEvents();
+    this.sitesController.init();
 
     if (typeof this.options?.url === "string") {
       this.refs.inputEl.value = this.options.url;
@@ -107,13 +123,9 @@ export class YtdlpToolController {
       return () => this.destroy();
     }
 
-    this.ui.transition(
-      "IDLE",
-      "Paste a YouTube URL and click Submit Download.",
-      {
-        showWhenIdle: true,
-      }
-    );
+    this.ui.transition("IDLE", "Paste a video URL and click Submit Download.", {
+      showWhenIdle: true,
+    });
 
     void this.ensureServiceHealth();
 
@@ -362,71 +374,52 @@ export class YtdlpToolController {
       this.captchaDialog.close();
 
       this.readyJobId = null;
+      this.jobMonitor.resetProgressKey();
       this.ui.setPrimaryStage("pending");
-      this.ui.transition("POLLING", "Downloading... Please wait.");
-
-      const result = await asyncPoll<"success" | "fail" | "handled-error">({
-        intervalMs: POLL_INTERVAL_MS,
-        maxAttempts: MAX_POLL_ATTEMPTS,
-        signal,
-        step: async () => {
-          const statusResult = await apiClient.checkJobStatus(jobId, signal);
-
-          if (!statusResult.ok) {
-            if (
-              this.handleApiFailure(statusResult, {
-                shouldResetCaptcha: true,
-              }) === "silent"
-            ) {
-              return { done: true, value: "handled-error" };
-            }
-
-            return { done: true, value: "handled-error" };
-          }
-
-          if (statusResult.data === "fail") {
-            return { done: true, value: "fail" };
-          }
-
-          if (statusResult.data === "success") {
-            return { done: true, value: "success" };
-          }
-
-          return { done: false };
-        },
-      });
-
-      if (result === "success") {
-        this.readyJobId = jobId;
-        this.ui.setPrimaryStage("download");
-        this.ui.transition("READY", "Download is ready.");
-        return;
-      }
-
-      if (result === "fail") {
-        this.readyJobId = null;
-        this.ui.setPrimaryStage("submit");
-        this.ui.transition("ERROR", "Download failed. Try another URL.");
-        return;
-      }
-
-      if (result === "handled-error") {
-        this.readyJobId = null;
-        return;
-      }
-
-      this.readyJobId = null;
-      this.ui.setPrimaryStage("submit");
+      this.ui.setPendingProgress("Queued", null);
       this.ui.transition(
-        "ERROR",
-        "Download is taking longer than expected. Please try again."
+        "POLLING",
+        "Download started. Waiting for progress..."
       );
+
+      const result = await this.jobMonitor.monitorJob(jobId, signal);
+      this.applyMonitorResult(result, jobId);
     } catch (error) {
       if (!isAbortError(error)) {
         this.readyJobId = null;
         this.disableService("NETWORK_DOWN");
       }
     }
+  }
+
+  private applyMonitorResult(result: StreamMonitorResult, jobId: string): void {
+    this.jobMonitor.resetProgressKey();
+
+    if (result === "success") {
+      this.readyJobId = jobId;
+      this.ui.setPrimaryStage("download");
+      this.ui.transition("READY", "Download is ready.");
+      return;
+    }
+
+    if (result === "fail") {
+      this.readyJobId = null;
+      this.ui.setPrimaryStage("submit");
+      this.ui.transition("ERROR", "Download failed. Try another URL.");
+      return;
+    }
+
+    if (result === "handled-error") {
+      this.readyJobId = null;
+      return;
+    }
+
+    this.readyJobId = null;
+    this.ui.setPrimaryStage("submit");
+    this.ui.transition(
+      "ERROR",
+      "Download is taking longer than expected. Please try again."
+    );
   }
 
   private async handleDownloadClick(): Promise<void> {
@@ -531,6 +524,7 @@ export class YtdlpToolController {
     this.refs.inputEl.value = "";
     this.pendingUrl = "";
     this.readyJobId = null;
+    this.jobMonitor.resetProgressKey();
     this.ui.setPrimaryStage("submit");
     this.captchaDialog.close();
     this.captchaManager?.reset();
@@ -563,6 +557,8 @@ export class YtdlpToolController {
   }
 
   private disableService(errorType?: ApiErrorType): void {
+    this.abortActiveOperation();
+
     this.serviceDisabledMessage =
       errorType === "NETWORK_DOWN"
         ? SERVICE_UNREACHABLE_MESSAGE
@@ -585,6 +581,8 @@ export class YtdlpToolController {
       this.activeAbortController.abort();
       this.activeAbortController = null;
     }
+
+    this.jobMonitor.closeActiveStream();
   }
 
   private addEventListener(
@@ -611,6 +609,7 @@ export class YtdlpToolController {
     this.captchaDialog.close();
     this.captchaDialog.destroy();
     this.responseDock.clear();
+    this.sitesController.destroy();
 
     if (this.toolViewPanel) {
       this.toolViewPanel.dataset.responseState = "idle";

@@ -10,14 +10,6 @@ export const YTDLP_BACKEND_URL_MAX_LENGTH = 512;
 export const YTDLP_RECAPTCHA_SITE_KEY_MAX_LENGTH = 256;
 export const YTDLP_CAPTCHA_TOKEN_MAX_LENGTH = 4096;
 
-const YOUTUBE_HOSTS = new Set([
-  "youtube.com",
-  "www.youtube.com",
-  "m.youtube.com",
-  "music.youtube.com",
-  "youtu.be",
-]);
-
 export type YtdlpActionInput = {
   url?: string;
   backendUrl?: string;
@@ -75,7 +67,7 @@ function validateHttpUrl(value: string, label: string): ToolValidationResult {
   }
 }
 
-function normalizeYouTubeUrl(url: string): YtdlpActionValidationResult {
+function normalizeVideoUrl(url: string): YtdlpActionValidationResult {
   const textValidation = validateToolTextInput(url, {
     label: "URL",
     required: true,
@@ -104,67 +96,10 @@ function normalizeYouTubeUrl(url: string): YtdlpActionValidationResult {
     };
   }
 
-  const hostname = parsed.hostname.toLowerCase();
-  if (!YOUTUBE_HOSTS.has(hostname)) {
-    return {
-      isValid: false,
-      message: "Only YouTube video URLs are allowed.",
-    };
-  }
-
-  if (parsed.searchParams.has("list") || parsed.pathname === "/playlist") {
-    return {
-      isValid: false,
-      message: "Playlists are not allowed.",
-    };
-  }
-
-  if (hostname === "youtu.be") {
-    const videoId = parsed.pathname.replace(/^\/+/, "").split("/")[0] ?? "";
-    if (!videoId) {
-      return {
-        isValid: false,
-        message: "Please provide a valid YouTube video URL.",
-      };
-    }
-
-    return {
-      isValid: true,
-      normalized: {
-        url: `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`,
-      },
-    };
-  }
-
-  if (parsed.pathname.startsWith("/shorts/")) {
-    const shortId = parsed.pathname.replace("/shorts/", "").split("/")[0] ?? "";
-    if (!shortId) {
-      return {
-        isValid: false,
-        message: "Please provide a valid YouTube Shorts URL.",
-      };
-    }
-
-    return {
-      isValid: true,
-      normalized: {
-        url: `https://www.youtube.com/watch?v=${encodeURIComponent(shortId)}`,
-      },
-    };
-  }
-
-  const videoId = parsed.searchParams.get("v")?.trim() ?? "";
-  if (!videoId) {
-    return {
-      isValid: false,
-      message: "Please provide a valid YouTube watch URL.",
-    };
-  }
-
   return {
     isValid: true,
     normalized: {
-      url: `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`,
+      url: parsed.href,
     },
   };
 }
@@ -224,7 +159,7 @@ export function validateYtdlpActionInput(
       preserveWhitespace: false,
     });
 
-    const urlValidation = normalizeYouTubeUrl(url ?? "");
+    const urlValidation = normalizeVideoUrl(url ?? "");
     if (!urlValidation.isValid) {
       return urlValidation;
     }

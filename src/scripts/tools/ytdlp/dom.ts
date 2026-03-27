@@ -3,6 +3,12 @@ export type YtdlpDomRefs = {
   pasteBtn: HTMLButtonElement;
   clearBtn: HTMLButtonElement;
   submitBtn: HTMLButtonElement;
+  viewSitesBtn: HTMLButtonElement;
+  sitesDialog: HTMLDialogElement;
+  sitesCloseBtn: HTMLButtonElement;
+  sitesSearchInput: HTMLInputElement;
+  sitesList: HTMLElement;
+  sitesCount: HTMLElement;
 };
 
 export function resolveYtdlpDomRefs(
@@ -20,8 +26,37 @@ export function resolveYtdlpDomRefs(
   const submitBtn = container.querySelector(
     "#ytdlp-submit"
   ) as HTMLButtonElement | null;
+  const viewSitesBtn = container.querySelector(
+    "#ytdlp-view-sites"
+  ) as HTMLButtonElement | null;
+  const sitesDialog = container.querySelector(
+    "#ytdlp-sites-dialog"
+  ) as HTMLDialogElement | null;
+  const sitesCloseBtn = container.querySelector(
+    "#ytdlp-sites-close"
+  ) as HTMLButtonElement | null;
+  const sitesSearchInput = container.querySelector(
+    "#ytdlp-sites-search"
+  ) as HTMLInputElement | null;
+  const sitesList = container.querySelector(
+    "#ytdlp-sites-list"
+  ) as HTMLElement | null;
+  const sitesCount = container.querySelector(
+    "#ytdlp-sites-count"
+  ) as HTMLElement | null;
 
-  if (!inputEl || !pasteBtn || !clearBtn || !submitBtn) {
+  if (
+    !inputEl ||
+    !pasteBtn ||
+    !clearBtn ||
+    !submitBtn ||
+    !viewSitesBtn ||
+    !sitesDialog ||
+    !sitesCloseBtn ||
+    !sitesSearchInput ||
+    !sitesList ||
+    !sitesCount
+  ) {
     return null;
   }
 
@@ -30,5 +65,11 @@ export function resolveYtdlpDomRefs(
     pasteBtn,
     clearBtn,
     submitBtn,
+    viewSitesBtn,
+    sitesDialog,
+    sitesCloseBtn,
+    sitesSearchInput,
+    sitesList,
+    sitesCount,
   };
 }

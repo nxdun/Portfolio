@@ -349,6 +349,11 @@ const defaultTool = TOOL_CATALOG.find(
     box-shadow: 0 0 0 1px color-mix(in oklab, #f59e0b 32%, transparent);
   }
 
+  #tool-view-panel[data-response-state="downloading"] {
+    border-color: color-mix(in oklab, #f59e0b 70%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in oklab, #f59e0b 38%, transparent);
+  }
+
   #tool-view-panel[data-response-state="success"] {
     border-color: color-mix(in oklab, #10b981 58%, var(--border));
     box-shadow: 0 0 0 1px color-mix(in oklab, #10b981 30%, transparent);
