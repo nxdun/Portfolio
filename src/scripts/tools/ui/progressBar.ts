@@ -17,6 +17,8 @@ export type ToolProgressBar = {
 };
 
 const DEFAULT_META = "Waiting for progress...";
+const INDETERMINATE_WIDTH = 38;
+const INDETERMINATE_CLASS = "animate-pulse";
 
 export function createToolProgressBar(
   refs: ToolProgressBarRefs
@@ -36,15 +38,18 @@ export function createToolProgressBar(
 
   const applyPercent = (percent: number | null): void => {
     if (percent === null) {
-      if (lastPercent === null) {
-        return;
-      }
-
-      refs.barEl.style.width = "0%";
+      refs.barEl.classList.add(INDETERMINATE_CLASS);
+      refs.barEl.style.width = `${INDETERMINATE_WIDTH}%`;
       refs.barEl.setAttribute("aria-valuenow", "0");
       lastPercent = null;
-      peakPercent = 0;
+      peakPercent = INDETERMINATE_WIDTH;
       return;
+    }
+
+    refs.barEl.classList.remove(INDETERMINATE_CLASS);
+
+    if (lastPercent === null) {
+      peakPercent = 0;
     }
 
     const clamped = Math.max(0, Math.min(100, percent));
@@ -64,6 +69,7 @@ export function createToolProgressBar(
 
   const reset = (): void => {
     refs.wrapEl.classList.add("hidden");
+    refs.barEl.classList.remove(INDETERMINATE_CLASS);
     refs.barEl.style.width = "0%";
     refs.barEl.setAttribute("aria-valuenow", "0");
     refs.metaEl.textContent = DEFAULT_META;

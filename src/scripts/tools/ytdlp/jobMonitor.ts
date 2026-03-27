@@ -72,7 +72,7 @@ export class YtdlpJobMonitor {
 
     this.ui.setPendingProgress(label, snapshot.progressPercent);
     this.ui.setPendingDetails(buildYtdlpProgressMeta(snapshot));
-    this.ui.transition("POLLING", message);
+    this.ui.transition("SERVER_DOWNLOADING", message);
   }
 
   private async monitorJobWithStream(
@@ -110,7 +110,10 @@ export class YtdlpJobMonitor {
         onError: error => {
           if (settled || signal.aborted) return;
           if (error.shouldFallbackToPolling) {
-            this.ui.transition("POLLING", error.message);
+            this.ui.transition(
+              "SERVER_DOWNLOADING",
+              "Live server updates were interrupted. Switching to status checks..."
+            );
             settle("fallback");
             return;
           }
@@ -152,11 +155,14 @@ export class YtdlpJobMonitor {
     if (!this.apiClient) return "handled-error";
 
     const apiClient = this.apiClient;
-    this.ui.setPendingProgress("Checking", null);
+    this.ui.setPendingProgress("Server status", null);
     this.ui.setPendingDetails(
-      "Progress stream is unavailable. Falling back to polling."
+      "Live progress is unavailable. Checking server status every few seconds."
     );
-    this.ui.transition("POLLING", "Checking download status...");
+    this.ui.transition(
+      "SERVER_DOWNLOADING",
+      "Checking server processing status..."
+    );
 
     const result = await asyncPoll<"success" | "fail" | "handled-error">({
       intervalMs: POLL_INTERVAL_MS,

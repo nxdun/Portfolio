@@ -2,7 +2,7 @@ import { createToolResponseDock } from "../ui/responseDock";
 import { readClipboardText } from "../clipboard";
 import type { ToolTeardown, YtdlpToolOptions } from "../types";
 import { validateYtdlpActionInput } from "./validation";
-import type { YtdlpApiClient } from "./apiClient";
+import type { YtdlpApiClient, YtdlpBrowserDownloadProgress } from "./apiClient";
 import { CaptchaManager } from "../../../utils/captchaManager";
 import type { ApiErrorType, ApiResult } from "../../../utils/CoreApiClient";
 import type { YtdlpDomRefs } from "./dom";
@@ -15,6 +15,43 @@ const SERVICE_UNAVAILABLE_MESSAGE =
   "Download service is currently unavailable due to maintenance. Please try again later.";
 const SERVICE_UNREACHABLE_MESSAGE =
   "Download service is currently unreachable. It may be under maintenance. Please try again later.";
+
+function formatBytes(value: number): string {
+  if (!Number.isFinite(value) || value < 0) {
+    return "0 B";
+  }
+
+  if (value < 1024) {
+    return `${Math.round(value)} B`;
+  }
+
+  const units = ["KB", "MB", "GB", "TB"];
+  let size = value / 1024;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+function formatBrowserDownloadMeta(
+  progress: YtdlpBrowserDownloadProgress
+): string {
+  const transferredText = `Transferred ${formatBytes(progress.loadedBytes)}`;
+  const sizeText =
+    typeof progress.totalBytes === "number"
+      ? `${transferredText} of ${formatBytes(progress.totalBytes)}`
+      : transferredText;
+  const speedText =
+    typeof progress.bytesPerSecond === "number" && progress.bytesPerSecond > 0
+      ? `Speed ${formatBytes(progress.bytesPerSecond)}/s`
+      : "Speed calculating...";
+
+  return `${sizeText} • ${speedText}`;
+}
 
 function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
@@ -74,6 +111,7 @@ export class YtdlpToolController {
       title: "AIO Downloader Response",
       hiddenOnIdle: true,
       minStateDurationMs: 220,
+      progressVariant: "meta",
       onStateChange: state => {
         if (this.toolViewPanel) {
           this.toolViewPanel.dataset.responseState = state;
@@ -90,6 +128,9 @@ export class YtdlpToolController {
         },
         setDockProgress: (percent, meta) => {
           this.responseDock.setProgress(percent, meta);
+        },
+        setDockProgressMeta: meta => {
+          this.responseDock.setProgressMeta(meta);
         },
         clearDockProgress: () => {
           this.responseDock.clearProgress();
@@ -135,7 +176,7 @@ export class YtdlpToolController {
   handleCaptchaSolved(): void {
     this.ui.transition(
       "AWAITING_CAPTCHA",
-      "Captcha solved. Click Verify and Continue.",
+      "Verification completed. Click Verify and Continue to start processing.",
       {
         showWhenIdle: true,
       }
@@ -143,11 +184,14 @@ export class YtdlpToolController {
   }
 
   handleCaptchaExpired(): void {
-    this.ui.transition("ERROR", "Captcha expired. Please solve it again.");
+    this.ui.transition(
+      "ERROR",
+      "Verification expired. Please complete captcha again."
+    );
   }
 
   handleCaptchaError(): void {
-    this.ui.transition("ERROR", "Captcha error. Please try again.");
+    this.ui.transition("ERROR", "Verification failed to load. Please retry.");
   }
 
   private bindEvents(): void {
@@ -187,7 +231,7 @@ export class YtdlpToolController {
       case "RATE_LIMITED":
         this.ui.transition(
           "ERROR",
-          "Too many requests. Please wait before trying again."
+          "Too many requests right now. Please wait and try again."
         );
         return "handled";
 
@@ -198,7 +242,7 @@ export class YtdlpToolController {
 
         this.ui.transition(
           "ERROR",
-          "Verification failed. Please retry captcha and submit again."
+          "Verification was rejected. Complete captcha again and resubmit."
         );
         return "handled";
 
@@ -206,7 +250,7 @@ export class YtdlpToolController {
         this.ui.transition(
           "ERROR",
           result.message ||
-            "Invalid request. Please check the input and try again."
+            "The request is invalid. Check the URL and try again."
         );
         return "handled";
 
@@ -214,7 +258,7 @@ export class YtdlpToolController {
       default:
         this.ui.transition(
           "ERROR",
-          result.message || "Request failed. Please try again."
+          result.message || "The request failed unexpectedly. Please try again."
         );
         return "handled";
     }
@@ -224,11 +268,6 @@ export class YtdlpToolController {
     const stage = this.ui.getPrimaryStage();
 
     if (stage === "pending") {
-      return;
-    }
-
-    if (stage === "download" && this.readyJobId) {
-      await this.handleDownloadClick();
       return;
     }
 
@@ -283,7 +322,7 @@ export class YtdlpToolController {
         if (!signal.aborted) {
           this.ui.transition(
             "ERROR",
-            "Verification failed to load. Refresh and try again."
+            "Unable to load verification. Refresh and try again."
           );
         }
         return;
@@ -291,7 +330,7 @@ export class YtdlpToolController {
 
       this.ui.transition(
         "AWAITING_CAPTCHA",
-        "Solve captcha and verify to continue.",
+        "Complete captcha, then click Verify and Continue.",
         {
           showWhenIdle: true,
         }
@@ -300,7 +339,7 @@ export class YtdlpToolController {
       if (!isAbortError(error)) {
         this.ui.transition(
           "ERROR",
-          "Verification failed to load. Refresh and try again."
+          "Unable to load verification. Refresh and try again."
         );
       }
     }
@@ -346,7 +385,7 @@ export class YtdlpToolController {
     const captchaToken = captchaValidation.normalized?.captchaToken ?? "";
 
     try {
-      this.ui.transition("SUBMITTING", "Starting download...");
+      this.ui.transition("SUBMITTING", "Submitting URL to server...");
 
       const enqueueResult = await apiClient.enqueue(
         urlValidation.normalized?.url ?? "",
@@ -376,14 +415,14 @@ export class YtdlpToolController {
       this.readyJobId = null;
       this.jobMonitor.resetProgressKey();
       this.ui.setPrimaryStage("pending");
-      this.ui.setPendingProgress("Queued", null);
+      this.ui.setPendingProgress("Server queue", null);
       this.ui.transition(
-        "POLLING",
-        "Download started. Waiting for progress..."
+        "SERVER_DOWNLOADING",
+        "Server accepted your request. Preparing media..."
       );
 
       const result = await this.jobMonitor.monitorJob(jobId, signal);
-      this.applyMonitorResult(result, jobId);
+      await this.applyMonitorResult(result, jobId);
     } catch (error) {
       if (!isAbortError(error)) {
         this.readyJobId = null;
@@ -392,20 +431,30 @@ export class YtdlpToolController {
     }
   }
 
-  private applyMonitorResult(result: StreamMonitorResult, jobId: string): void {
+  private async applyMonitorResult(
+    result: StreamMonitorResult,
+    jobId: string
+  ): Promise<void> {
     this.jobMonitor.resetProgressKey();
 
     if (result === "success") {
       this.readyJobId = jobId;
-      this.ui.setPrimaryStage("download");
-      this.ui.transition("READY", "Download is ready.");
+      this.ui.setPrimaryStage("pending");
+      this.ui.transition(
+        "BROWSER_DOWNLOADING",
+        "Server processing complete. Starting browser download..."
+      );
+      await this.handleDownloadClick();
       return;
     }
 
     if (result === "fail") {
       this.readyJobId = null;
       this.ui.setPrimaryStage("submit");
-      this.ui.transition("ERROR", "Download failed. Try another URL.");
+      this.ui.transition(
+        "ERROR",
+        "Server could not prepare this video. Try a different URL."
+      );
       return;
     }
 
@@ -418,7 +467,7 @@ export class YtdlpToolController {
     this.ui.setPrimaryStage("submit");
     this.ui.transition(
       "ERROR",
-      "Download is taking longer than expected. Please try again."
+      "Server processing is taking too long. Please try again later."
     );
   }
 
@@ -430,17 +479,27 @@ export class YtdlpToolController {
 
     if (!this.apiClient || !this.readyJobId) {
       this.ui.setPrimaryStage("submit");
-      this.ui.transition("ERROR", "Download is no longer ready. Submit again.");
+      this.ui.transition(
+        "ERROR",
+        "Download session expired. Submit the URL again."
+      );
       return;
     }
 
     const signal = this.beginOperation();
 
-    this.ui.transition("SUBMITTING", "Preparing file download...");
+    this.ui.setPrimaryStage("pending");
+    this.ui.transition("BROWSER_DOWNLOADING", "Saving file to your browser...");
 
     const downloadResult = await this.apiClient.downloadFile(
       this.readyJobId,
-      signal
+      signal,
+      {
+        onProgress: progress => {
+          this.ui.setPendingProgress("Saving to browser", null);
+          this.ui.setPendingDetails(formatBrowserDownloadMeta(progress));
+        },
+      }
     );
 
     if (!downloadResult.ok) {
@@ -464,7 +523,10 @@ export class YtdlpToolController {
 
     this.readyJobId = null;
     this.ui.setPrimaryStage("submit");
-    this.ui.transition("READY", "Download started.");
+    this.ui.transition(
+      "READY",
+      "Saved to browser downloads. You can start another download."
+    );
   }
 
   private triggerBrowserDownload(blob: Blob, fileName: string): void {
@@ -494,7 +556,7 @@ export class YtdlpToolController {
 
     const signal = this.beginOperation();
 
-    this.ui.transition("SUBMITTING", "Reading from clipboard...");
+    this.ui.transition("SUBMITTING", "Reading URL from clipboard...");
 
     const result = await readClipboardText();
     if (signal.aborted || this.disposed) {
@@ -506,17 +568,20 @@ export class YtdlpToolController {
         this.refs.inputEl.focus();
         this.ui.transition(
           "ERROR",
-          "Clipboard access is unavailable. Focused URL field—press Ctrl+V to paste."
+          "Clipboard access is unavailable. URL field is focused. Press Ctrl+V to paste."
         );
         return;
       }
 
-      this.ui.transition("ERROR", "Clipboard read failed.");
+      this.ui.transition(
+        "ERROR",
+        "Could not read clipboard. Please paste manually."
+      );
       return;
     }
 
     this.refs.inputEl.value = result.text;
-    this.ui.transition("READY", "Pasted from clipboard.");
+    this.ui.transition("READY", "URL pasted from clipboard.");
   }
 
   private clearForm(): void {
@@ -528,7 +593,7 @@ export class YtdlpToolController {
     this.ui.setPrimaryStage("submit");
     this.captchaDialog.close();
     this.captchaManager?.reset();
-    this.ui.transition("READY", "Fields cleared.");
+    this.ui.transition("READY", "Form reset. Ready for a new URL.");
   }
 
   private async ensureServiceHealth(): Promise<void> {

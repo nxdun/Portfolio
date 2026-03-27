@@ -6,12 +6,13 @@ export type YtdlpUiState =
   | "AWAITING_CAPTCHA"
   | "LOADING_CAPTCHA"
   | "SUBMITTING"
-  | "POLLING"
+  | "SERVER_DOWNLOADING"
+  | "BROWSER_DOWNLOADING"
   | "READY"
   | "ERROR"
   | "DISABLED";
 
-export type PrimaryStage = "submit" | "pending" | "download";
+export type PrimaryStage = "submit" | "pending";
 
 type ResponseBridge = {
   setDockState: (
@@ -20,6 +21,7 @@ type ResponseBridge = {
     options?: { showWhenIdle?: boolean }
   ) => void;
   setDockProgress: (percent: number | null, meta: string) => void;
+  setDockProgressMeta: (meta: string) => void;
   clearDockProgress: () => void;
 };
 
@@ -27,30 +29,6 @@ export class YtdlpUiController {
   private state: YtdlpUiState = "IDLE";
   private primaryStage: PrimaryStage = "submit";
   private pendingPercent: number | null = null;
-
-  private readonly responseToneClasses = [
-    "border-accent",
-    "bg-accent/5",
-    "text-accent",
-    "hover:bg-accent",
-    "hover:text-white",
-    "border-amber-500",
-    "bg-amber-500/10",
-    "text-amber-300",
-    "hover:bg-amber-500",
-    "border-green-600",
-    "bg-green-600",
-    "text-white",
-    "hover:bg-green-700",
-    "border-rose-500",
-    "bg-rose-500/10",
-    "text-rose-300",
-    "hover:bg-rose-500",
-    "border-slate-500",
-    "bg-slate-500/10",
-    "text-slate-300",
-    "hover:bg-slate-500",
-  ] as const;
 
   constructor(
     private readonly refs: YtdlpDomRefs,
@@ -68,62 +46,6 @@ export class YtdlpUiController {
   private renderProgressBar(percent: number | null, meta: string): void {
     this.pendingPercent = percent;
     this.responseState.setDockProgress(percent, meta);
-  }
-
-  private applySubmitButtonTone(state: ToolResponseState): void {
-    const submitBtn = this.refs.submitBtn;
-    submitBtn.classList.remove(...this.responseToneClasses);
-
-    if (state === "idle") {
-      submitBtn.classList.add(
-        "border-accent",
-        "bg-accent/5",
-        "text-accent",
-        "hover:bg-accent",
-        "hover:text-white"
-      );
-      return;
-    }
-
-    if (state === "pending" || state === "downloading") {
-      submitBtn.classList.add(
-        "border-amber-500",
-        "bg-amber-500/10",
-        "text-amber-300",
-        "hover:bg-amber-500",
-        "hover:text-white"
-      );
-      return;
-    }
-
-    if (state === "success") {
-      submitBtn.classList.add(
-        "border-green-600",
-        "bg-green-600",
-        "text-white",
-        "hover:bg-green-700"
-      );
-      return;
-    }
-
-    if (state === "fail") {
-      submitBtn.classList.add(
-        "border-rose-500",
-        "bg-rose-500/10",
-        "text-rose-300",
-        "hover:bg-rose-500",
-        "hover:text-white"
-      );
-      return;
-    }
-
-    submitBtn.classList.add(
-      "border-slate-500",
-      "bg-slate-500/10",
-      "text-slate-300",
-      "hover:bg-slate-500",
-      "hover:text-white"
-    );
   }
 
   setPendingProgress(label: string, percent: number | null): void {
@@ -146,7 +68,7 @@ export class YtdlpUiController {
       return;
     }
 
-    this.renderProgressBar(this.pendingPercent, details);
+    this.responseState.setDockProgressMeta(details);
   }
 
   setPrimaryStage(stage: PrimaryStage): void {
@@ -157,19 +79,6 @@ export class YtdlpUiController {
     if (stage === "submit") {
       this.hideProgress();
       submitBtn.textContent = "Submit Download";
-      submitBtn.classList.remove(
-        "bg-green-600",
-        "border-green-600",
-        "text-white",
-        "hover:bg-green-700"
-      );
-      submitBtn.classList.add(
-        "border-accent",
-        "bg-accent/5",
-        "text-accent",
-        "hover:bg-accent",
-        "hover:text-white"
-      );
       return;
     }
 
@@ -178,9 +87,6 @@ export class YtdlpUiController {
       this.renderProgressBar(null, "Waiting for progress...");
       return;
     }
-
-    submitBtn.textContent = "Save File";
-    this.hideProgress();
   }
 
   getPrimaryStage(): PrimaryStage {
@@ -197,8 +103,10 @@ export class YtdlpUiController {
     let dockState: ToolResponseState = "idle";
     if (nextState === "LOADING_CAPTCHA" || nextState === "SUBMITTING") {
       dockState = "pending";
-    } else if (nextState === "POLLING") {
+    } else if (nextState === "SERVER_DOWNLOADING") {
       dockState = "downloading";
+    } else if (nextState === "BROWSER_DOWNLOADING") {
+      dockState = "browser-downloading";
     } else if (nextState === "READY") {
       dockState = "success";
     } else if (nextState === "ERROR") {
@@ -208,7 +116,6 @@ export class YtdlpUiController {
     }
 
     this.responseState.setDockState(dockState, message, options);
-    this.applySubmitButtonTone(dockState);
     this.syncInteractiveState();
   }
 
@@ -219,14 +126,16 @@ export class YtdlpUiController {
   syncInteractiveState(): void {
     const isBusy =
       this.state === "LOADING_CAPTCHA" || this.state === "SUBMITTING";
-    const isPolling = this.state === "POLLING";
+    const isDownloading =
+      this.state === "SERVER_DOWNLOADING" ||
+      this.state === "BROWSER_DOWNLOADING";
     const isDisabled = this.state === "DISABLED";
 
     this.refs.pasteBtn.disabled = isBusy;
     this.refs.clearBtn.disabled = isBusy;
 
     this.refs.submitBtn.disabled =
-      isDisabled || isBusy || isPolling || !this.isCaptchaEnabled;
+      isDisabled || isBusy || isDownloading || !this.isCaptchaEnabled;
 
     if (this.primaryStage === "pending") {
       this.refs.submitBtn.disabled = true;
