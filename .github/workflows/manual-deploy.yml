@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         run: |
           if [[ -z "${{ vars.AUTHORIZED_USERS }}" ]]; then
-            echo "::error::VPN_CERT_AUTHORIZED_USERS variable not configured"
+            echo "::error::AUTHORIZED_USERS variable not configured"
             exit 1
           fi
           if ! echo "${{ vars.AUTHORIZED_USERS }}" | grep -qw "${{ github.actor }}"; then

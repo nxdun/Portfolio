@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
-    "@astrojs/rss": "^4.0.17",
-    "@astrojs/sitemap": "^3.7.1",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^5.18.1",
@@ -48,7 +48,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.2",
-    "wrangler": "^4.77.0"
+    "wrangler": "^4.78.0"
   },
   "pnpm": {
     "overrides": {
