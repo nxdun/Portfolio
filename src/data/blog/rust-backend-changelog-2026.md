@@ -14,7 +14,18 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 
 ## Future updates - Backlog
 
-- _Separate CAPTCHA Verification endpoint_
+- _Redis Intergration for Caching and Pub/Sub_
+- _Add OpenGraph API Intergration and Map it with Postman_
+
+## v.0.3.0 - 2026-03-31
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/9" target="_blank"><code>#9</code></a>[feat(infra)] Tiered rate limiting, Caddy file server, and expanded test suite
+  - Yt Download Support Removed Due to DMCA Sorry ;[
+  - Added API Key Support With Tiered Rate Limiting (free vs. premium).
+  - Added Production Caddyfile with Personal File Server + Reverse Proxy.
+  - Infrastructure Fully Parameterized with Environment Variables and Config Files.
+  - Test Cases Are More Rigorous and Cover Edge Cases.
+  - Postman Collection is More Structured With Up to Date Seperation and Usage of environment variables.
 
 ## v0.2.0 - 2026-03-27
 
