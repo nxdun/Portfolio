@@ -45,19 +45,13 @@ The `buildx` plugin acts as the next-generation `docker build` command, using Bu
 
 ### Enable the buildx Plugin
 
-Ensure you are using Docker 19.03 or newer. Enable the `buildx` plugin by setting the environment variable:
-
-```bash
-export DOCKER_CLI_EXPERIMENTAL=enabled
-```
-
-Verify it is active:
+Ensure you are using Docker 19.03 or newer. Verify it is active:
 
 ```bash
 docker buildx version
 ```
 
-If the variable doesn't take effect (e.g., on Arch Linux), compile it from source:
+If the plugin isn't available (e.g., on Arch Linux), compile it from source:
 
 ```bash
 export DOCKER_BUILDKIT=1
@@ -175,22 +169,22 @@ Running software across different CPU architectures presents challenges. Docker'
 
 ## References
 
-[^1]: QEMU: https://www.wikiwand.com/zh-hans/QEMU
+[^1]: QEMU: [https://www.wikiwand.com/zh-hans/QEMU](https://www.wikiwand.com/zh-hans/QEMU)
 
-[^2]: binfmt_misc: https://en.wikipedia.org/wiki/Binfmt_misc
+[^2]: binfmt_misc: [https://en.wikipedia.org/wiki/Binfmt_misc](https://en.wikipedia.org/wiki/Binfmt_misc)
 
-[^3]: chroot: https://en.wikipedia.org/wiki/Chroot
+[^3]: chroot: [https://en.wikipedia.org/wiki/Chroot](https://en.wikipedia.org/wiki/Chroot)
 
-[^4]: buildx: https://github.com/docker/buildx
+[^4]: buildx: [https://github.com/docker/buildx](https://github.com/docker/buildx)
 
-[^5]: BuildKit: https://github.com/moby/buildkit
+[^5]: BuildKit: [https://github.com/moby/buildkit](https://github.com/moby/buildkit)
 
-[^6]: Docker Hub: https://hub.docker.com/
+[^6]: Docker Hub: [https://hub.docker.com/](https://hub.docker.com/)
 
-[^7]: manifest: https://docs.docker.com/engine/reference/commandline/manifest/
+[^7]: manifest: [https://docs.docker.com/engine/reference/commandline/manifest/](https://docs.docker.com/engine/reference/commandline/manifest/)
 
-[^8]: Building Multi-Arch Images for Arm and x86 with Docker Desktop: https://engineering.docker.com/2019/04/multi-arch-images/
+[^8]: Building Multi-Arch Images for Arm and x86 with Docker Desktop: [https://engineering.docker.com/2019/04/multi-arch-images/](https://engineering.docker.com/2019/04/multi-arch-images/)
 
-[^9]: Getting started with Docker for Arm on Linux: https://engineering.docker.com/2019/06/getting-started-with-docker-for-arm-on-linux/
+[^9]: Getting started with Docker for Arm on Linux: [https://engineering.docker.com/2019/06/getting-started-with-docker-for-arm-on-linux/](https://engineering.docker.com/2019/06/getting-started-with-docker-for-arm-on-linux/)
 
 [^10]: Leverage multi-CPU architecture support: https://docs.docker.com/docker-for-mac/multi-arch/
