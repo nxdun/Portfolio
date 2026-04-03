@@ -134,7 +134,7 @@ const recentProjects = projectsData.slice(0, 3);
           <h2 class="mb-4 text-2xl font-semibold tracking-wide">
             Featured Projects
           </h2>
-          <ul class="mt-2">
+          <ul class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {recentProjects.map(project => (
               <ProjectCard variant="h3" project={project} />
             ))}
@@ -146,13 +146,6 @@ const recentProjects = projectsData.slice(0, 3);
     <div class="my-8 text-center">
       <LinkButton href="/projects/">
         All Projects
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
-    </div>
-
-    <div class="my-8 text-center">
-      <LinkButton href="/tools?tool=base64">
-        All Tools
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

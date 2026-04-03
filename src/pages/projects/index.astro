@@ -7,14 +7,21 @@ import ProjectCard from "@/components/ProjectCard.astro";
 import projectsData from "@/data/projects/ProjectData.json";
 import { SITE } from "@/config";
 
-const projects = projectsData;
+type Project = (typeof projectsData)[0] & { featured?: number };
+
+// Sort projects: featured projects (lower numbers) on top Refer Json Schema.
+const sortedProjects = [...projectsData].sort((a: Project, b: Project) => {
+  const aRank = a.featured ?? 9999;
+  const bRank = b.featured ?? 9999;
+  return aRank - bRank;
+});
 ---
 
 <Layout title={`Projects | ${SITE.title}`}>
   <Header activeNav="projects" />
   <Main pageTitle="Projects" pageDesc="All the projects I've worked on.">
-    <ul class="columns-1 gap-5 sm:columns-2 lg:columns-3 2xl:columns-4">
-      {projects.map(project => <ProjectCard project={project} />)}
+    <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {sortedProjects.map(project => <ProjectCard project={project} />)}
     </ul>
   </Main>
   <Footer />

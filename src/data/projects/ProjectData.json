@@ -135,7 +135,7 @@
   {
     "project_name": "Smart Healthcare System for Urban Hospitals",
     "short_desc": "Health Wizard",
-    "full_desc": "JWT Authentication, Design Patterns, Higher Order Components, Advanced File Organization, Event Emitter, IIFE Functions, Discriminators, Requirement Analysis, XP Methodology, and Agile Development.",
+    "full_desc": "JWT, Design Patterns, IIFE, Discriminators, Requirement Analysis, XP, Agile Development.",
     "tags": {
       "icon": [
         { "name": "Express", "iconName": "IconExpress" },

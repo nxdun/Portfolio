@@ -26,59 +26,145 @@ const projectId = slugifyStr(project_name);
 const dialogId = `dialog-${projectId}`;
 ---
 
-<li class="mb-5 break-inside-avoid">
-  <button
-    onclick={`document.getElementById('${dialogId}').showModal()`}
-    class="group relative mx-0 flex w-full cursor-pointer flex-col rounded-xl border border-border/60 bg-muted/10 p-5 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-muted/20 hover:shadow-[0_0_0_1px_var(--accent)] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
-    aria-label={`View details for ${project_name}`}
+<li class="flex h-full flex-col rounded-xl transition-all">
+  <project-card
+    data-dialog-id={dialogId}
+    class="group relative mx-0 flex h-full w-full flex-col items-center rounded-2xl border border-border/70 bg-linear-to-b from-muted/20 to-background px-4 py-5 text-center transition-all duration-250 ease-out hover:-translate-y-0.5 hover:border-accent/80 hover:shadow-[0_0_0_1px_var(--accent),0_16px_26px_-24px_var(--accent)] sm:px-6 sm:py-6"
   >
-    <Heading
-      class="text-lg font-semibold text-accent decoration-dashed underline-offset-4 group-hover:underline"
+    <button
+      onclick={`document.getElementById('${dialogId}').showModal()`}
+      class="mb-3 cursor-pointer text-xl leading-snug font-bold text-accent outline-hidden hover:underline sm:text-2xl"
       style={{ viewTransitionName: projectId }}
+      aria-label={`View details for ${project_name}`}
     >
-      {project_name}
-    </Heading>
+      <Heading>{project_name}</Heading>
+    </button>
 
     <div
-      class="mt-3 flex flex-wrap items-center gap-2 text-foreground/70 group-hover:text-foreground/90"
+      class="card-content flex w-full grow flex-col items-center overflow-hidden transition-all duration-300"
+      style="max-height: 180px;"
     >
-      {
-        tags.icon.map(t => {
-          const IconImg = getIcon(t.iconName);
-          return (
+      <div
+        class="mb-4 flex w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-2 text-foreground/75 transition-colors group-hover:text-foreground"
+      >
+        {
+          tags.icon.map(t => {
+            const IconImg = getIcon(t.iconName);
+            return (
+              <span
+                class="flex items-center justify-center p-1 transition-all hover:scale-110"
+                title={t.name}
+              >
+                {IconImg && (
+                  <span
+                    class="icon-container block size-5"
+                    set:html={IconImg}
+                  />
+                )}
+              </span>
+            );
+          })
+        }
+        {
+          tags.noIcon.map(tag => (
             <span
-              class="flex items-center justify-center p-1 transition-all hover:scale-110"
-              title={t.name}
+              class="project-tag rounded-md px-2 py-1 text-[0.7rem] font-medium tracking-wide"
+              style={`--tag-hue: ${getTagHue(tag)}`}
             >
-              {IconImg && (
-                <span class="icon-container block size-6" set:html={IconImg} />
-              )}
+              {tag}
             </span>
-          );
-        })
-      }
-      {
-        tags.noIcon.map(tag => (
-          <span
-            class="project-tag rounded-md px-2 py-1 text-sm font-medium"
-            style={`--tag-hue: ${getTagHue(tag)}`}
-          >
-            {tag}
-          </span>
-        ))
-      }
+          ))
+        }
+      </div>
+
+      <p class="mb-4 max-w-[56ch] text-sm leading-relaxed text-foreground/85">
+        {short_desc}
+      </p>
     </div>
 
-    <p class="mt-2 line-clamp-3 text-sm text-foreground/90">
-      {short_desc}
-    </p>
-
-    <span
-      class="mt-auto pt-4 text-sm text-foreground/70 group-hover:text-foreground/95"
-    >
-      View details →
-    </span>
-  </button>
+    <div class="mt-auto flex w-full items-center justify-center pt-4">
+      <button
+        class="action-btn inline-flex cursor-pointer items-center rounded-full border border-border/80 px-3 py-1 text-xs font-semibold tracking-wide text-foreground/75 transition-colors group-hover:border-accent/70 group-hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-hidden"
+      >
+        View Details &rarr;
+      </button>
+    </div>
+  </project-card>
 
   <ProjectDialog project={project} />
 </li>
+
+<script>
+  class ProjectCard extends HTMLElement {
+    connectedCallback() {
+      const content = this.querySelector(".card-content") as HTMLElement;
+      const actionBtn = this.querySelector(".action-btn") as HTMLButtonElement;
+      const dialogId = this.dataset.dialogId;
+
+      if (!content || !actionBtn || !dialogId) return;
+
+      // Small delay to ensure layouts are calculated
+      setTimeout(() => {
+        // Detect if content is taller than max-height
+        const isOverflowing = content.scrollHeight > content.clientHeight;
+
+        if (isOverflowing) {
+          actionBtn.innerHTML = "Show More &darr;";
+
+          const collapseBtn = document.createElement("button");
+          collapseBtn.className = actionBtn.className;
+          collapseBtn.innerHTML = "Show Less &uarr;";
+          collapseBtn.style.display = "none";
+
+          const btnContainer = actionBtn.parentElement;
+          if (btnContainer) {
+            btnContainer.classList.add("gap-3");
+            btnContainer.appendChild(collapseBtn);
+          }
+
+          actionBtn.addEventListener("click", e => {
+            e.preventDefault();
+            const isExpanded = content.classList.contains("expanded");
+
+            if (!isExpanded) {
+              // Expand
+              content.style.maxHeight = content.scrollHeight + "px";
+              content.classList.add("expanded");
+              actionBtn.innerHTML = "View Details &rarr;";
+              collapseBtn.style.display = "inline-flex";
+            } else {
+              // Open modal if already expanded
+              const dialog = document.getElementById(
+                dialogId
+              ) as HTMLDialogElement;
+              if (dialog) dialog.showModal();
+            }
+          });
+
+          collapseBtn.addEventListener("click", e => {
+            e.preventDefault();
+            // Collapse
+            content.style.maxHeight = "180px";
+            content.classList.remove("expanded");
+            actionBtn.innerHTML = "Show More &darr;";
+            collapseBtn.style.display = "none";
+          });
+        } else {
+          // If no overflow, default to opening the modal directly
+          actionBtn.addEventListener("click", e => {
+            e.preventDefault();
+            const dialog = document.getElementById(
+              dialogId
+            ) as HTMLDialogElement;
+            if (dialog) dialog.showModal();
+          });
+        }
+      }, 50);
+    }
+  }
+
+  // Define only if not already defined
+  if (!customElements.get("project-card")) {
+    customElements.define("project-card", ProjectCard);
+  }
+</script>
