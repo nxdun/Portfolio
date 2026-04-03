@@ -61,6 +61,7 @@ choco install make
 ```
 
 ### File Structure
+
 <details>
 <summary>Directory Structure (overall)</summary>
 
@@ -274,4 +275,5 @@ choco install make
 `-- wrangler.jsonc
 
 ```
+
 </details>
