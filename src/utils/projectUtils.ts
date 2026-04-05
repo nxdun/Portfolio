@@ -1,10 +1,19 @@
-// Get all tags icons only.
 // Note: This relies on Vite's glob import feature.
 const iconImports = import.meta.glob<string>("/src/assets/tags/*.svg", {
   eager: true,
   query: "?raw",
   import: "default",
 });
+
+const uiIconImports = import.meta.glob<string>("/src/assets/icons/*.svg", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+});
+
+const iconAliases: Record<string, string> = {
+  IconGitLab: "IconGitHub",
+};
 
 /**
  * Generate distinct colorful styles for tags based on the tag name.
@@ -22,6 +31,9 @@ export const getTagHue = (tag: string) => {
  * Get the SVG content for a given icon name.
  */
 export const getIcon = (name: string) => {
-  const path = `/src/assets/tags/${name}.svg`;
-  return iconImports[path];
+  const resolvedName = iconAliases[name] || name;
+  const tagPath = `/src/assets/tags/${resolvedName}.svg`;
+  const uiPath = `/src/assets/icons/${resolvedName}.svg`;
+
+  return iconImports[tagPath] || uiIconImports[uiPath];
 };

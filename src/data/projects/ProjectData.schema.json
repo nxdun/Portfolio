@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Project Data Array",
-  "description": "An array of portfolio or project entries. Each item represents one software project and contains metadata such as project name, short and full descriptions, technology tags, repository link, development time period, and preview images.",
+  "description": "An array of portfolio or project entries. Each item represents one software project and contains metadata such as project name, short and full descriptions, technology tags, related links, development time period, and preview images.",
   "type": "array",
   "items": {
     "type": "object",
@@ -64,11 +64,39 @@
         },
         "required": ["icon", "noIcon"]
       },
-      "github_url": {
-        "type": "string",
-        "format": "uri",
-        "description": "The public GitHub repository URL for the project source code. This should point directly to the repository so users can view the codebase, commits, documentation, and related project files.",
-        "examples": ["https://github.com/nxdun/CodeWizard"]
+      "urls": {
+        "type": "array",
+        "description": "A collection of related project links (up to 5). Each link can include an icon, label text, the URL, and a custom description. Links are displayed in the order they appear.",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "description": "A single link entry for the project (e.g., GitHub, Live Demo, Documentation).",
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "The display text for the link (e.g., 'GitHub', 'Live Demo', 'Documentation').",
+              "examples": ["GitHub", "Live Demo", "Documentation", "Paper"]
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "The full URL to navigate to when the link is clicked."
+            },
+            "description": {
+              "type": "string",
+              "description": "A short description or tooltip for the link. Appears as supporting text or hover text.",
+              "examples": ["View Source Code", "Visit Live Website", "Read Full Documentation", "Published Paper"]
+            },
+            "iconName": {
+              "type": ["string", "null"],
+              "description": "Optional icon component name (e.g., 'IconGitHub', 'IconGlobe', 'IconExternalLink'). Set to null for text-only links.",
+              "examples": ["IconGitHub", "IconGlobe", "IconExternalLink", "IconDocument", null]
+            }
+          },
+          "required": ["label", "url", "description"]
+        }
       },
       "time_period": {
         "type": "string",
@@ -98,7 +126,7 @@
       "short_desc",
       "full_desc",
       "tags",
-      "github_url",
+      "urls",
       "time_period",
       "photos"
     ]

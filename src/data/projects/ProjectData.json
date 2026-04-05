@@ -12,7 +12,14 @@
       ],
       "noIcon": []
     },
-    "github_url": "https://github.com/nxdun/NASA-Spacia",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/NASA-Spacia",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "April 2024 - May 2024",
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg",
@@ -34,7 +41,14 @@
       ],
       "noIcon": []
     },
-    "github_url": "https://github.com/nxdun/lms-microservice",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/lms-microservice",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "March 2024 - May 2024",
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-1.png",
@@ -53,7 +67,14 @@
       ],
       "noIcon": ["Socket Programming"]
     },
-    "github_url": "https://github.com/nxdun/OSGI.chatte",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/OSGI.chatte",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "February 2024 - March 2024",
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-1.jpg",
@@ -72,7 +93,14 @@
       ],
       "noIcon": ["RESTful API"]
     },
-    "github_url": "https://github.com/nxdun/Movie-theatre-management-system",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/Movie-theatre-management-system",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "July 2023 - October 2023",
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-2.bak.jpg",
@@ -92,7 +120,14 @@
       ],
       "noIcon": []
     },
-    "github_url": "https://github.com/nxdun",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "January 2023 - March 2023",
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png",
@@ -123,7 +158,14 @@
         "Discriminators"
       ]
     },
-    "github_url": "https://github.com/nxdun/HealthWizard",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/HealthWizard",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "April 2024 - July 2024",
     "photos": [
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin-userDashboiard.jpeg?updatedAt=1729425370011",
@@ -145,7 +187,14 @@
       ],
       "noIcon": []
     },
-    "github_url": "https://github.com/nxdun/HealthWizard",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/HealthWizard",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "April 2024 - July 2024",
     "photos": [
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/appointment%20booking.jpg?updatedAt=1729425369292",
@@ -164,7 +213,14 @@
       ],
       "noIcon": ["Microservices", "Code Analysis", "Project Management"]
     },
-    "github_url": "https://github.com/nxdun/CodeWizard",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/CodeWizard",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "July 2024 - Octomber 2024",
     "photos": [
       "https://ik.imagekit.io/nuu/Screenshot%202024-09-14%20112456.png?updatedAt=1730009713252",
@@ -182,7 +238,14 @@
       ],
       "noIcon": ["Web API", "MVC"]
     },
-    "github_url": "https://github.com/nxdun/NuusBreakfast",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/NuusBreakfast",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "Dec 2024 - Jan 2025",
     "photos": [
       "https://ik.imagekit.io/nuu/nuus%20breakfast-1.jpg?updatedAt=1735893858337",
@@ -197,8 +260,35 @@
       "icon": [{ "name": "Express", "iconName": "IconExpress" }],
       "noIcon": ["FTP", "Parallel Downloads", "API"]
     },
-    "github_url": "https://github.com/nxdun/TeraboxBulkDownloader",
+    "urls": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nxdun/TeraboxBulkDownloader",
+        "description": "View Source Code",
+        "iconName": "IconGitHub"
+      }
+    ],
     "time_period": "june 2024 - July 2025",
     "photos": ["https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"]
+  },
+  {
+    "project_name": "Multi Agents AI-Based Chatbot for Support Automation",
+    "short_desc": "Research Project (Company Collaboration), Project Leader, Developed Custom Multi-Agent System",
+    "full_desc": "Project leader for a generative AI-based chatbot designed for support automation. Led architecture design, enforced Git-Flow and conventional commit best practices, authored CI/CD pipelines, and co-authored a research paper published at the 7th ICAC (2025). Developed a core Python multi-agent system service with custom MCP-based intra-service communication and agentic task orchestration, integrated quantized open-source LLMs, and produced API documentation. Built complete IaC with Terraform, CloudFormation, Dockerized builds, and deployed production infra with OIDC using GitHub Actions, S3 Terraform state, and Cloudflare-managed domain.",
+    "tags": {
+      "icon": [{"name": "Python", "iconName": "IconPython"}],
+      "noIcon": ["LLM", "Multi-Agent Systems", "MCP", "Terraform", "CI/CD", "GitHub Actions", "Cloudflare", "OIDC"]
+    },
+    "urls": [
+      {
+        "label": "GitLab",
+        "url": "https://gitlab.com/rp25-036/ChatBot",
+        "description": "View Source Code",
+        "iconName": "IconGitLab"
+      }
+    ],
+    "time_period": "Jan 2025 - Dec 2025",
+    "photos": [],
+    "featured": 1
   }
 ]
