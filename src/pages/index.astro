@@ -20,7 +20,41 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
-const recentProjects = projectsData.slice(0, 3);
+const getTopFeaturedProjects = (
+  projects: (typeof projectsData)[number][],
+  limit: number
+) => {
+  const top: (typeof projectsData)[number][] = [];
+
+  for (const project of projects) {
+    const featuredValue = project.featured;
+    if (typeof featuredValue !== "number") {
+      continue;
+    }
+
+    let insertAt = top.length;
+    for (let i = 0; i < top.length; i++) {
+      const currentValue = top[i].featured ?? Number.POSITIVE_INFINITY;
+      if (featuredValue < currentValue) {
+        insertAt = i;
+        break;
+      }
+    }
+
+    if (insertAt < limit) {
+      top.splice(insertAt, 0, project);
+      if (top.length > limit) {
+        top.pop();
+      }
+    } else if (top.length < limit) {
+      top.push(project);
+    }
+  }
+
+  return top;
+};
+
+const featuredProjects = getTopFeaturedProjects(projectsData, 3);
 ---
 
 <Layout>
@@ -129,13 +163,13 @@ const recentProjects = projectsData.slice(0, 3);
     </div>
 
     {
-      recentProjects.length > 0 && (
+      featuredProjects.length > 0 && (
         <section id="projects" class="border-t border-border pt-12 pb-6">
           <h2 class="mb-4 text-2xl font-semibold tracking-wide">
             Featured Projects
           </h2>
-          <ul class="mt-2">
-            {recentProjects.map(project => (
+          <ul class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {featuredProjects.map(project => (
               <ProjectCard variant="h3" project={project} />
             ))}
           </ul>
@@ -146,13 +180,6 @@ const recentProjects = projectsData.slice(0, 3);
     <div class="my-8 text-center">
       <LinkButton href="/projects/">
         All Projects
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
-    </div>
-
-    <div class="my-8 text-center">
-      <LinkButton href="/tools?tool=base64">
-        All Tools
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

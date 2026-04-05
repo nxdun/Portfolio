@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Data Array",
+  "description": "An array of portfolio or project entries. Each item represents one software project and contains metadata such as project name, short and full descriptions, technology tags, related links, development time period, and preview images.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "description": "A single project record used to describe a software application, API, platform, or system in a portfolio or project listing.",
+    "additionalProperties": false,
+    "properties": {
+      "project_name": {
+        "type": "string",
+        "description": "The official name or display title of the project. This should be short, clear, and suitable for showing as the main heading in a portfolio card or project details page.",
+        "examples": ["CodeWizard"]
+      },
+      "short_desc": {
+        "type": "string",
+        "description": "A very brief summary of the project, usually one line. It should quickly explain the main purpose, type, or core identity of the project without going into implementation details.",
+        "examples": ["Task management and code analysis platform"]
+      },
+      "full_desc": {
+        "type": "string",
+        "description": "A detailed explanation of the project. This field can include the system architecture, major features, technical goals, problem solved, workflows, performance improvements, development approach, and any important implementation highlights.",
+        "examples": [
+          "Microservices-based project management platform with task handling, real-time feedback, issue tracking, and code quality optimization."
+        ]
+      },
+      "tags": {
+        "type": "object",
+        "description": "A categorized collection of technologies, tools, and concepts used in the project. This is split into items with icons for UI display and plain text tags for concepts or technologies that do not need icons.",
+        "additionalProperties": false,
+        "properties": {
+          "icon": {
+            "type": "array",
+            "description": "A list of technology tags that should be shown with icons in the user interface. Each item contains a readable technology name and the matching icon identifier used by the frontend.",
+            "items": {
+              "type": "object",
+              "description": "A technology item that includes both the label to display and the icon component or icon key used to visually represent it.",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The human-readable name of the technology, framework, language, database, or tool used in the project.",
+                  "examples": ["React"]
+                },
+                "iconName": {
+                  "type": "string",
+                  "description": "The icon component name, icon key, or identifier mapped in the frontend to visually represent the technology.",
+                  "examples": ["IconReact"]
+                }
+              },
+              "required": ["name", "iconName"]
+            }
+          },
+          "noIcon": {
+            "type": "array",
+            "description": "A list of plain text tags that describe architectural patterns, features, domains, or technologies that do not need an icon.",
+            "items": {
+              "type": "string",
+              "description": "A simple descriptive tag related to the project.",
+              "examples": ["Microservices"]
+            }
+          }
+        },
+        "required": ["icon", "noIcon"]
+      },
+      "urls": {
+        "type": "array",
+        "description": "A collection of related project links (up to 5). Each link can include an icon, label text, the URL, and a custom description. Links are displayed in the order they appear.",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "description": "A single link entry for the project (e.g., GitHub, Live Demo, Documentation).",
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "The display text for the link (e.g., 'GitHub', 'Live Demo', 'Documentation').",
+              "examples": ["GitHub", "Live Demo", "Documentation", "Paper"]
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "The full URL to navigate to when the link is clicked."
+            },
+            "description": {
+              "type": "string",
+              "description": "A short description or tooltip for the link. Appears as supporting text or hover text.",
+              "examples": [
+                "View Source Code",
+                "Visit Live Website",
+                "Read Full Documentation",
+                "Published Paper"
+              ]
+            },
+            "iconName": {
+              "type": ["string", "null"],
+              "description": "Optional icon component name (e.g., 'IconGitHub', 'IconGlobe', 'IconExternalLink'). Set to null for text-only links.",
+              "examples": [
+                "IconGitHub",
+                "IconGlobe",
+                "IconExternalLink",
+                "IconDocument",
+                null
+              ]
+            }
+          },
+          "required": ["label", "url", "description"]
+        }
+      },
+      "time_period": {
+        "type": "string",
+        "description": "The period during which the project was developed, maintained, or actively worked on. This is stored as readable text rather than structured dates so it can be displayed directly in the UI.",
+        "examples": ["July 2024 - October 2024"]
+      },
+      "photos": {
+        "type": "array",
+        "description": "A list of image URLs showing screenshots, dashboards, previews, or other visual representations of the project. These images are typically used in project galleries, sliders, cards, or detail pages.",
+        "items": {
+          "type": "string",
+          "format": "uri",
+          "description": "A direct URL to a project-related image.",
+          "examples": ["https://example.com/project-preview.png"]
+        }
+      },
+      "featured": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "An optional priority number (0-100) to feature the project. Lower numbers indicate higher display priority. Projects omitting this field should be sorted at the bottom, below all numbered entries.",
+        "examples": [1]
+      }
+    },
+    "required": [
+      "project_name",
+      "short_desc",
+      "full_desc",
+      "tags",
+      "urls",
+      "time_period",
+      "photos"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "Nuus Portfolio",
   "type": "module",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "astro dev --host",
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
-    "@astrojs/rss": "^4.0.17",
-    "@astrojs/sitemap": "^3.7.1",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^5.18.1",
@@ -29,7 +29,7 @@
     "remark-toc": "^9.0.0",
     "satori": "^0.18.4",
     "sharp": "^0.34.5",
-    "slugify": "^1.6.8",
+    "slugify": "^1.6.9",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "@shikijs/transformers": "^3.23.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@typescript-eslint/parser": "^8.57.2",
+    "@typescript-eslint/parser": "^8.58.0",
     "eslint": "^9.39.4",
     "eslint-plugin-astro": "^1.6.0",
     "globals": "^16.5.0",
@@ -47,8 +47,8 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2",
-    "wrangler": "^4.77.0"
+    "typescript-eslint": "^8.58.0",
+    "wrangler": "^4.80.0"
   },
   "pnpm": {
     "overrides": {

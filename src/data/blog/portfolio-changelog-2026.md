@@ -18,6 +18,13 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
+## v2.4.1 - 2026-04-03
+
+- <a href="https://github.com/nxdun/Portfolio/pull/25" target="_blank"><code>#25</code></a> [chore(deps)] Bump dependencies, expand README docs, fix CI variable
+  - Bumped related lockfile resolutions to latest versions.
+  - Updated Projects section with Rigid Schema and added new project entries.
+  - Added full repository directory tree under `### File Structure` in README..
+
 ## v2.4.0 - 2026-03-27
 
 - <a href="https://github.com/nxdun/Portfolio/pull/24" target="_blank"><code>#24</code></a> [feat(tools)] Improve downloader experience and expand supported platforms
