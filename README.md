@@ -84,6 +84,7 @@ choco install make
 |   |-- nadzu-og-2.jpg
 |   |-- nadzu-og-3.jpg
 |   |-- nadzu-og.jpg
+|   `-- pagefind
 |-- src
 |   |-- assets
 |   |   |-- icons
@@ -126,6 +127,7 @@ choco install make
 |   |   |   `-- LoaderPacman.svg
 |   |   `-- tags
 |   |       |-- IconApacheFelix.svg
+|   |       |-- IconCloudFlare.svg
 |   |       |-- IconCsharp.svg
 |   |       |-- IconCss.svg
 |   |       |-- IconDocker.svg
@@ -134,6 +136,8 @@ choco install make
 |   |       |-- IconExpress.svg
 |   |       |-- IconFigma.svg
 |   |       |-- IconFlask.svg
+|   |       |-- IconGitlab.svg
+|   |       |-- IconGlobe.svg
 |   |       |-- IconHeroku.svg
 |   |       |-- IconJava.svg
 |   |       |-- IconKubernetes.svg
@@ -142,11 +146,14 @@ choco install make
 |   |       |-- IconPhp.svg
 |   |       |-- IconReact.svg
 |   |       |-- IconRedux.svg
+|   |       |-- IconResearch.svg
 |   |       |-- IconSpringBoot.svg
 |   |       |-- IconSql.svg
 |   |       |-- IconTailwind.svg
+|   |       |-- IconTerraform.svg
 |   |       |-- IconThreejs.svg
-|   |       `-- IconTomcat.svg
+|   |       |-- IconTomcat.svg
+|   |       `-- IconYoutube.svg
 |   |-- components
 |   |   |-- BackButton.astro
 |   |   |-- BackToTopButton.astro

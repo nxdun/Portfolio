@@ -28,7 +28,7 @@
   },
   {
     "project_name": "Study-Forge Learning System",
-    "short_desc": "Microservice: UI and Backend Services with Containerization and Orchestration",
+    "short_desc": "Microservice: Polyglot Microservices including 7 Services with Docker and Kubernetes",
     "full_desc": "Backend Services: Built and maintained high-performance and secure backend services using Express, Flask, and Spring Boot. Containerization and Orchestration: Utilized Docker and Kubernetes for efficient container orchestration.",
     "tags": {
       "icon": [
@@ -47,13 +47,26 @@
         "url": "https://github.com/nxdun/lms-microservice",
         "description": "View Source Code",
         "iconName": "IconGitHub"
+      },
+      {
+        "label": "Live Frontend",
+        "url": "https://lms-core-microservice.vercel.app/",
+        "description": "Visit Live Website",
+        "iconName": "IconGlobe"
+      },
+      {
+        "label": "Demo Video",
+        "url": "https://www.youtube.com/watch?v=y88QLlOEGJ0",
+        "description": "Watch Demo Video",
+        "iconName": "IconYoutube"
       }
     ],
     "time_period": "March 2024 - May 2024",
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-1.png",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-2.png"
-    ]
+    ],
+    "featured": 50
   },
   {
     "project_name": "Chatte - P2P and Global Messenger",
@@ -149,12 +162,11 @@
         { "name": "ThreeJS", "iconName": "IconThreejs" }
       ],
       "noIcon": [
-        "JWT Authentication",
+        "JWT",
         "Higher Order Components",
         "Advanced File Organization",
-        "Image Upload",
         "Event Emitter",
-        "IIFE Functions",
+        "IIFE",
         "Discriminators"
       ]
     },
@@ -276,28 +288,39 @@
     "short_desc": "Research Project (Company Collaboration), Project Leader, Developed Custom Multi-Agent System",
     "full_desc": "Project leader for a generative AI-based chatbot designed for support automation. Led architecture design, enforced Git-Flow and conventional commit best practices, authored CI/CD pipelines, and co-authored a research paper published at the 7th ICAC (2025). Developed a core Python multi-agent system service with custom MCP-based intra-service communication and agentic task orchestration, integrated quantized open-source LLMs, and produced API documentation. Built complete IaC with Terraform, CloudFormation, Dockerized builds, and deployed production infra with OIDC using GitHub Actions, S3 Terraform state, and Cloudflare-managed domain.",
     "tags": {
-      "icon": [{ "name": "Python", "iconName": "IconPython" }],
-      "noIcon": [
-        "LLM",
-        "Multi-Agent Systems",
-        "MCP",
-        "Terraform",
-        "CI/CD",
-        "GitHub Actions",
-        "Cloudflare",
-        "OIDC"
-      ]
+      "icon": [
+        { "name": "Python", "iconName": "IconPython" },
+        { "name": "Terraform", "iconName": "IconTerraform" },
+        { "name": "Docker", "iconName": "IconDocker" },
+        { "name": "Cloudflare", "iconName": "IconCloudFlare" }
+      ],
+      "noIcon": ["LLM", "Multi-Agent Systems", "MCP", "CI/CD", "GitHub Actions"]
     },
     "urls": [
       {
         "label": "GitLab",
         "url": "https://gitlab.com/rp25-036/ChatBot",
-        "description": "View Source Code",
+        "description": "Source Code",
         "iconName": "IconGitLab"
+      },
+      {
+        "label": "Deployment IaC",
+        "url": "https://github.com/nxdun/chatbot-iaac",
+        "description": "Terraform IaC Repository",
+        "iconName": "IconGitHub"
+      },
+      {
+        "label": "Research Paper",
+        "url": "https://doi.org/10.1109/ICAC69156.2025.11361517",
+        "description": "Published Research Paper",
+        "iconName": "IconResearch"
       }
     ],
     "time_period": "Jan 2025 - Dec 2025",
-    "photos": [],
+    "photos": [
+      "https://ik.imagekit.io/cq1p7u6vo/Portfolio/MAS-diagram.svg",
+      "https://ik.imagekit.io/cq1p7u6vo/Portfolio/Picture1.jpg"
+    ],
     "featured": 1
   }
 ]

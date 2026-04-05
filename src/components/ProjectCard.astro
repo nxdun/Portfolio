@@ -1,6 +1,6 @@
 ---
 import { slugifyStr } from "@/utils/slugify";
-import { getTagHue, getIcon } from "@/utils/projectUtils";
+import { getTagHue, getTagIcon } from "@/utils/projectUtils";
 import ProjectDialog from "./ProjectDialog.astro";
 
 type Props = {
@@ -12,7 +12,12 @@ type Props = {
       icon: { name: string; iconName: string }[];
       noIcon: string[];
     };
-    github_url: string;
+    urls: {
+      label: string;
+      url: string;
+      description: string;
+      iconName?: string | null;
+    }[];
     time_period: string;
     photos?: string[];
   };
@@ -49,7 +54,7 @@ const dialogId = `dialog-${projectId}`;
       >
         {
           tags.icon.map(t => {
-            const IconImg = getIcon(t.iconName);
+            const IconImg = getTagIcon(t.iconName);
             return (
               <span
                 class="flex items-center justify-center p-1 transition-all hover:scale-110"
