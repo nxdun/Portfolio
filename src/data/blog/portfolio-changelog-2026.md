@@ -22,6 +22,7 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 
 - <a href="https://github.com/nxdun/Portfolio/pull/25" target="_blank"><code>#25</code></a> [chore(deps)] Bump dependencies, expand README docs, fix CI variable
   - Bumped related lockfile resolutions to latest versions.
+  - Updated Projects section with Rigid Schema and added new project entries.
   - Added full repository directory tree under `### File Structure` in README..
 
 ## v2.4.0 - 2026-03-27
