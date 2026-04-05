@@ -276,8 +276,17 @@
     "short_desc": "Research Project (Company Collaboration), Project Leader, Developed Custom Multi-Agent System",
     "full_desc": "Project leader for a generative AI-based chatbot designed for support automation. Led architecture design, enforced Git-Flow and conventional commit best practices, authored CI/CD pipelines, and co-authored a research paper published at the 7th ICAC (2025). Developed a core Python multi-agent system service with custom MCP-based intra-service communication and agentic task orchestration, integrated quantized open-source LLMs, and produced API documentation. Built complete IaC with Terraform, CloudFormation, Dockerized builds, and deployed production infra with OIDC using GitHub Actions, S3 Terraform state, and Cloudflare-managed domain.",
     "tags": {
-      "icon": [{"name": "Python", "iconName": "IconPython"}],
-      "noIcon": ["LLM", "Multi-Agent Systems", "MCP", "Terraform", "CI/CD", "GitHub Actions", "Cloudflare", "OIDC"]
+      "icon": [{ "name": "Python", "iconName": "IconPython" }],
+      "noIcon": [
+        "LLM",
+        "Multi-Agent Systems",
+        "MCP",
+        "Terraform",
+        "CI/CD",
+        "GitHub Actions",
+        "Cloudflare",
+        "OIDC"
+      ]
     },
     "urls": [
       {

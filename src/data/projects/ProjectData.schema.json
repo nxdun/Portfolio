@@ -87,12 +87,23 @@
             "description": {
               "type": "string",
               "description": "A short description or tooltip for the link. Appears as supporting text or hover text.",
-              "examples": ["View Source Code", "Visit Live Website", "Read Full Documentation", "Published Paper"]
+              "examples": [
+                "View Source Code",
+                "Visit Live Website",
+                "Read Full Documentation",
+                "Published Paper"
+              ]
             },
             "iconName": {
               "type": ["string", "null"],
               "description": "Optional icon component name (e.g., 'IconGitHub', 'IconGlobe', 'IconExternalLink'). Set to null for text-only links.",
-              "examples": ["IconGitHub", "IconGlobe", "IconExternalLink", "IconDocument", null]
+              "examples": [
+                "IconGitHub",
+                "IconGlobe",
+                "IconExternalLink",
+                "IconDocument",
+                null
+              ]
             }
           },
           "required": ["label", "url", "description"]

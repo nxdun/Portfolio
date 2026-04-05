@@ -13,22 +13,20 @@ type Props = {
       icon: { name: string; iconName: string }[];
       noIcon: string[];
     };
-    urls: { label: string; url: string; description: string; iconName?: string | null }[];
+    urls: {
+      label: string;
+      url: string;
+      description: string;
+      iconName?: string | null;
+    }[];
     time_period: string;
     photos?: string[];
   };
 };
 
 const { project } = Astro.props;
-const {
-  project_name,
-  short_desc,
-  full_desc,
-  tags,
-  urls,
-  time_period,
-  photos,
-} = project;
+const { project_name, short_desc, full_desc, tags, urls, time_period, photos } =
+  project;
 
 const projectId = slugifyStr(project_name);
 const dialogId = `dialog-${projectId}`;
@@ -43,7 +41,9 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
 >
   <div class="flex h-full max-h-full flex-col">
     <!-- Header with Title and Close Button -->
-    <div class="sticky top-0 z-10 border-b border-border bg-background px-6 py-4">
+    <div
+      class="sticky top-0 z-10 border-b border-border bg-background px-6 py-4"
+    >
       <div class="flex items-start justify-between">
         <div class="flex-1">
           <h2 class="text-xl font-bold text-accent sm:text-2xl">
@@ -76,14 +76,28 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3.5 py-2 text-sm font-medium leading-none text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                  class="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3.5 py-2 text-sm leading-none font-medium text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-white focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:outline-none"
                   title={link.description}
                 >
                   {IconImg ? (
-                    <span class="icon-container block size-4.5 shrink-0" set:html={IconImg} />
+                    <span
+                      class="icon-container block size-4.5 shrink-0"
+                      set:html={IconImg}
+                    />
                   ) : (
-                    <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-6l6-6m0 0l-6 6"></path>
+                    <svg
+                      class="size-4 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-6l6-6m0 0l-6 6"
+                      />
                     </svg>
                   )}
                   <span>{linkText}</span>
@@ -113,7 +127,10 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
                 title={t.name}
               >
                 {IconImg && (
-                  <span class="icon-container block size-8" set:html={IconImg} />
+                  <span
+                    class="icon-container block size-8"
+                    set:html={IconImg}
+                  />
                 )}
               </span>
             );
@@ -171,7 +188,9 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
     ].join(",");
 
     const getFocusable = (container: Element): HTMLElement[] => {
-      const els = Array.from(container.querySelectorAll(focusableSelector)) as HTMLElement[];
+      const els = Array.from(
+        container.querySelectorAll(focusableSelector)
+      ) as HTMLElement[];
       return els.filter(el => {
         return (
           el instanceof HTMLElement &&
@@ -220,8 +239,12 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
       const imgContainer = dialog.querySelector("[data-images]");
       if (!imgContainer || imgContainer.classList.contains("loaded")) return;
 
-      const photos = JSON.parse(imgContainer.getAttribute("data-images") || "[]");
-      const loaderElement = imgContainer.querySelector(".image-loader") as HTMLElement;
+      const photos = JSON.parse(
+        imgContainer.getAttribute("data-images") || "[]"
+      );
+      const loaderElement = imgContainer.querySelector(
+        ".image-loader"
+      ) as HTMLElement;
 
       if (photos.length === 0) {
         loaderElement?.remove();
@@ -274,7 +297,7 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
             const closeBtn = dialog.querySelector("[data-dialog-close]");
             const focusables = getFocusable(dialog);
             const firstElement = focusables[0] || closeBtn || dialog;
-            
+
             try {
               (firstElement as HTMLElement).focus({ preventScroll: true });
             } catch {
