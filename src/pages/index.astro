@@ -4,6 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
+import Loader from "@/components/Loader.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Card from "@/components/Card.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
@@ -94,32 +95,52 @@ const featuredProjects = getTopFeaturedProjects(projectsData, 3);
         production-grade solutions.
       </p>
 
-      <div class="mt-6 flex flex-col gap-4">
-        <LinkButton href="/posts/" class="whitespace-nowrap">
-          All Posts
-          <IconArrowRight class="inline-block rtl:-rotate-180" />
-        </LinkButton>
+      <div
+        class="mt-6 flex flex-col items-stretch justify-between gap-12 xl:flex-row xl:gap-8"
+      >
+        <div class="flex flex-col gap-4">
+          <LinkButton href="/posts/" class="whitespace-nowrap">
+            All Posts
+            <IconArrowRight class="inline-block rtl:-rotate-180" />
+          </LinkButton>
 
-        <LinkButton href="/projects/" class="whitespace-nowrap">
-          All Projects
-          <IconArrowRight class="inline-block rtl:-rotate-180" />
-        </LinkButton>
+          <LinkButton href="/projects/" class="whitespace-nowrap">
+            All Projects
+            <IconArrowRight class="inline-block rtl:-rotate-180" />
+          </LinkButton>
 
-        <LinkButton href="/tools?tool=base64" class="whitespace-nowrap">
-          All Tools
-          <IconArrowRight class="inline-block rtl:-rotate-180" />
-        </LinkButton>
+          <LinkButton href="/tools?tool=base64" class="whitespace-nowrap">
+            All Tools
+            <IconArrowRight class="inline-block rtl:-rotate-180" />
+          </LinkButton>
+
+          {
+            // only display if at least one social link is enabled
+            SOCIALS.length > 0 && (
+              <div class="mt-4 flex max-sm:flex-col sm:items-center">
+                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
+                  Social Links:
+                </div>
+                <Socials />
+              </div>
+            )
+          }
+        </div>
+
+        <div
+          class="relative hidden w-full flex-1 items-center overflow-hidden align-middle xl:flex"
+        >
+          <Loader
+            mode="attached"
+            isSkeleton={true}
+            class="h-full min-h-[160px] w-full"
+            spotlight="hover"
+            sweep={true}
+            edgeHighlight={true}
+            showIcon={true}
+          />
+        </div>
       </div>
-
-      {
-        // only display if at least one social link is enabled
-        SOCIALS.length > 0 && (
-          <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">Social Links:</div>
-            <Socials />
-          </div>
-        )
-      }
     </section>
 
     {

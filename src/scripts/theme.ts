@@ -40,7 +40,7 @@ function reflectPreference(): void {
   // Check if the body element exists before using getComputedStyle
   if (body) {
     // Get the computed styles for the body element
-    const computedStyles = window.getComputedStyle(body);
+    const computedStyles = window.getComputedStyle(document.documentElement);
 
     // Get the background color property
     const bgColor = computedStyles.backgroundColor;
@@ -83,30 +83,11 @@ function setThemeFeature(): void {
   });
 }
 
-function initToolsWorkbenchIfPresent(): void {
-  if (!document.querySelector("#tools-workbench")) {
-    return;
-  }
-
-  void import("./tools/workbench")
-    .then(({ initToolsWorkbench }) => {
-      window.requestAnimationFrame(() => {
-        initToolsWorkbench();
-      });
-    })
-    .catch(() => {
-      // Keep theme runtime resilient even if tools bundle fails to load.
-    });
-}
-
 // Set up theme features after page load
 setThemeFeature();
-initToolsWorkbenchIfPresent();
 
 // Runs on view transitions navigation
 document.addEventListener("astro:after-swap", setThemeFeature);
-document.addEventListener("astro:after-swap", initToolsWorkbenchIfPresent);
-document.addEventListener("astro:page-load", initToolsWorkbenchIfPresent);
 
 // Set theme-color value before page transition
 // to avoid navigation bar color flickering in Android dark mode
