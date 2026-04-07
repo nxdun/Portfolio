@@ -28,7 +28,6 @@ type ResponseBridge = {
 export class YtdlpUiController {
   private state: YtdlpUiState = "IDLE";
   private primaryStage: PrimaryStage = "submit";
-  private pendingPercent: number | null = null;
 
   constructor(
     private readonly refs: YtdlpDomRefs,
@@ -39,12 +38,10 @@ export class YtdlpUiController {
   ) {}
 
   private hideProgress(): void {
-    this.pendingPercent = null;
     this.responseState.clearDockProgress();
   }
 
   private renderProgressBar(percent: number | null, meta: string): void {
-    this.pendingPercent = percent;
     this.responseState.setDockProgress(percent, meta);
   }
 
