@@ -162,7 +162,6 @@ const spotlightEnabled = spotlight !== "none";
     pointer-events: none;
     clip-path: circle(0px at 50% 50%);
     transition: clip-path 600ms cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: clip-path;
   }
 
   .loader-container[data-loader-state="enter"] .loader-grid-container,
@@ -190,7 +189,6 @@ const spotlightEnabled = spotlight !== "none";
     transition:
       opacity 400ms ease,
       transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
   }
 
   .loader-container[data-loader-state="enter"] .loader-content,
@@ -238,7 +236,7 @@ const spotlightEnabled = spotlight !== "none";
         transparent var(--loader-dot-blur)
       ),
       radial-gradient(circle at 50% 50%, transparent 0, transparent 100%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-position:
       0 0,
       center;
@@ -256,8 +254,12 @@ const spotlightEnabled = spotlight !== "none";
   .loader-container[data-loader-skeleton="true"] .loader-grid,
   .loader-container[data-loader-skeleton="true"] .loader-sweep,
   .loader-container[data-loader-skeleton="true"] .loader-edge {
-    background-attachment: scroll !important;
     background-position: var(--bg-x, 0px) var(--bg-y, 0px) !important;
+  }
+  .loader-container--background .loader-grid,
+  .loader-container--background .loader-spotlight {
+    position: fixed;
+    inset: 0;
   }
   @media (hover: hover) and (pointer: fine) {
     .loader-container[data-loader-skeleton="true"]:hover .loader-sweep {
@@ -277,7 +279,7 @@ const spotlightEnabled = spotlight !== "none";
     );
     background-position: 0 0;
     background-size: var(--loader-grid-size) var(--loader-grid-size);
-    background-attachment: fixed;
+    background-attachment: scroll;
     --mask: radial-gradient(
       circle var(--loader-spotlight-size, 96px) at
         var(--loader-spotlight-x, 50%) var(--loader-spotlight-y, 50%),
@@ -288,10 +290,6 @@ const spotlightEnabled = spotlight !== "none";
     -webkit-mask-image: var(--mask);
     mask-image: var(--mask);
     transition: opacity 800ms ease;
-    will-change:
-      opacity,
-      -webkit-mask-image,
-      mask-image;
   }
 
   html:has(.loader-container[data-loader-skeleton="true"]:hover)
@@ -361,16 +359,12 @@ const spotlightEnabled = spotlight !== "none";
     mask-image: var(--mask);
     -webkit-mask-size: 250% 100%;
     mask-size: 250% 100%;
-    will-change:
-      mask-position,
-      -webkit-mask-position,
-      opacity;
     transition: opacity 300ms ease;
   }
 
   .loader-container[data-loader-state="ready"] .loader-sweep {
     opacity: 0.9;
-    animation: sweep-back-and-forth 2.8s infinite ease-in-out;
+    animation: sweep-back-and-forth 1.6s 1 ease-in-out;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -519,17 +513,23 @@ const spotlightEnabled = spotlight !== "none";
   type LoaderSpotlightMode = "hover" | "always" | "none";
 
   let isUpdating = false;
+  let skeletonElements: HTMLElement[] = [];
+
+  const refreshSkeletonElements = () => {
+    skeletonElements = Array.from(
+      document.querySelectorAll(
+        '.loader-container[data-loader-skeleton="true"]'
+      )
+    ) as HTMLElement[];
+  };
 
   const updateSkeletonOffsets = () => {
-    if (isUpdating) return;
+    if (isUpdating || skeletonElements.length === 0) return;
     isUpdating = true;
 
     requestAnimationFrame(() => {
-      const skeletons = document.querySelectorAll(
-        '.loader-container[data-loader-skeleton="true"]'
-      );
-      for (let i = 0; i < skeletons.length; i++) {
-        const el = skeletons[i] as HTMLElement;
+      for (let i = 0; i < skeletonElements.length; i++) {
+        const el = skeletonElements[i];
         const rect = el.getBoundingClientRect();
         el.style.setProperty("--bg-x", `${-rect.left}px`);
         el.style.setProperty("--bg-y", `${-rect.top}px`);
@@ -617,6 +617,12 @@ const spotlightEnabled = spotlight !== "none";
     private loader: HTMLElement;
     private mode: LoaderSpotlightMode;
     private isPointerFine: boolean;
+    private loaderRect: DOMRect | null = null;
+    private rafId: number | null = null;
+    private queuedEvent: PointerEvent | null = null;
+    private readonly onWindowResize = () => {
+      this.loaderRect = null;
+    };
 
     constructor(loaderElement: HTMLElement, mode: LoaderSpotlightMode) {
       this.loader = loaderElement;
@@ -626,7 +632,41 @@ const spotlightEnabled = spotlight !== "none";
       ).matches;
     }
 
+    private isBackgroundLoader(): boolean {
+      return this.loader.classList.contains("loader-container--background");
+    }
+
+    private shouldDisableBackgroundSpotlight(): boolean {
+      if (!this.isBackgroundLoader()) return false;
+
+      const nav = navigator as Navigator & {
+        connection?: { saveData?: boolean };
+      };
+      const saveData = nav.connection?.saveData === true;
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      const isCoarsePointer = window.matchMedia(
+        "(hover: none), (pointer: coarse)"
+      ).matches;
+      const lowCpuCores =
+        typeof navigator.hardwareConcurrency === "number" &&
+        navigator.hardwareConcurrency > 0 &&
+        navigator.hardwareConcurrency <= 4;
+
+      // Disable always-on background spotlight in power-constrained contexts.
+      return saveData || prefersReducedMotion || isCoarsePointer || lowCpuCores;
+    }
+
     init(): void {
+      if (this.shouldDisableBackgroundSpotlight()) {
+        this.loader.style.removeProperty("--loader-spotlight-x");
+        this.loader.style.removeProperty("--loader-spotlight-y");
+        this.loader.style.removeProperty("--loader-spotlight-size");
+        this.loader.classList.remove("loader-spotlight-active");
+        return;
+      }
+
       if (this.mode === "none") {
         this.loader.style.removeProperty("--loader-spotlight-x");
         this.loader.style.removeProperty("--loader-spotlight-y");
@@ -648,6 +688,7 @@ const spotlightEnabled = spotlight !== "none";
     private attachHoverListeners(): void {
       const isGlobal = this.loader.dataset.loaderGlobalHover === "true";
       const target = isGlobal ? document.documentElement : this.loader;
+      const shouldTrackScroll = !isGlobal && !this.isBackgroundLoader();
 
       const onEnter = (event: Event) => {
         this.loader.classList.add("loader-spotlight-active");
@@ -655,7 +696,7 @@ const spotlightEnabled = spotlight !== "none";
       };
 
       const onMove = (event: Event) => {
-        this.updateFromPointer(event as PointerEvent);
+        this.queuePointerUpdate(event as PointerEvent);
       };
 
       const onLeave = () => {
@@ -670,10 +711,38 @@ const spotlightEnabled = spotlight !== "none";
         target.addEventListener("pointermove", onMove as EventListener);
         target.addEventListener("pointerleave", onLeave as EventListener);
       }
+
+      window.addEventListener("resize", this.onWindowResize, { passive: true });
+      if (shouldTrackScroll) {
+        window.addEventListener("scroll", this.onWindowResize, {
+          passive: true,
+        });
+      }
+    }
+
+    private queuePointerUpdate(event: PointerEvent): void {
+      this.queuedEvent = event;
+      if (this.rafId !== null) return;
+
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        if (this.queuedEvent) {
+          this.updateFromPointer(this.queuedEvent);
+          this.queuedEvent = null;
+        }
+      });
+    }
+
+    private getLoaderRect(): DOMRect {
+      if (!this.loaderRect) {
+        this.loaderRect = this.loader.getBoundingClientRect();
+      }
+
+      return this.loaderRect;
     }
 
     private updateFromPointer(event: PointerEvent): void {
-      const rect = this.loader.getBoundingClientRect();
+      const rect = this.getLoaderRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top) / rect.height) * 100;
 
@@ -715,6 +784,8 @@ const spotlightEnabled = spotlight !== "none";
   }
 
   const initLoaders = () => {
+    refreshSkeletonElements();
+
     const loaders = document.querySelectorAll("[data-loader]");
     loaders.forEach(loader => {
       const element = loader as HTMLElement;

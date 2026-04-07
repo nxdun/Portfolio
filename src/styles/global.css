@@ -30,20 +30,6 @@ html[data-theme="dark"] {
 }
 
 @layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  span:not(.icon-container):not(.loader-grid):not(.loader-sweep):not(
-      .loader-spotlight
-    ):not(.loader-edge) {
-    text-shadow:
-      0 0 6px var(--background),
-      0 0 12px var(--background);
-  }
   * {
     @apply border-border outline-accent/75;
     scrollbar-width: auto;
