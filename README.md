@@ -287,4 +287,5 @@ choco install make
 
 ### notes
 
-- Disable Cloudflare's rocket loader permenantly. it broke to Custom DOM hydration and caused weird bugs.
+- Disable Cloudflare's rocket loader permanently. [#19](https://github.com/nxdun/Portfolio/issues/19)
+
