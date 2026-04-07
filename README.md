@@ -13,7 +13,7 @@
 
 ![PageSpeed Insights](./public/PageSpeed%20Insights.png)
 
-Achieves near-perfect PageSpeed scores with heavily chunked CSS and optimized DOM hydration for real-world speed, not just benchmarks.
+Achieves perfect [PageSpeed mobile scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=mobile) and [PageSpeed Desktop scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=desktop) with heavily chunked CSS and optimized DOM hydration for real-world speed, not just benchmarks.
 
 ## Modular Tool Workspace
 
@@ -284,3 +284,7 @@ choco install make
 ```
 
 </details>
+
+### notes
+
+- Disable Cloudflare's rocket loader permenantly. it broke to Custom DOM hydration and caused weird bugs.
