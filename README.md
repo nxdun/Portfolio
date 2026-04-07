@@ -84,7 +84,6 @@ choco install make
 |   |-- nadzu-og-2.jpg
 |   |-- nadzu-og-3.jpg
 |   |-- nadzu-og.jpg
-|   `-- pagefind
 |-- src
 |   |-- assets
 |   |   |-- icons
