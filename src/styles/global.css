@@ -30,16 +30,30 @@ html[data-theme="dark"] {
 }
 
 @layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span:not(.icon-container):not(.loader-grid):not(.loader-sweep):not(
+      .loader-spotlight
+    ):not(.loader-edge) {
+    text-shadow:
+      0 0 6px var(--background),
+      0 0 12px var(--background);
+  }
   * {
     @apply border-border outline-accent/75;
     scrollbar-width: auto;
     scrollbar-color: var(--color-muted) transparent;
   }
   html {
-    @apply overflow-y-scroll scroll-smooth;
+    @apply overflow-y-scroll scroll-smooth bg-background;
   }
   body {
-    @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/75 selection:text-background;
+    @apply flex min-h-svh flex-col bg-transparent font-app text-foreground selection:bg-accent/75 selection:text-background;
   }
   a,
   button {
@@ -52,11 +66,11 @@ html[data-theme="dark"] {
 }
 
 @utility max-w-app {
-  @apply max-w-8/10;
+  @apply max-w-3xl;
 }
 
 @utility app-layout {
-  @apply mx-auto w-full max-w-app px-4;
+  @apply mx-auto w-full px-4 sm:max-w-11/12 sm:px-6 md:px-8 lg:max-w-8/10;
 }
 
 .active-nav {

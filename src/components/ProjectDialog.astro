@@ -157,13 +157,22 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
             <h3 class="border-b border-border pb-2 text-lg font-semibold">
               Gallery
             </h3>
-            <div
-              class="grid grid-cols-1 gap-6"
-              data-images={JSON.stringify(photos)}
-            >
-              <div class="image-loader flex flex-col items-center py-8">
-                <Loader size="md" />
-              </div>
+            <div class="grid grid-cols-1 gap-6">
+              {photos.map(url => (
+                <div
+                  class="image-wrapper relative flex min-h-[300px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background"
+                  data-src={url}
+                >
+                  <div class="pointer-events-none absolute inset-0 z-0 h-full w-full">
+                    <Loader
+                      mode="attached"
+                      isSkeleton={true}
+                      spotlight="none"
+                      class="h-full w-full !bg-transparent"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )
@@ -171,6 +180,22 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
     </div>
   </div>
 </dialog>
+
+<style>
+  /* Ensure the loader conforms fully to the image aspect ratio skeletons */
+  .image-wrapper :global(.loader-container) {
+    height: 100%;
+    margin: 0;
+  }
+  .image-wrapper :global(.loader-frame) {
+    min-height: 100% !important;
+    background: transparent !important;
+    border-radius: 0;
+  }
+  .image-wrapper :global(.loader-reveal) {
+    min-height: 100% !important;
+  }
+</style>
 
 <script>
   const initProjectDialogs = () => {
@@ -238,48 +263,40 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
     };
 
     const loadDialogImages = (dialog: DialogWithHandler) => {
-      const imgContainer = dialog.querySelector("[data-images]");
-      if (!imgContainer || imgContainer.classList.contains("loaded")) return;
+      const wrappers = dialog.querySelectorAll(".image-wrapper:not(.loaded)");
+      if (wrappers.length === 0) return;
 
-      const photos = JSON.parse(
-        imgContainer.getAttribute("data-images") || "[]"
-      );
-      const loaderElement = imgContainer.querySelector(
-        ".image-loader"
-      ) as HTMLElement;
+      wrappers.forEach(wrapper => {
+        const url = wrapper.getAttribute("data-src");
+        if (!url) return;
 
-      if (photos.length === 0) {
-        loaderElement?.remove();
-        return;
-      }
-
-      let loadedCount = 0;
-      const imageElements: HTMLImageElement[] = [];
-
-      photos.forEach((url: string) => {
         const img = document.createElement("img");
         img.src = url;
         img.className =
-          "rounded-lg shadow-md w-full h-auto border border-border bg-muted/50 transition-opacity duration-500 opacity-0";
+          "relative z-10 w-full h-auto rounded-lg opacity-0 transition-opacity duration-500 bg-background";
         img.loading = "lazy";
         img.alt = "Project Screenshot";
 
         const onImageLoad = () => {
-          loadedCount++;
           img.classList.remove("opacity-0");
 
-          if (loadedCount === photos.length && loaderElement) {
-            loaderElement.remove();
+          // Let the image push the height properly, and fade out the underlying loader
+          const loader = wrapper.querySelector("[data-loader]") as HTMLElement;
+          if (loader && window.LoaderManager) {
+            const manager =
+              loader.__loaderManager || new window.LoaderManager(loader);
+            manager.hide().then(() => {
+              loader.remove();
+            });
           }
         };
 
         img.addEventListener("load", onImageLoad);
-        img.addEventListener("error", onImageLoad);
-        imageElements.push(img);
-      });
+        img.addEventListener("error", onImageLoad); // Optional: handles broken links smoothly
 
-      imageElements.forEach(img => imgContainer.appendChild(img));
-      imgContainer.classList.add("loaded");
+        wrapper.appendChild(img);
+        wrapper.classList.add("loaded");
+      });
     };
 
     dialogs.forEach(d => {

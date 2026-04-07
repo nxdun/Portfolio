@@ -287,4 +287,3 @@ choco install make
 ### notes
 
 - Disable Cloudflare's rocket loader permanently. [#19](https://github.com/nxdun/Portfolio/issues/19)
-

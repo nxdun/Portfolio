@@ -40,7 +40,7 @@ function reflectPreference(): void {
   // Check if the body element exists before using getComputedStyle
   if (body) {
     // Get the computed styles for the body element
-    const computedStyles = window.getComputedStyle(body);
+    const computedStyles = window.getComputedStyle(document.documentElement);
 
     // Get the background color property
     const bgColor = computedStyles.backgroundColor;
