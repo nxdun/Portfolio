@@ -48,7 +48,6 @@ export default defineConfig({
     build: {
       cssCodeSplit: true,
       rollupOptions: {
-        external: ["@resvg/resvg-js"],
         output: {
           manualChunks: undefined,
         },
@@ -96,5 +95,7 @@ export default defineConfig({
     },
   ],
 
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    prerenderEnvironment: "node",
+  }),
 });
