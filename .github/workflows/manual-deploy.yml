@@ -19,7 +19,7 @@ jobs:
     # if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Node.js
+      - name: Validate user authorization
         run: |
           if [[ -z "${{ vars.AUTHORIZED_USERS }}" ]]; then
             echo "::error::AUTHORIZED_USERS variable not configured"
@@ -38,6 +38,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24.13.0
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
 
       - name: Build Astro
         env:
