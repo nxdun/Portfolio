@@ -16,7 +16,7 @@ env:
   deploy_me: ${{ github.event.inputs.deploy_me }}
 jobs:
   deploy-portfolio:
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
+    # if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
     runs-on: ubuntu-latest
     steps:
       - name: Set up Node.js
