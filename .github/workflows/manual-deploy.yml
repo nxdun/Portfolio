@@ -8,6 +8,9 @@ on:
         required: true
         type: boolean
         default: false
+  push:
+    branches:
+      - nadun/migrate-to-cf-workers
 
 env:
   deploy_me: ${{ github.event.inputs.deploy_me }}
