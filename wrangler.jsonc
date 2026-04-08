@@ -1,27 +1,30 @@
 {
 	"name": "nuus-portfolio",
-  "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-02-05",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
+	"main": "@astrojs/cloudflare/entrypoints/server",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist/client"
+	},
+	"compatibility_date": "2026-02-05",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
 	"observability": {
-    "enabled": true
-  },
-  "env": {
-    "preview": {
-      "vars": {
-        "ASTRO_TELEMETRY_DISABLED": "true",
-        "NODE_ENV": "development"
-      }
-    },
-    "production": {
-      "vars": {
-        "ASTRO_TELEMETRY_DISABLED": "true",
-        "NODE_ENV": "production"
-
-      }
-    }
-  }
+		"enabled": true
+	},
+	"env": {
+		"preview": {
+			"vars": {
+				"ASTRO_TELEMETRY_DISABLED": "true",
+				"NODE_ENV": "development"
+			}
+		},
+		"production": {
+			"vars": {
+				"ASTRO_TELEMETRY_DISABLED": "true",
+				"NODE_ENV": "production"
+			}
+		}
+	}
 }

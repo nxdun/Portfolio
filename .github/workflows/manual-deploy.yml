@@ -37,12 +37,14 @@ jobs:
           node-version: 24.13.0
 
       - name: Build Astro
+        env:
+          CLOUDFLARE_ENV: production
         run: make build
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=YOUR_PROJECT_NAME
+          command: deploy --env production
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
