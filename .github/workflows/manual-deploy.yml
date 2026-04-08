@@ -3,20 +3,20 @@ name: Deploy Portfolio Manually
 on:
   workflow_dispatch:
     inputs:
-      deploy_me:
-        description: "Deploy Portfolio?"
+      deploy_environment:
+        description: "Choose deployment environment"
         required: true
-        type: boolean
-        default: false
-  push:
-    branches:
-      - nadun/migrate-to-cf-workers
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
 
 env:
-  deploy_me: ${{ github.event.inputs.deploy_me }}
+  DEPLOY_ENVIRONMENT: ${{ github.event.inputs.deploy_environment }}
 jobs:
   deploy-portfolio:
-    # if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Validate user authorization
@@ -52,5 +52,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --env production
+          command: deploy --env ${{ env.DEPLOY_ENVIRONMENT }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
