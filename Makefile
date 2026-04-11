@@ -68,19 +68,21 @@ $(DIST_DIR)/.build-timestamp: $(NODE_MODULES)/.install-timestamp $(shell find sr
 	$(SAY) "$(BLUE)Building $(PROJECT_NAME)...$(NC)"
 	$(Q)pnpm run build
 	$(Q)touch $@
-	$(SAY) "$(GREEN)✓ Build completed at $(BUILD_TIME)$(NC)"
+	$(SAY) "$(GREEN) Build completed at $(BUILD_TIME)$(NC)"
 
 preview: $(DIST_DIR)/.build-timestamp ## Preview build (pnpm preview)
 	$(SAY) "$(BLUE)Starting preview...$(NC)"
 	$(Q)pnpm run preview
 
-deploy: guard-production clean install format-check build ## Deploy (pnpm deploy)
+deploy: guard-production clean install format-check ## Deploy (pnpm deploy)
 	$(SAY) "$(GREEN)Deploying $(PROJECT_NAME)...$(NC)"
-	$(Q)pnpm wrangler pages deploy
+	$(Q)CLOUDFLARE_ENV=production pnpm run build
+	$(Q)pnpm wrangler deploy --env production
 
-d-p: build ## Deploy preview branch
+d-p: $(NODE_MODULES)/.install-timestamp ## Deploy preview branch
 	$(SAY) "$(YELLOW)Deploying preview...$(NC)"
-	$(Q)pnpm wrangler pages deploy --branch=$(shell git rev-parse --abbrev-ref HEAD)
+	$(Q)CLOUDFLARE_ENV=preview pnpm run build
+	$(Q)pnpm wrangler deploy --env preview
 
 # -----------------------
 # Code Quality
@@ -103,7 +105,7 @@ lint: ## Lint code (pnpm lint)
 check: ## Run lint and format-check in parallel
 	$(SAY) "$(BLUE)Running checks in parallel ($(NPROCS) threads)...$(NC)"
 	$(Q)$(MAKE) -j$(NPROCS) lint format-check
-	$(SAY) "$(GREEN)✓ All checks passed$(NC)"
+	$(SAY) "$(GREEN) All checks passed$(NC)"
 
 # -----------------------
 # Utilities

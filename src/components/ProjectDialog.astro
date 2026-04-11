@@ -160,7 +160,7 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
             <div class="grid grid-cols-1 gap-6">
               {photos.map(url => (
                 <div
-                  class="image-wrapper relative flex min-h-[300px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background"
+                  class="image-wrapper relative flex min-h-75 w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background"
                   data-src={url}
                 >
                   <div class="pointer-events-none absolute inset-0 z-0 h-full w-full">
@@ -168,7 +168,7 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
                       mode="attached"
                       isSkeleton={true}
                       spotlight="none"
-                      class="h-full w-full !bg-transparent"
+                      class="h-full w-full bg-transparent!"
                     />
                   </div>
                 </div>
@@ -273,9 +273,16 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
         const img = document.createElement("img");
         img.src = url;
         img.className =
-          "relative z-10 w-full h-auto rounded-lg opacity-0 transition-opacity duration-500 bg-background";
+          "relative z-10 w-full h-auto rounded-lg opacity-0 transition-opacity duration-500 bg-background cursor-zoom-in";
         img.loading = "lazy";
         img.alt = "Project Screenshot";
+
+        img.addEventListener("click", () => {
+          const event = new CustomEvent("open-image-viewer", {
+            detail: { src: url },
+          });
+          window.dispatchEvent(event);
+        });
 
         const onImageLoad = () => {
           img.classList.remove("opacity-0");

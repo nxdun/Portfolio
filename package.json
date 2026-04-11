@@ -5,9 +5,9 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "astro dev --host",
-    "build": "astro check && astro build && pagefind --site dist && cp -r dist/pagefind public/",
-    "preview": "wrangler pages dev dist",
-    "deploy": "pnpm build && wrangler pages deploy",
+    "build": "astro check && astro build && pagefind --site dist/client && cp -r dist/client/pagefind public/",
+    "preview": "astro preview",
+    "deploy": "pnpm build && wrangler deploy",
     "sync": "astro sync",
     "astro": "astro",
     "format:check": "prettier --check .",

@@ -12,6 +12,7 @@ import getSortedPosts from "@/utils/getSortedPosts";
 import projectsData from "@/data/projects/ProjectData.json";
 import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import LoaderSvg from "@/assets/icons/LoaderPacman.svg?raw";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
 
@@ -56,6 +57,7 @@ const getTopFeaturedProjects = (
 };
 
 const featuredProjects = getTopFeaturedProjects(projectsData, 3);
+const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 ---
 
 <Layout>
@@ -133,11 +135,12 @@ const featuredProjects = getTopFeaturedProjects(projectsData, 3);
           <Loader
             mode="attached"
             isSkeleton={true}
-            class="h-full min-h-[160px] w-full"
+            content={LoaderSvg}
+            class="h-full min-h-40 w-full"
+            animation={true}
             spotlight="hover"
             sweep={true}
             edgeHighlight={true}
-            showIcon={true}
           />
         </div>
       </div>
@@ -192,6 +195,21 @@ const featuredProjects = getTopFeaturedProjects(projectsData, 3);
           <ul class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {featuredProjects.map(project => (
               <ProjectCard variant="h3" project={project} />
+            ))}
+            {Array.from({ length: emptyFeaturedProjectCount }).map(() => (
+              <li class="flex h-full flex-col rounded-xl">
+                <Loader
+                  mode="attached"
+                  isSkeleton={true}
+                  content="All Projects →"
+                  contentHref="/projects/"
+                  class="h-full min-h-70 w-full rounded-2xl"
+                  animation={false}
+                  spotlight="hover"
+                  sweep={true}
+                  edgeHighlight={true}
+                />
+              </li>
             ))}
           </ul>
         </section>

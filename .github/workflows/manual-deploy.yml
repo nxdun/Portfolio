@@ -3,20 +3,23 @@ name: Deploy Portfolio Manually
 on:
   workflow_dispatch:
     inputs:
-      deploy_me:
-        description: "Deploy Portfolio?"
+      deploy_environment:
+        description: "Choose deployment environment"
         required: true
-        type: boolean
-        default: false
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
 
 env:
-  deploy_me: ${{ github.event.inputs.deploy_me }}
+  DEPLOY_ENVIRONMENT: ${{ github.event.inputs.deploy_environment }}
 jobs:
   deploy-portfolio:
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_me == true
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Node.js
+      - name: Validate user authorization
         run: |
           if [[ -z "${{ vars.AUTHORIZED_USERS }}" ]]; then
             echo "::error::AUTHORIZED_USERS variable not configured"
@@ -36,13 +39,18 @@ jobs:
         with:
           node-version: 24.13.0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
       - name: Build Astro
+        env:
+          CLOUDFLARE_ENV: ${{ env.DEPLOY_ENVIRONMENT }}
         run: make build
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=YOUR_PROJECT_NAME
+          command: deploy --env ${{ env.DEPLOY_ENVIRONMENT }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -5,8 +5,11 @@ interface Props {
   mode?: "attached" | "screen" | "overlay" | "background";
   globalHover?: boolean;
   spotlight?: "hover" | "always" | "none";
+  animation?: boolean;
   sweep?: boolean;
   edgeHighlight?: boolean;
+  content?: string;
+  contentHref?: string;
   showIcon?: boolean;
   isSkeleton?: boolean;
   class?: string;
@@ -18,18 +21,27 @@ const {
   mode = "attached",
   globalHover = false,
   spotlight = "hover",
+  animation = false,
   sweep = mode === "attached",
   edgeHighlight = mode === "attached",
-  showIcon = mode === "attached",
+  content = null,
+  contentHref = undefined,
+  showIcon = undefined,
   isSkeleton = false,
   class: className = "",
   label = "Loading",
   message,
 } = Astro.props;
 
+const boolAttr = (value: boolean) => (value ? "true" : "false");
+const loaderContent = content ?? (showIcon ? LoaderSvg : null);
+const isContentHtml =
+  typeof loaderContent === "string" && loaderContent.trim().startsWith("<");
+const hasContent = Boolean(loaderContent);
 const isOverlay = mode === "overlay";
 const isScreen = mode === "screen";
 const isBackground = mode === "background";
+const isAttached = !isOverlay && !isScreen && !isBackground;
 const spotlightEnabled = spotlight !== "none";
 ---
 
@@ -37,7 +49,7 @@ const spotlightEnabled = spotlight !== "none";
   class:list={[
     "loader-container",
     {
-      "loader-container--attached": !isOverlay && !isScreen && !isBackground,
+      "loader-container--attached": isAttached,
       "loader-container--screen": isScreen,
       "loader-container--overlay": isOverlay,
       "loader-container--background": isBackground,
@@ -51,20 +63,17 @@ const spotlightEnabled = spotlight !== "none";
   aria-busy="true"
   aria-label={label}
   data-loader-spotlight={spotlight}
-  data-loader-global-hover={globalHover || isScreen ? "true" : "false"}
-  data-loader-sweep={sweep ? "true" : "false"}
-  data-loader-edge={edgeHighlight ? "true" : "false"}
-  data-loader-icon={showIcon ? "true" : "false"}
-  data-loader-skeleton={isSkeleton ? "true" : "false"}
+  data-loader-global-hover={boolAttr(globalHover || isScreen)}
+  data-loader-animation={boolAttr(animation)}
+  data-loader-sweep={boolAttr(sweep)}
+  data-loader-edge={boolAttr(edgeHighlight)}
+  data-loader-content={boolAttr(hasContent)}
+  data-loader-skeleton={boolAttr(isSkeleton)}
   data-loader-state="enter"
 >
   <div class="loader-frame">
     <div class="loader-reveal">
-      <div
-        class="loader-grid-container"
-        aria-hidden="true"
-        style="container-type: size;"
-      >
+      <div class="loader-grid-container" aria-hidden="true">
         <span class="loader-grid"></span>
 
         {sweep && <span class="loader-sweep" />}
@@ -72,9 +81,27 @@ const spotlightEnabled = spotlight !== "none";
         {spotlightEnabled && <span class="loader-spotlight" />}
 
         {edgeHighlight && <span class="loader-edge" />}
-
-        {showIcon && <span class="loader-icon" set:html={LoaderSvg} />}
       </div>
+
+      {
+        hasContent && (
+          <span class="loader-icon">
+            {contentHref ? (
+              <a class="loader-action" href={contentHref}>
+                {isContentHtml ? (
+                  <span set:html={loaderContent} />
+                ) : (
+                  loaderContent
+                )}
+              </a>
+            ) : isContentHtml ? (
+              <span set:html={loaderContent} />
+            ) : (
+              loaderContent
+            )}
+          </span>
+        )
+      }
 
       {
         message && (
@@ -154,6 +181,7 @@ const spotlightEnabled = spotlight !== "none";
     width: 100%;
     height: 100%;
     min-height: inherit;
+    container-type: size;
   }
 
   .loader-grid-container {
@@ -212,18 +240,43 @@ const spotlightEnabled = spotlight !== "none";
     border-radius: 0;
   }
 
-  .loader-container--overlay .loader-frame {
-    background: var(--background);
-  }
-
   .loader-grid,
   .loader-sweep,
   .loader-edge,
-  .loader-spotlight,
-  .loader-icon {
+  .loader-spotlight {
     position: absolute;
     inset: 0;
     pointer-events: none;
+  }
+
+  .loader-icon {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+    display: none;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    color: var(--loader-text-color);
+  }
+
+  .loader-action {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    font: inherit;
+    padding: 0 1rem;
+  }
+
+  .loader-action:hover,
+  .loader-action:focus-visible {
+    outline: none;
+    text-decoration: none;
   }
 
   .loader-grid {
@@ -304,28 +357,10 @@ const spotlightEnabled = spotlight !== "none";
     opacity: 0.95;
   }
 
-  @media (hover: none), (pointer: coarse) {
-    .loader-container[data-loader-spotlight="hover"] .loader-spotlight {
-      opacity: 0.9;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .loader-spotlight {
       transition: none;
     }
-  }
-
-  .loader-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1.5rem;
-    text-align: center;
   }
 
   .loader-message {
@@ -367,6 +402,36 @@ const spotlightEnabled = spotlight !== "none";
     animation: sweep-back-and-forth 1.6s 1 ease-in-out;
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    .loader-container[data-loader-animation="true"]:not(:hover) .loader-grid {
+      animation: grid-nebula-drift 12s infinite linear;
+    }
+
+    .loader-container[data-loader-animation="true"]:not(:hover)
+      .loader-spotlight {
+      animation: spotlight-breathe 3.6s infinite ease-in-out;
+    }
+
+    .loader-container[data-loader-animation="true"]:not(:hover) .loader-icon {
+      animation: icon-levitate 2.8s infinite ease-in-out;
+    }
+  }
+
+  .loader-container[data-loader-animation="true"][data-loader-sweep="true"]:not(
+      :hover
+    )
+    .loader-sweep {
+    opacity: 0.5;
+    animation: sweep-back-and-forth 2.2s infinite ease-in-out;
+  }
+
+  .loader-container[data-loader-animation="true"]:hover .loader-grid,
+  .loader-container[data-loader-animation="true"]:hover .loader-spotlight,
+  .loader-container[data-loader-animation="true"]:hover .loader-icon,
+  .loader-container[data-loader-animation="true"]:hover .loader-sweep {
+    animation: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .loader-sweep {
       animation: none !important;
@@ -383,6 +448,50 @@ const spotlightEnabled = spotlight !== "none";
     50% {
       -webkit-mask-position: -50% 0;
       mask-position: -50% 0;
+    }
+  }
+
+  @keyframes grid-nebula-drift {
+    0% {
+      background-position:
+        0 0,
+        center;
+    }
+    50% {
+      background-position:
+        26px 14px,
+        center;
+    }
+    100% {
+      background-position:
+        0 0,
+        center;
+    }
+  }
+
+  @keyframes spotlight-breathe {
+    0%,
+    100% {
+      opacity: 0.78;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.98;
+      transform: scale(1.06);
+    }
+  }
+
+  @keyframes icon-levitate {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+      filter: drop-shadow(0 0 0 transparent);
+    }
+    50% {
+      transform: translateY(-3px) scale(1.04);
+      filter: drop-shadow(
+        0 0 6px color-mix(in srgb, var(--accent) 45%, transparent)
+      );
     }
   }
 
@@ -450,14 +559,6 @@ const spotlightEnabled = spotlight !== "none";
     }
   }
 
-  .loader-icon {
-    display: none;
-    place-items: center;
-    opacity: 0;
-    transition: opacity 300ms ease;
-    color: var(--loader-text-color);
-  }
-
   .loader-icon :global(svg) {
     width: clamp(2rem, 15cqw, 4rem);
     height: clamp(2rem, 15cqw, 4rem);
@@ -478,13 +579,13 @@ const spotlightEnabled = spotlight !== "none";
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .loader-container[data-loader-icon="true"]:hover .loader-icon {
+    .loader-container[data-loader-content="true"]:hover .loader-icon {
       opacity: 1;
     }
-    .loader-container[data-loader-icon="true"]:hover .loader-grid {
+    .loader-container[data-loader-content="true"]:hover .loader-grid {
       opacity: 0.25;
     }
-    .loader-container[data-loader-icon="true"]:hover .loader-sweep {
+    .loader-container[data-loader-content="true"]:hover .loader-sweep {
       opacity: 0.35;
     }
   }
@@ -539,8 +640,19 @@ const spotlightEnabled = spotlight !== "none";
   };
 
   if (typeof window !== "undefined") {
-    window.addEventListener("scroll", updateSkeletonOffsets, { passive: true });
-    window.addEventListener("resize", updateSkeletonOffsets, { passive: true });
+    const loaderGlobal = window as typeof window & {
+      __loaderSkeletonEventsBound?: boolean;
+    };
+
+    if (!loaderGlobal.__loaderSkeletonEventsBound) {
+      window.addEventListener("scroll", updateSkeletonOffsets, {
+        passive: true,
+      });
+      window.addEventListener("resize", updateSkeletonOffsets, {
+        passive: true,
+      });
+      loaderGlobal.__loaderSkeletonEventsBound = true;
+    }
   }
 
   class LoaderManager {
@@ -658,19 +770,21 @@ const spotlightEnabled = spotlight !== "none";
       return saveData || prefersReducedMotion || isCoarsePointer || lowCpuCores;
     }
 
+    private clearSpotlightPosition(): void {
+      this.loader.style.removeProperty("--loader-spotlight-x");
+      this.loader.style.removeProperty("--loader-spotlight-y");
+      this.loader.style.removeProperty("--loader-spotlight-size");
+    }
+
     init(): void {
       if (this.shouldDisableBackgroundSpotlight()) {
-        this.loader.style.removeProperty("--loader-spotlight-x");
-        this.loader.style.removeProperty("--loader-spotlight-y");
-        this.loader.style.removeProperty("--loader-spotlight-size");
+        this.clearSpotlightPosition();
         this.loader.classList.remove("loader-spotlight-active");
         return;
       }
 
       if (this.mode === "none") {
-        this.loader.style.removeProperty("--loader-spotlight-x");
-        this.loader.style.removeProperty("--loader-spotlight-y");
-        this.loader.style.removeProperty("--loader-spotlight-size");
+        this.clearSpotlightPosition();
         return;
       }
 
@@ -761,7 +875,7 @@ const spotlightEnabled = spotlight !== "none";
     }
 
     private setSpotlightToCenter(): void {
-      // In mobile, keeping spotlight fixed at the top-left rather than center.
+      // Keep a fixed top-left anchor on small screens for visual stability.
       const isMobile = window.innerWidth < 768;
 
       this.loader.style.setProperty(
@@ -775,7 +889,7 @@ const spotlightEnabled = spotlight !== "none";
       this.loader.style.setProperty(
         "--loader-spotlight-size",
         isMobile ? "120px" : "180px"
-      ); // The user actually prefers it disabled or top-left.
+      );
     }
   }
 
