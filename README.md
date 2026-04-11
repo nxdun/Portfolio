@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
-  <h1><code>~/nadzu.me</code> </h1>
-  <p><em>Super Fast Portfolio x Blogger</em></p>
+  <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
+  <h1><code>~/nadzu.me</code></h1>
+  <p><em>Fast portfolio with integrated blog</em></p>
 
 [![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
 
@@ -9,42 +9,38 @@
 
 ---
 
-## High Performance
+# Features
 
-![PageSpeed Insights](./public/PageSpeed%20Insights.png)
+Achives Perfect(100/100)
 
-Achieves perfect [PageSpeed mobile scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=mobile) and [PageSpeed Desktop scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=desktop) with heavily chunked CSS and optimized DOM hydration for real-world speed, not just benchmarks.
+- [PageSpeed mobile scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=mobile)
+- [PageSpeed Desktop scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=desktop).
+  ![PageSpeed Insights](./public/PageSpeed%20Insights.png)
 
-## Modular Tool Workspace
+## Tooling Support
 
-A mobile-responsive, built-in developer toolkit:
+- **Quick Execution:** Launch tools via URL query params.
 
-- **YouTube Downloader:** Securely fetch MP4s and Shorts with reCAPTCHA.
-- **Base64 Toolkit:** Fast encoder/decoder with a streamlined UI.
-- **Quick Execution:** Run tools instantly via URL query parameters.
+Built-in tools:
 
-## Integrated Blogger & Showcase
+- [Base64 Encoder/Decoder](https://nadzu.me/tools/?tool=base64) Offline Base64 Encoder and decoder with a clean UI.
 
-Beyond a landing page: a complete Markdown blogging system for changelogs, insights, and a static **Projects** showcase to maximize SEO.
+- [yt-dlp Downloader](https://nadzu.me/tools/?tool=ytdlp) Download from 1,700+ supported sites with reCAPTCHA protection.
 
-## Modern Developer Experience
-
-Rebuilt for stability and ease of use with **Astro + TypeScript**, managed by `pnpm`, and automated with an advanced `Makefile` for parallel tasks and CI/CD.
-
----
+# Development
 
 ## Tech Stack
 
-| Layer          | Tool                                              |
-| -------------- | ------------------------------------------------- |
-| **Framework**  | [Astro](https://astro.build/)                     |
-| **Language**   | [TypeScript](https://www.typescriptlang.org/)     |
-| **Styling**    | [TailwindCSS](https://tailwindcss.com/)           |
-| **Search**     | [Pagefind](https://pagefind.app/)                 |
-| **Icons**      | [Icones](https://icones.js.org/)                  |
-| **Formatting** | [Prettier](https://prettier.io/)                  |
-| **Linting**    | [ESLint](https://eslint.org)                      |
-| **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/) |
+| Layer          | Tool                                                   |
+| -------------- | ------------------------------------------------------ |
+| **Framework**  | [Astro](https://astro.build/) [pnpm](https://pnpm.io/) |
+| **Language**   | [TypeScript](https://www.typescriptlang.org/)          |
+| **Styling**    | [TailwindCSS](https://tailwindcss.com/)                |
+| **Search**     | [Pagefind](https://pagefind.app/)                      |
+| **Icons**      | [Icones](https://icones.js.org/)                       |
+| **Formatting** | [Prettier](https://prettier.io/)                       |
+| **Linting**    | [ESLint](https://eslint.org)                           |
+| **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/)      |
 
 ---
 
@@ -83,7 +79,7 @@ choco install make
 |   |-- favicon.svg
 |   |-- nadzu-og-2.jpg
 |   |-- nadzu-og-3.jpg
-|   |-- nadzu-og.jpg
+|   `-- nadzu-og.jpg
 |-- src
 |   |-- assets
 |   |   |-- icons
@@ -162,7 +158,9 @@ choco install make
 |   |   |-- EditPost.astro
 |   |   |-- Footer.astro
 |   |   |-- Header.astro
+|   |   |-- ImageViewer.astro
 |   |   |-- LinkButton.astro
+|   |   |-- Loader
 |   |   |-- Loader.astro
 |   |   |-- Pagination.astro
 |   |   |-- ProjectCard.astro
@@ -184,6 +182,7 @@ choco install make
 |   |   |   |   `-- example-non-draft-non-featured-post.md
 |   |   |   |-- portfolio-changelog-2026.md
 |   |   |   `-- rust-backend-changelog-2026.md
+|   |   |-- loader
 |   |   `-- projects
 |   |       |-- ProjectData.json
 |   |       `-- ProjectData.schema.json
@@ -200,6 +199,7 @@ choco install make
 |   |   |-- archives
 |   |   |   `-- index.astro
 |   |   |-- index.astro
+|   |   |-- loader
 |   |   |-- og.png.ts
 |   |   |-- posts
 |   |   |   |-- [...page].astro
@@ -276,10 +276,8 @@ choco install make
 |       |-- typingAnimation.ts
 |       |-- ytdlpProgress.ts
 |       `-- ytdlpStatus.ts
-|-- tree.txt
 |-- tsconfig.json
 `-- wrangler.jsonc
-
 ```
 
 </details>

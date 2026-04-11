@@ -1,0 +1,202 @@
+---
+import IconX from "@/assets/icons/IconX.svg";
+import Loader from "@/components/Loader.astro";
+---
+
+<dialog
+  id="global-image-viewer"
+  class="fixed inset-0 z-100 m-auto h-full max-h-none w-full max-w-none items-center justify-center overflow-hidden bg-black/95 p-0 text-white backdrop-blur-md backdrop:bg-transparent [[open]]:flex"
+>
+  <!-- Fullscreen close area -->
+  <button
+    id="iv-close-bg"
+    class="absolute inset-0 z-0 h-full w-full cursor-zoom-out border-none bg-transparent outline-none"
+    aria-label="Close image viewer"></button>
+
+  <!-- Control Header -->
+  <div
+    class="pointer-events-none absolute top-0 left-0 z-20 flex w-full items-center justify-end p-4"
+  >
+    <button
+      id="iv-close-btn"
+      class="pointer-events-auto rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 focus:outline-none"
+      aria-label="Close image viewer"
+    >
+      <IconX class="size-6" />
+    </button>
+  </div>
+
+  <div
+    id="iv-loading"
+    class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity"
+  >
+    <div class="h-16 w-16">
+      <Loader mode="attached" isSkeleton={false} />
+    </div>
+  </div>
+
+  <!-- Zoom/Pan Container -->
+  <div
+    id="iv-container"
+    class="relative z-10 flex h-full w-full cursor-grab touch-none items-center justify-center active:cursor-grabbing"
+  >
+    <img
+      id="iv-image"
+      src=""
+      alt="Interactive Viewer"
+      class="max-h-full max-w-full origin-center object-contain opacity-0 transition-opacity duration-200 ease-out select-none"
+      draggable="false"
+    />
+  </div>
+</dialog>
+
+<script>
+  const initImageViewer = () => {
+    const dialog = document.getElementById(
+      "global-image-viewer"
+    ) as HTMLDialogElement;
+    const imgBox = document.getElementById("iv-container") as HTMLElement;
+    const img = document.getElementById("iv-image") as HTMLImageElement;
+    const closeBg = document.getElementById("iv-close-bg") as HTMLElement;
+    const closeBtn = document.getElementById("iv-close-btn") as HTMLElement;
+    const loadingEl = document.getElementById("iv-loading") as HTMLElement;
+
+    if (!dialog || dialog.dataset.initialized) return;
+    dialog.dataset.initialized = "true";
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    let initialPinchDistance = 0;
+    let initialScale = 1;
+    let transformFrame = 0;
+
+    const updateTransform = () => {
+      if (transformFrame) cancelAnimationFrame(transformFrame);
+      transformFrame = requestAnimationFrame(() => {
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      });
+    };
+
+    const resetTransform = () => {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    };
+
+    const closeViewer = () => {
+      if (!dialog.open) return;
+      dialog.close();
+      resetTransform();
+    };
+
+    closeBg.addEventListener("click", closeViewer);
+    closeBtn.addEventListener("click", closeViewer);
+
+    dialog.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeViewer();
+      }
+    });
+
+    window.addEventListener("open-image-viewer", ((e: CustomEvent) => {
+      resetTransform();
+      img.src = e.detail.src;
+      img.classList.remove("opacity-100");
+      img.classList.add("opacity-0");
+      loadingEl.classList.add("opacity-100");
+      loadingEl.classList.remove("opacity-0");
+
+      const onImageLoad = () => {
+        loadingEl.classList.remove("opacity-100");
+        loadingEl.classList.add("opacity-0");
+        img.classList.remove("opacity-0");
+        img.classList.add("opacity-100");
+        img.removeEventListener("load", onImageLoad);
+      };
+
+      img.addEventListener("load", onImageLoad);
+      dialog.showModal();
+    }) as EventListener);
+
+    // Mouse Wheel Zoom
+    imgBox.addEventListener(
+      "wheel",
+      e => {
+        e.preventDefault();
+        const zoomFactor = 0.1;
+        scale =
+          e.deltaY < 0
+            ? Math.min(scale + zoomFactor, 5)
+            : Math.max(scale - zoomFactor, 0.5);
+        updateTransform();
+      },
+      { passive: false }
+    );
+
+    // Drag/Pan (Pointer Events)
+    imgBox.addEventListener("pointerdown", e => {
+      if (e.pointerType === "touch" && !e.isPrimary) return;
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+      imgBox.setPointerCapture(e.pointerId);
+    });
+
+    imgBox.addEventListener("pointermove", e => {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    });
+
+    imgBox.addEventListener("pointerup", e => {
+      isDragging = false;
+      try {
+        imgBox.releasePointerCapture(e.pointerId);
+      } catch {}
+    });
+
+    imgBox.addEventListener("pointercancel", () => {
+      isDragging = false;
+    });
+
+    // Pinch to Zoom (Touch Events)
+    imgBox.addEventListener("touchstart", e => {
+      if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        initialScale = scale;
+      }
+    });
+
+    imgBox.addEventListener(
+      "touchmove",
+      e => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const newScale = initialScale * (dist / initialPinchDistance);
+          scale = Math.min(Math.max(newScale, 0.5), 5);
+          updateTransform();
+        }
+      },
+      { passive: false }
+    );
+  };
+
+  initImageViewer();
+  document.addEventListener("astro:page-load", initImageViewer);
+</script>

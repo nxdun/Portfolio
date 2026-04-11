@@ -5,6 +5,7 @@ import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 import Loader from "@/components/Loader.astro";
+import ImageViewer from "@/components/ImageViewer.astro";
 
 type Props = {
   title?: string;
@@ -176,11 +177,13 @@ const structuredData = {
     <Loader
       mode="background"
       globalHover={true}
-      showIcon={false}
       edgeHighlight={false}
       sweep={false}
     />
     <slot />
+
+    <!-- Global Image Viewer for Pannable/Zoomable Images -->
+    <ImageViewer />
 
     <!-- Load full theme logic -->
     <script src="../scripts/theme.ts"></script>
