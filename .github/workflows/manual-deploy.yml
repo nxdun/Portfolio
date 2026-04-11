@@ -44,7 +44,7 @@ jobs:
 
       - name: Build Astro
         env:
-          CLOUDFLARE_ENV: production
+          CLOUDFLARE_ENV: ${{ env.DEPLOY_ENVIRONMENT }}
         run: make build
 
       - name: Deploy to Cloudflare Workers
