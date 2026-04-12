@@ -18,6 +18,16 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
+## v2.5.0 - 2026-04-12
+
+- <a href="https://github.com/nxdun/Portfolio/pull/26" target="_blank"><code>#26</code></a> [chore] Expand README docs,Icons, add ProjectData schema
+  - Added a new ProjectData schema to standardize project entries.
+  - Projetcs/Featured Projects UI update, New Custom Dot Based BG with intergrated Skeleton/loader.
+- <a href="https://github.com/nxdun/Portfolio/pull/27" target="_blank"><code>#27</code></a> [feat] Add contact form with D1-backed message handling
+  - New contact form with fields for name, email, and message.
+  - Added SQL schema for storing contact form.
+  - Integrated D1 database with Astro V6 for storing contact form submissions securely.
+
 ## v2.4.1 - 2026-04-03
 
 - <a href="https://github.com/nxdun/Portfolio/pull/25" target="_blank"><code>#25</code></a> [chore(deps)] Bump dependencies, expand README docs, fix CI variable

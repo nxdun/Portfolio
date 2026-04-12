@@ -198,7 +198,7 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
               <ProjectCard variant="h3" project={project} />
             ))}
             {Array.from({ length: emptyFeaturedProjectCount }).map(() => (
-              <li class="hidden md:flex h-full flex-col rounded-xl">
+              <li class="hidden h-full flex-col rounded-xl md:flex">
                 <Loader
                   mode="attached"
                   isSkeleton={true}
