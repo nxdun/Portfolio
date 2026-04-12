@@ -1,0 +1,200 @@
+---
+
+---
+
+<section id="contact-me" class="pt-12 pb-6">
+  <div class="mx-auto flex flex-col items-center gap-6 lg:w-2/3">
+    <h2 id="contact-me-heading" class="mb-4 text-3xl font-bold tracking-wide">
+      Contact Me
+    </h2>
+
+    <div id="contact-response-host" class="hidden w-full"></div>
+
+    <form id="contact-form" class="flex w-full flex-col gap-5">
+      <div>
+        <label for="name" class="mb-1 block text-sm font-medium text-foreground"
+          >Name</label
+        >
+        <input
+          type="text"
+          name="name"
+          id="contact-name"
+          required
+          placeholder="John Doe"
+          class="bg-skin-fill w-full rounded-lg border border-border px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label
+          for="email"
+          class="mb-1 block text-sm font-medium text-foreground">Email</label
+        >
+        <input
+          type="email"
+          name="email"
+          id="contact-email"
+          required
+          placeholder="your.email@example.com"
+          class="bg-skin-fill w-full rounded-lg border border-border px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label
+          for="purpose"
+          class="mb-1 block text-sm font-medium text-foreground">Purpose</label
+        >
+        <input
+          type="text"
+          name="purpose"
+          id="contact-purpose"
+          required
+          placeholder="Freelance Project, Job Offer, etc."
+          class="bg-skin-fill w-full rounded-lg border border-border px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
+        />
+      </div>
+
+      <div>
+        <label
+          for="message"
+          class="mb-1 block text-sm font-medium text-foreground">Message</label
+        >
+        <textarea
+          name="message"
+          id="contact-message"
+          rows="5"
+          required
+          placeholder="Tell me more about it..."
+          class="bg-skin-fill w-full rounded-lg border border-border px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
+        ></textarea>
+      </div>
+
+      <div class="mt-4 flex justify-center">
+        <button
+          type="submit"
+          class="text-skin-inverted flex w-full items-center justify-center rounded-lg bg-accent px-8 py-3 text-sm font-bold transition-colors hover:bg-accent/90 focus:ring-4 focus:ring-accent/50 sm:w-auto"
+        >
+          Send Message
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  import { actions } from "astro:actions";
+  import { createCaptchaDialog } from "@/scripts/tools/ui/captchaDialog";
+  import { createToolResponseDock } from "@/scripts/tools/ui/responseDock";
+  import { CaptchaManager } from "@/utils/captchaManager";
+
+  const initContactForm = () => {
+    const form = document.getElementById(
+      "contact-form"
+    ) as HTMLFormElement | null;
+    const responseHost = document.getElementById("contact-response-host");
+
+    if (!form || !responseHost) return;
+
+    const responseDock = createToolResponseDock(responseHost, {
+      title: "Contact Status",
+      hiddenOnIdle: true,
+    });
+
+    const submitButton = form.querySelector(
+      'button[type="submit"]'
+    ) as HTMLButtonElement | null;
+    if (!submitButton) return;
+
+    const captchaDialog = createCaptchaDialog(document.body, {
+      idPrefix: "contact",
+    });
+    let captchaManager: CaptchaManager | null = null;
+    const siteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+
+    if (captchaDialog && siteKey) {
+      captchaManager = new CaptchaManager({
+        host: captchaDialog.refs.captchaHostEl,
+        siteKey: siteKey,
+        onSolved: () => {
+          if (captchaDialog) {
+            captchaDialog.refs.verifyBtn.disabled = false;
+          }
+        },
+      });
+      captchaManager.ensureRendered().catch(() => {});
+    }
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      const executeForm = async (captchaToken?: string) => {
+        submitButton!.disabled = true;
+        responseDock.setState("pending", "Sending your message...");
+
+        if (captchaToken) {
+          formData.append("g-recaptcha-response", captchaToken);
+        }
+
+        try {
+          const result = await actions.contact(formData);
+
+          if (result.error) {
+            throw new Error(result.error.message);
+          }
+
+          const formElements = form.querySelectorAll("input, textarea, button");
+          formElements.forEach(el => {
+            (el as HTMLInputElement).disabled = true;
+          });
+
+          responseDock.setState(
+            "success",
+            `Thanks for reaching out, ${result.data?.name || "there"}! I'll get back to you within 24-48 hours.`
+          );
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error(err);
+          responseDock.setState(
+            "fail",
+            "Something went wrong on my end. Please email me directly at hello@nadzu.me"
+          );
+          submitButton!.disabled = false;
+        }
+      };
+
+      if (captchaManager && captchaDialog) {
+        captchaManager.reset();
+        captchaDialog.refs.verifyBtn.disabled = true;
+        const verifyBtnHtml = captchaDialog.refs.verifyBtn;
+
+        captchaDialog.open();
+
+        const onVerifyClick = async () => {
+          const token = captchaManager!.getToken();
+          if (!token) return;
+
+          verifyBtnHtml.disabled = true;
+          verifyBtnHtml.removeEventListener("click", onVerifyClick);
+
+          await executeForm(token);
+
+          // Close dialog only after submission completes
+          captchaDialog!.close();
+        };
+        verifyBtnHtml.addEventListener("click", onVerifyClick);
+      } else {
+        executeForm();
+      }
+    });
+  };
+
+  document.addEventListener("astro:page-load", initContactForm);
+</script>
