@@ -89,8 +89,8 @@ function createCaptchaDialogTemplate(options: CaptchaDialogOptions): {
             </div>
 
             <div class="flex-1 space-y-4 overflow-visible p-6">
-              <div id="${ids.host}" class="min-h-[78px] flex w-full justify-center overflow-visible">
-                <div class="h-[78px] w-[304px] animate-pulse flex items-center justify-center rounded-sm border border-border bg-muted/40 shadow-sm">
+              <div id="${ids.host}" class="min-h-19.5 flex w-full justify-center overflow-visible">
+                <div class="h-19.5 w-76 animate-pulse flex items-center justify-center rounded-sm border border-border bg-muted/40 shadow-sm">
                   <div class="flex gap-2">
                     <div class="h-2 w-2 rounded-full bg-border md:animate-bounce"></div>
                     <div class="h-2 w-2 rounded-full bg-border md:animate-bounce md:[animation-delay:-0.15s]"></div>
