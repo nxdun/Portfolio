@@ -285,3 +285,4 @@ choco install make
 ### notes
 
 - Disable Cloudflare's rocket loader permanently. [#19](https://github.com/nxdun/Portfolio/issues/19)
+- Run `npx astro telemetry disable` to disable Astro's telemetry on your machine.
