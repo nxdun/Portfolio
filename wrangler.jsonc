@@ -24,8 +24,23 @@
 			"vars": {
 				"ASTRO_TELEMETRY_DISABLED": "true",
 				"NODE_ENV": "production"
-			}
+			},
+			"d1_databases": [
+				{
+					"binding": "portfolio_db",
+					"database_name": "portfolio-db",
+					"database_id": "8aa69ba1-1199-49d8-ad8c-2369631b0ed4"
+				}
+			]
 		}
 	},
-	"workers_dev": false
+	// note: A Custom Domain added manually
+	"workers_dev": false,
+	"d1_databases": [
+		{
+			"binding": "portfolio_db",
+			"database_name": "portfolio-db",
+			"database_id": "8aa69ba1-1199-49d8-ad8c-2369631b0ed4"
+		}
+	]
 }
