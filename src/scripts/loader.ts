@@ -45,6 +45,17 @@ const bindSkeletonListeners = () => {
   skeletonListenersBound = true;
 };
 
+const openPopoverIfNeeded = (element: HTMLElement) => {
+  if (element.hasAttribute("popover") && !element.matches(":popover-open")) {
+    try {
+      element.showPopover();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_e) {
+      // ignore: popover support may vary by browser
+    }
+  }
+};
+
 class LoaderManager {
   private loader: HTMLElement | null;
   private fadeOutClass = "fade-out";
@@ -80,7 +91,10 @@ class LoaderManager {
           ) {
             try {
               this.loader.hidePopover();
-            } catch (e) {}
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_e) {
+              // ignore: popover may not be available in all browsers
+            }
           }
         }
         resolve();
@@ -101,14 +115,7 @@ class LoaderManager {
   show(): void {
     if (!this.loader) return;
 
-    if (
-      this.loader.hasAttribute("popover") &&
-      !this.loader.matches(":popover-open")
-    ) {
-      try {
-        this.loader.showPopover();
-      } catch (e) {}
-    }
+    openPopoverIfNeeded(this.loader);
 
     this.loader.style.display = "";
     this.loader.classList.remove(this.fadeOutClass);
@@ -349,16 +356,7 @@ const initLoader = (element: LoaderManagerElement) => {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      // Force open popover overlay on mount
-      if (
-        element.hasAttribute("popover") &&
-        !element.matches(":popover-open")
-      ) {
-        try {
-          element.showPopover();
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (e) {}
-      }
+      openPopoverIfNeeded(element);
 
       if (element.dataset.loaderState === "enter") {
         element.dataset.loaderState = "ready";
