@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
   <h1><code>~/nadzu.me</code></h1>
-  <p><em>Fast portfolio with integrated blog</em></p>
+  <p><em>Fast portfolio | blog | toolkit</em></p>
 
 [![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
 
@@ -40,7 +40,7 @@ Built-in tools:
 | **Icons**      | [Icones](https://icones.js.org/)                       |
 | **Formatting** | [Prettier](https://prettier.io/)                       |
 | **Linting**    | [ESLint](https://eslint.org)                           |
-| **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/)      |
+| **Deployment** | [Cloudflare workers](https://workers.cloudflare.com/)  |
 
 ---
 
