@@ -126,6 +126,8 @@ export class CaptchaManager {
           return;
         }
 
+        this.host.innerHTML = "";
+
         this.widgetId = window.grecaptcha.render(this.host, {
           sitekey: this.siteKey,
           theme: getTheme(),

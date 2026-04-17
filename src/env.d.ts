@@ -20,3 +20,9 @@ interface HTMLElement {
     remove: () => void;
   };
 }
+
+declare module "cloudflare:workers" {
+  export const env: {
+    portfolio_db: import("@cloudflare/workers-types").D1Database;
+  };
+}

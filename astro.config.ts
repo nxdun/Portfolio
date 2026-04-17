@@ -95,6 +95,8 @@ export default defineConfig({
     },
   ],
 
+  output: "static",
+
   adapter: cloudflare({
     prerenderEnvironment: "node",
   }),

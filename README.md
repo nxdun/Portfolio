@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
   <h1><code>~/nadzu.me</code></h1>
-  <p><em>Fast portfolio with integrated blog</em></p>
+  <p><em>Fast portfolio | blog | toolkit</em></p>
 
 [![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
 
@@ -40,7 +40,7 @@ Built-in tools:
 | **Icons**      | [Icones](https://icones.js.org/)                       |
 | **Formatting** | [Prettier](https://prettier.io/)                       |
 | **Linting**    | [ESLint](https://eslint.org)                           |
-| **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com/)      |
+| **Deployment** | [Cloudflare workers](https://workers.cloudflare.com/)  |
 
 ---
 
@@ -81,6 +81,8 @@ choco install make
 |   |-- nadzu-og-3.jpg
 |   `-- nadzu-og.jpg
 |-- src
+|   |-- actions
+|   |   `-- index.ts
 |   |-- assets
 |   |   |-- icons
 |   |   |   |-- IcoGithub.svg
@@ -154,13 +156,13 @@ choco install make
 |   |   |-- BackToTopButton.astro
 |   |   |-- Breadcrumb.astro
 |   |   |-- Card.astro
+|   |   |-- ContactMe.astro
 |   |   |-- Datetime.astro
 |   |   |-- EditPost.astro
 |   |   |-- Footer.astro
 |   |   |-- Header.astro
 |   |   |-- ImageViewer.astro
 |   |   |-- LinkButton.astro
-|   |   |-- Loader
 |   |   |-- Loader.astro
 |   |   |-- Pagination.astro
 |   |   |-- ProjectCard.astro
@@ -182,7 +184,8 @@ choco install make
 |   |   |   |   `-- example-non-draft-non-featured-post.md
 |   |   |   |-- portfolio-changelog-2026.md
 |   |   |   `-- rust-backend-changelog-2026.md
-|   |   |-- loader
+|   |   |-- form
+|   |   |   `-- schema.sql
 |   |   `-- projects
 |   |       |-- ProjectData.json
 |   |       `-- ProjectData.schema.json
@@ -196,10 +199,11 @@ choco install make
 |   |-- pages
 |   |   |-- 404.astro
 |   |   |-- about.md
+|   |   |-- api
+|   |   |   `-- health.ts
 |   |   |-- archives
 |   |   |   `-- index.astro
 |   |   |-- index.astro
-|   |   |-- loader
 |   |   |-- og.png.ts
 |   |   |-- posts
 |   |   |   |-- [...page].astro
@@ -285,3 +289,4 @@ choco install make
 ### notes
 
 - Disable Cloudflare's rocket loader permanently. [#19](https://github.com/nxdun/Portfolio/issues/19)
+- Run `npx astro telemetry disable` to disable Astro's telemetry on your machine.
