@@ -17,6 +17,16 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 - _Redis Intergration for Caching and Pub/Sub_
 - _Add OpenGraph API Intergration and Map it with Postman_
 
+## v0.3.1 - 2026-04-19
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/10" target="_blank"><code>#10</code></a>[refactor(api)] Standardize API errors and simplify service flows
+  - Unified all API errors under a shared `AppError` enum with structured JSON responses.
+  - Removed unnecessary `async` from `YtdlpManager` service methods.
+  - `MASTER_API_KEY` missing now exits cleanly with code 1 instead of panicking.
+  - Root endpoint returns JSON instead of plain text.
+  - Added custom Caddy file browser with neon dark theme, served to infra by makefile and terraform via presigned R2 URL.
+  - Bumped `axum` to 0.8.9, `tokio` to 1.52; added `thiserror` 2.0.
+
 ## v.0.3.0 - 2026-03-31
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/9" target="_blank"><code>#9</code></a>[feat(infra)] Tiered rate limiting, Caddy file server, and expanded test suite
