@@ -17,3 +17,18 @@ export type ToolCatalogItem = (typeof TOOL_CATALOG)[number];
 export type ToolKey = ToolCatalogItem["key"];
 
 export const DEFAULT_TOOL_QUERY_KEYS = ["tool", "t"] as const;
+
+const TOOL_QUERY_PARAMS_DOCS_PATH = "/posts/tool-query-params";
+
+const TOOL_QUERY_PARAMS_DOCS_PATHS_BY_TOOL: Partial<Record<ToolKey, string>> =
+  {};
+
+export function getToolQueryParamsDocsUrl(
+  baseUrl: string,
+  toolKey: ToolKey
+): string {
+  const path =
+    TOOL_QUERY_PARAMS_DOCS_PATHS_BY_TOOL[toolKey] ??
+    TOOL_QUERY_PARAMS_DOCS_PATH;
+  return new URL(path, baseUrl).toString();
+}

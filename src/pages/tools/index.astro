@@ -5,12 +5,20 @@ import Footer from "@/components/Footer.astro";
 import ToolsLayout from "@/layouts/ToolsLayout.astro";
 import RecaptchaConfig from "@/components/tools/RecaptchaConfig.astro";
 import { SITE } from "@/config";
-import { TOOL_CATALOG } from "@/scripts/tools/catalog";
+import {
+  TOOL_CATALOG,
+  getToolQueryParamsDocsUrl,
+} from "@/scripts/tools/catalog";
 import IconMaximize from "@/assets/icons/IconMaximize.svg?raw";
 import IconMinimize from "@/assets/icons/IconMinimize.svg?raw";
 
 const defaultTool = TOOL_CATALOG.find(
   tool => tool.key === SITE.tools.defaultKey
+);
+
+const defaultToolDocsUrl = getToolQueryParamsDocsUrl(
+  SITE.website,
+  defaultTool?.key ?? TOOL_CATALOG[0].key
 );
 ---
 
@@ -36,6 +44,10 @@ const defaultTool = TOOL_CATALOG.find(
               <li>
                 <button
                   data-tool-key={tool.key}
+                  data-tool-docs-url={getToolQueryParamsDocsUrl(
+                    SITE.website,
+                    tool.key
+                  )}
                   class="tool-select-btn w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-left"
                 >
                   <span class="tool-select-title block text-sm font-semibold">
@@ -64,6 +76,19 @@ const defaultTool = TOOL_CATALOG.find(
               </h2>
               <p id="tool-subtitle" class="mt-1 text-sm italic opacity-85">
                 {defaultTool?.subtitle ?? "Loading tool..."}
+              </p>
+              <p class="mt-1 text-xs opacity-70">
+                Supports query params ·
+                <a
+                  id="tool-docs-link"
+                  href={defaultToolDocsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="ml-1 no-underline hover:underline"
+                  aria-label="Learn how to use tool query parameters"
+                >
+                  Learn how →
+                </a>
               </p>
             </div>
 

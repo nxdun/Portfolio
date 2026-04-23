@@ -1,9 +1,9 @@
 <div align="center">
   <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
   <h1><code>~/nadzu.me</code></h1>
-  <p><em>Fast portfolio | blog | toolkit</em></p>
+  <p><em>Fast by default. Useful by design.</em></p>
 
-[![Old Release](https://img.shields.io/badge/Old%20Release-white.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0)
+[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.me/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase/pulls)
 
 </div>
 
@@ -11,42 +11,60 @@
 
 # Features
 
-Achives Perfect(100/100)
+<div align="center">
+  <p><strong>Achieves a perfect PageSpeed score (100/100).</strong></p>
+  <p>
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=mobile">Mobile score</a> ·
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=desktop">Desktop score</a>
+  </p>
+  <img src="./public/PageSpeed%20Insights.png" alt="PageSpeed Insights" style="max-width: 100%; height: auto; display: block; margin: 1rem 0;" />
+</div>
 
-- [PageSpeed mobile scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=mobile)
-- [PageSpeed Desktop scores](https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=desktop).
-  ![PageSpeed Insights](./public/PageSpeed%20Insights.png)
+A personal site that doubles as a blog platform and Additioonal Awsome tools. Built fast. Kept useful.
 
-## Tooling Support
+- Static-first architecture via Astro with zero client-side JS by default
+- Full-text search powered by Pagefind with no external search service required
+- Auto-generated Open Graph images per post and site-wide
+- RSS feed for automation `/rss.xml`, robots configuration at `/robots.txt`
+- Health check endpoint at `/api/health`
+- Tag-based post grouping with paginated archive
 
-- **Quick Execution:** Launch tools via URL query params.
+- CI pipleines For Linting / Formatting and Build
+- CD pipelines for Deploying into Cloudflare Workers
 
-Built-in tools:
+## Toolkit
 
-- [Base64 Encoder/Decoder](https://nadzu.me/tools/?tool=base64) Offline Base64 Encoder and decoder with a clean UI.
+Quick-launch browser tools accessible directly via URL query parameters. No install, no sign-in.
+Refer Developer Documentation at :
+| Tool | URL | Description |
+| ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| Base64 | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
+| yt-dlp Downloader | [`/tools/?tool=ytdlp`](https://nadzu.me/tools/?tool=ytdlp) | Download from 1,700+ supported sites with reCAPTCHA protection |
 
-- [yt-dlp Downloader](https://nadzu.me/tools/?tool=ytdlp) Download from 1,700+ supported sites with reCAPTCHA protection.
+---
 
 # Development
 
 ## Tech Stack
 
-| Layer          | Tool                                                   |
-| -------------- | ------------------------------------------------------ |
-| **Framework**  | [Astro](https://astro.build/) [pnpm](https://pnpm.io/) |
-| **Language**   | [TypeScript](https://www.typescriptlang.org/)          |
-| **Styling**    | [TailwindCSS](https://tailwindcss.com/)                |
-| **Search**     | [Pagefind](https://pagefind.app/)                      |
-| **Icons**      | [Icones](https://icones.js.org/)                       |
-| **Formatting** | [Prettier](https://prettier.io/)                       |
-| **Linting**    | [ESLint](https://eslint.org)                           |
-| **Deployment** | [Cloudflare workers](https://workers.cloudflare.com/)  |
+<div align="center">
 
----
+| Layer      | Choice                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| Framework  | [Astro](https://astro.build/) + [pnpm](https://pnpm.io/)                                                     |
+| Language   | [TypeScript](https://www.typescriptlang.org/)                                                                |
+| Styling    | [TailwindCSS](https://tailwindcss.com/)                                                                      |
+| Search     | [Pagefind](https://pagefind.app/)                                                                            |
+| Icons      | [Icones](https://icones.js.org/)                                                                             |
+| Formatting | [Prettier](https://prettier.io/)                                                                             |
+| Linting    | [ESLint](https://eslint.org)                                                                                 |
+| Deployment | [Cloudflare Workers](https://workers.cloudflare.com/) [Cloudflare KV](https://developers.cloudflare.com/kv/) |
+
+</div>
 
 ## Running Locally
 
-> Requires `make`. Install it first if you haven't: Check MakeFile for available commands.
+Requires `make`. Install it first if not already present, then use `make help` to list all available targets.
 
 ```bash
 # macOS
@@ -56,10 +74,47 @@ brew install make
 choco install make
 ```
 
-### File Structure
+Once `make` is available:
+
+```bash
+make install   # install dependencies via pnpm
+make dev       # start local dev server
+make build     # production build
+make preview   # preview the production build locally
+```
 
 <details>
-<summary>Directory Structure (overall)</summary>
+<summary>All available Make targets</summary>
+
+| Target         | Alias | Description                                       |
+| -------------- | ----- | ------------------------------------------------- |
+| `install`      | `i`   | Install dependencies via pnpm                     |
+| `dev`          |       | Start dev server                                  |
+| `build`        |       | Production build                                  |
+| `preview`      |       | Preview the built output                          |
+| `check`        | `c`   | Run lint and format-check in parallel             |
+| `format`       | `f`   | Format code via Prettier                          |
+| `format-check` |       | Check formatting without writing                  |
+| `lint`         |       | Lint via ESLint                                   |
+| `sync`         |       | Sync Astro types                                  |
+| `deploy`       |       | Deploy to Cloudflare (requires `production=true`) |
+| `d-p`          |       | Deploy to Cloudflare preview branch               |
+| `clean`        |       | Remove dist, node_modules, and build artifacts    |
+
+</details>
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in the required values before running locally.
+
+```bash
+cp .env.example .env
+```
+
+## File Structure
+
+<details>
+<summary>Full directory tree</summary>
 
 ```text
 .
@@ -74,219 +129,64 @@ choco install make
 |-- package.json
 |-- pnpm-lock.yaml
 |-- pnpm-workspace.yaml
-|-- public
+|-- public/
 |   |-- PageSpeed Insights.png
 |   |-- favicon.svg
-|   |-- nadzu-og-2.jpg
-|   |-- nadzu-og-3.jpg
-|   `-- nadzu-og.jpg
-|-- src
-|   |-- actions
-|   |   `-- index.ts
-|   |-- assets
-|   |   |-- icons
-|   |   |   |-- IcoGithub.svg
-|   |   |   |-- IcoInstagram.svg
-|   |   |   |-- IcoLinkedin.svg
-|   |   |   |-- IcoMail.svg
-|   |   |   |-- IcoTelegram.svg
-|   |   |   |-- IcoWhatsaspp.svg
-|   |   |   |-- IconArchive.svg
-|   |   |   |-- IconArrowLeft.svg
-|   |   |   |-- IconArrowNarrowUp.svg
-|   |   |   |-- IconArrowRight.svg
-|   |   |   |-- IconBrandX.svg
-|   |   |   |-- IconCalendar.svg
-|   |   |   |-- IconChevronLeft.svg
-|   |   |   |-- IconChevronRight.svg
-|   |   |   |-- IconClear.svg
-|   |   |   |-- IconCopy.svg
-|   |   |   |-- IconEdit.svg
-|   |   |   |-- IconFacebook.svg
-|   |   |   |-- IconGitHub.svg
-|   |   |   |-- IconHash.svg
-|   |   |   |-- IconLinkedin.svg
-|   |   |   |-- IconMail.svg
-|   |   |   |-- IconMaximize.svg
-|   |   |   |-- IconMenuDeep.svg
-|   |   |   |-- IconMinimize.svg
-|   |   |   |-- IconMoon.svg
-|   |   |   |-- IconNuuLinkedIn.svg
-|   |   |   |-- IconPaste.svg
-|   |   |   |-- IconPinterest.svg
-|   |   |   |-- IconRss.svg
-|   |   |   |-- IconSearch.svg
-|   |   |   |-- IconSunHigh.svg
-|   |   |   |-- IconSwap.svg
-|   |   |   |-- IconTelegram.svg
-|   |   |   |-- IconWhatsapp.svg
-|   |   |   |-- IconX.svg
-|   |   |   `-- LoaderPacman.svg
-|   |   `-- tags
-|   |       |-- IconApacheFelix.svg
-|   |       |-- IconCloudFlare.svg
-|   |       |-- IconCsharp.svg
-|   |       |-- IconCss.svg
-|   |       |-- IconDocker.svg
-|   |       |-- IconDotNet.svg
-|   |       |-- IconEclipse.svg
-|   |       |-- IconExpress.svg
-|   |       |-- IconFigma.svg
-|   |       |-- IconFlask.svg
-|   |       |-- IconGitlab.svg
-|   |       |-- IconGlobe.svg
-|   |       |-- IconHeroku.svg
-|   |       |-- IconJava.svg
-|   |       |-- IconKubernetes.svg
-|   |       |-- IconMongodb.svg
-|   |       |-- IconNetlify.svg
-|   |       |-- IconPhp.svg
-|   |       |-- IconReact.svg
-|   |       |-- IconRedux.svg
-|   |       |-- IconResearch.svg
-|   |       |-- IconSpringBoot.svg
-|   |       |-- IconSql.svg
-|   |       |-- IconTailwind.svg
-|   |       |-- IconTerraform.svg
-|   |       |-- IconThreejs.svg
-|   |       |-- IconTomcat.svg
-|   |       `-- IconYoutube.svg
-|   |-- components
-|   |   |-- BackButton.astro
-|   |   |-- BackToTopButton.astro
-|   |   |-- Breadcrumb.astro
-|   |   |-- Card.astro
-|   |   |-- ContactMe.astro
-|   |   |-- Datetime.astro
-|   |   |-- EditPost.astro
-|   |   |-- Footer.astro
-|   |   |-- Header.astro
-|   |   |-- ImageViewer.astro
-|   |   |-- LinkButton.astro
-|   |   |-- Loader.astro
-|   |   |-- Pagination.astro
-|   |   |-- ProjectCard.astro
-|   |   |-- ProjectDialog.astro
-|   |   |-- ShareLinks.astro
-|   |   |-- Socials.astro
-|   |   |-- Tag.astro
-|   |   `-- tools
-|   |       `-- RecaptchaConfig.astro
-|   |-- config.ts
-|   |-- constants.ts
-|   |-- content.config.ts
-|   |-- data
-|   |   |-- blog
-|   |   |   |-- docker-build-post.md
-|   |   |   |-- examples
-|   |   |   |   |-- example-draft-post.md
-|   |   |   |   |-- example-featured-post.md
-|   |   |   |   `-- example-non-draft-non-featured-post.md
-|   |   |   |-- portfolio-changelog-2026.md
-|   |   |   `-- rust-backend-changelog-2026.md
-|   |   |-- form
-|   |   |   `-- schema.sql
-|   |   `-- projects
-|   |       |-- ProjectData.json
-|   |       `-- ProjectData.schema.json
-|   |-- env.d.ts
-|   |-- layouts
-|   |   |-- AboutLayout.astro
-|   |   |-- Layout.astro
-|   |   |-- Main.astro
-|   |   |-- PostDetails.astro
-|   |   `-- ToolsLayout.astro
-|   |-- pages
-|   |   |-- 404.astro
-|   |   |-- about.md
-|   |   |-- api
-|   |   |   `-- health.ts
-|   |   |-- archives
-|   |   |   `-- index.astro
-|   |   |-- index.astro
-|   |   |-- og.png.ts
-|   |   |-- posts
-|   |   |   |-- [...page].astro
-|   |   |   `-- [...slug]
-|   |   |       |-- index.astro
-|   |   |       `-- index.png.ts
-|   |   |-- projects
-|   |   |   `-- index.astro
-|   |   |-- robots.txt.ts
-|   |   |-- rss.xml.ts
-|   |   |-- search.astro
-|   |   |-- tags
-|   |   |   |-- [tag]
-|   |   |   |   `-- [...page].astro
-|   |   |   `-- index.astro
-|   |   `-- tools
-|   |       `-- index.astro
-|   |-- remark-collapse.d.ts
-|   |-- scripts
+|   `-- nadzu-og*.jpg
+|-- src/
+|   |-- actions/         # Astro server actions
+|   |-- assets/          # SVG icons (ui + tech tags)
+|   |-- components/      # Reusable Astro components
+|   |-- data/
+|   |   |-- blog/        # Markdown blog posts
+|   |   |-- form/        # Contact form schema
+|   |   `-- projects/    # ProjectData.json + schema
+|   |-- layouts/         # Page layout wrappers
+|   |-- pages/           # File-based routing
+|   |-- scripts/
 |   |   |-- theme.ts
-|   |   `-- tools
-|   |       |-- base64
-|   |       |   |-- controller.ts
-|   |       |   |-- dom.ts
-|   |       |   |-- index.ts
-|   |       |   |-- template.ts
-|   |       |   |-- uiController.ts
-|   |       |   |-- urlOptions.ts
-|   |       |   `-- validation.ts
-|   |       |-- catalog.ts
-|   |       |-- clipboard.ts
-|   |       |-- registry.ts
-|   |       |-- types.ts
-|   |       |-- ui
-|   |       |   |-- captchaDialog.ts
-|   |       |   |-- progressBar.ts
-|   |       |   `-- responseDock.ts
-|   |       |-- validation.ts
-|   |       |-- workbench.ts
-|   |       `-- ytdlp
-|   |           |-- apiClient.ts
-|   |           |-- controller.ts
-|   |           |-- dom.ts
-|   |           |-- index.ts
-|   |           |-- jobMonitor.ts
-|   |           |-- sitesController.ts
-|   |           |-- template.ts
-|   |           |-- uiController.ts
-|   |           |-- urlOptions.ts
-|   |           `-- validation.ts
-|   |-- styles
-|   |   |-- global.css
-|   |   `-- typography.css
-|   `-- utils
-|       |-- CoreApiClient.ts
-|       |-- asyncPoll.ts
-|       |-- base64.ts
-|       |-- captchaManager.ts
-|       |-- generateOgImages.ts
-|       |-- getPath.ts
-|       |-- getPostsByGroupCondition.ts
-|       |-- getPostsByTag.ts
-|       |-- getSortedPosts.ts
-|       |-- getUniqueTags.ts
-|       |-- loadGoogleFont.ts
-|       |-- og-templates
-|       |   |-- post.js
-|       |   `-- site.js
-|       |-- postFilter.ts
-|       |-- projectUtils.ts
-|       |-- slugify.ts
-|       |-- transformers
-|       |   `-- fileName.js
-|       |-- typingAnimation.ts
-|       |-- ytdlpProgress.ts
-|       `-- ytdlpStatus.ts
+|   |   `-- tools/       # Tool-specific TS modules (base64, ytdlp)
+|   |-- styles/          # Global CSS and typography
+|   `-- utils/           # Helpers: OG gen, slug, post filters, etc.
 |-- tsconfig.json
 `-- wrangler.jsonc
 ```
 
 </details>
 
-### notes
+<details>
+<summary>Key source paths explained</summary>
 
-- Disable Cloudflare's rocket loader permanently. [#19](https://github.com/nxdun/Portfolio/issues/19)
-- Run `npx astro telemetry disable` to disable Astro's telemetry on your machine.
+- `src/pages/` maps every `.astro` or `.md` file directly to a URL via file-based routing.
+- `src/data/projects/ProjectData.json` is the single source of truth for all project cards on the site.
+- `src/scripts/tools/` isolates each tool (base64, ytdlp) into its own module set: controller, dom, template, validation, urlOptions, uiController.
+- `src/utils/` holds shared utilities including OG image generation, post sorting and filtering, slug helpers, and the `CoreApiClient` used by the yt-dlp tool.
+- `wrangler.jsonc` holds the Cloudflare Workers deployment config for both production and preview environments.
+
+</details>
+
+---
+
+## Docker
+
+A `Dockerfile` and `docker-compose.yml` are included for containerized local development or self-hosting.
+
+```bash
+docker compose up
+```
+
+The `.dockerignore` excludes `node_modules`, `dist`, and other non-essential paths from the image context.
+
+---
+
+## Notes
+
+- Disable Cloudflare Rocket Loader permanently. It interferes with client-side scripts. See [#19](https://github.com/nxdun/Portfolio/issues/19).
+- Run `npx astro telemetry disable` once after cloning to opt out of Astro anonymous usage telemetry on your machine.
+- Commitizen is configured via `cz.yaml` for consistent conventional commit messages.
+
+---
+
+## License
+
+[MIT](./LICENSE)
