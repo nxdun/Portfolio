@@ -29,17 +29,17 @@ A personal site that doubles as a blog platform and Additioonal Awsome tools. Bu
 - Health check endpoint at `/api/health`
 - Tag-based post grouping with paginated archive
 
-- CI pipleines For Linting / Formatting and Build 
+- CI pipleines For Linting / Formatting and Build
 - CD pipelines for Deploying into Cloudflare Workers
 
 ## Toolkit
 
 Quick-launch browser tools accessible directly via URL query parameters. No install, no sign-in.
-Refer Developer Documentation at : 
-| Tool              | URL                                                          | Description                                                    |
+Refer Developer Documentation at :
+| Tool | URL | Description |
 | ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Base64            | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI             |
-| yt-dlp Downloader | [`/tools/?tool=ytdlp`](https://nadzu.me/tools/?tool=ytdlp)   | Download from 1,700+ supported sites with reCAPTCHA protection |
+| Base64 | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
+| yt-dlp Downloader | [`/tools/?tool=ytdlp`](https://nadzu.me/tools/?tool=ytdlp) | Download from 1,700+ supported sites with reCAPTCHA protection |
 
 ---
 
