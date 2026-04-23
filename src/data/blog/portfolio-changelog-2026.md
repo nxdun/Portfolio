@@ -18,15 +18,31 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
+## v.2.6.0 - 2026-04-23
+
+- <a href="https://github.com/nxdun/Portfolio/pull/30" target="_blank"><code>#30</code></a> [docs] Expand README and add toolkit query parameter guide
+  - Updated README Structure with Better Organization.
+  - Added missing trim in zod form fields.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/29" target="_blank"><code>#29</code></a>[feat] Add contact form with D1-backed message handling
+  - New contact form with fields for name, email, and message.
+  - Added SQL schema for storing contact form.
+  - Integrated Cloudflare D1 database with Astro V6.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/28" target="_blank"><code>#28</code></a> [build(ci)] migrate manual deploy workflow to Cloudflare Workers environments
+  - Manual CD Trigger Workflow - Automated with My Agentic System with MCP, Agent Will Trigger CD Workflow on demand via API call to GitHub Actions API.
+  - Added ImageViewr to zoom in/out of project screenshots in the Projects section. beter UX.
+  - Minor Deps Update Chore, Including Wrangler TO support the latest Astro features.
+
 ## v2.5.0 - 2026-04-12
 
-- <a href="https://github.com/nxdun/Portfolio/pull/26" target="_blank"><code>#26</code></a> [chore] Expand README docs,Icons, add ProjectData schema
-  - Added a new ProjectData schema to standardize project entries.
-  - Projects/Featured Projects UI update, New Custom Dot Based BG with intergrated Skeleton/loader.
 - <a href="https://github.com/nxdun/Portfolio/pull/27" target="_blank"><code>#27</code></a> [feat] Add contact form with D1-backed message handling
   - New contact form with fields for name, email, and message.
   - Added SQL schema for storing contact form.
-  - Integrated D1 database with Astro V6 for storing contact form submissions securely.
+  - Integrated Cloudflare D1 database with Astro V6 for storing contact form submissions securely.
+- <a href="https://github.com/nxdun/Portfolio/pull/26" target="_blank"><code>#26</code></a> [chore] Expand README docs,Icons, add ProjectData schema
+  - Added a new ProjectData schema to standardize project entries.
+  - Projects/Featured Projects UI update, New Custom Dot Based BG with intergrated Skeleton/loader.
 
 ## v2.4.1 - 2026-04-03
 

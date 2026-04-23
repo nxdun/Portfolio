@@ -1,8 +1,9 @@
 ---
-title: "Tool Query Parameters: Base64 + yt-dlp"
+title: "Tool Query Parameters Documentation"
 author: nadzu
 pubDatetime: 2026-04-19T12:00:00Z
 slug: tool-query-params
+# note : soft linked src/pages/tools if you modify this reflect it.
 featured: false
 draft: false
 tags:

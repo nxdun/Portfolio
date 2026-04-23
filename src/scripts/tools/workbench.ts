@@ -1,5 +1,9 @@
 import { TOOL_REGISTRY, getInitialToolKey, isToolKey } from "./registry";
-import { TOOL_CATALOG, type ToolKey } from "./catalog";
+import {
+  TOOL_CATALOG,
+  getToolQueryParamsDocsUrl,
+  type ToolKey,
+} from "./catalog";
 import type { ToolMount, ToolTeardown } from "./types";
 import { sanitizeSafeToken } from "./validation";
 import { SITE } from "@/config";
@@ -29,6 +33,9 @@ export function initToolsWorkbench(): boolean {
   const subtitleEl = document.querySelector(
     "#tool-subtitle"
   ) as HTMLElement | null;
+  const docsLinkEl = document.querySelector(
+    "#tool-docs-link"
+  ) as HTMLAnchorElement | null;
   const toggleBtn = document.querySelector(
     "#selector-toggle"
   ) as HTMLButtonElement | null;
@@ -126,6 +133,13 @@ export function initToolsWorkbench(): boolean {
     setActiveButton(toolKey);
     titleEl.textContent = definition.title;
     subtitleEl.textContent = definition.subtitle;
+    if (docsLinkEl) {
+      docsLinkEl.href = getToolQueryParamsDocsUrl(SITE.website, toolKey);
+      docsLinkEl.setAttribute(
+        "aria-label",
+        `Learn how to use ${definition.title} query parameters`
+      );
+    }
     replaceUrlToolParam(toolKey);
 
     if (activeTeardown) {
