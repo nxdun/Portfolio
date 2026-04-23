@@ -21,8 +21,9 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 ## v.2.6.0 - 2026-04-23
 
 - <a href="https://github.com/nxdun/Portfolio/pull/30" target="_blank"><code>#30</code></a> [docs] Expand README and add toolkit query parameter guide
-  - Updated README Structure with Better Organization.
-  - Added missing trim in zod form fields.
+- Revised README for clearer organization
+- Fixed missing trim in Zod form fields
+- Updated Tools Query Blog Post: added links in the tools section Additional Discoverability.
 
 - <a href="https://github.com/nxdun/Portfolio/pull/29" target="_blank"><code>#29</code></a>[feat] Add contact form with D1-backed message handling
   - New contact form with fields for name, email, and message.
