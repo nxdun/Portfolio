@@ -13,7 +13,6 @@ import getSortedPosts from "@/utils/getSortedPosts";
 import projectsData from "@/data/projects/ProjectData.json";
 import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
-import LoaderSvg from "@/assets/icons/LoaderPacman.svg?raw";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
 
@@ -133,16 +132,44 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
         <div
           class="relative hidden w-full flex-1 items-center overflow-hidden align-middle xl:flex"
         >
-          <Loader
-            mode="attached"
-            isSkeleton={true}
-            content={LoaderSvg}
-            class="h-full min-h-40 w-full"
-            animation={true}
-            spotlight="hover"
-            sweep={true}
-            edgeHighlight={true}
-          />
+          <div
+            class="hero-contribution-shell h-full min-h-40 w-full"
+            data-contribution-graph
+            data-contribution-graph-state="loading"
+            aria-label="GitHub contribution activity"
+          >
+            <Loader
+              mode="attached"
+              isSkeleton={true}
+              class="h-full min-h-40 w-full"
+              animation={true}
+              spotlight="hover"
+              sweep={true}
+              edgeHighlight={true}
+            />
+            <section class="hero-contribution-surface" aria-live="polite">
+              <div class="hero-contribution-head" aria-hidden="true">
+                <div class="hero-contribution-months" data-contribution-months></div>
+              </div>
+              <div class="hero-contribution-body">
+                <div class="hero-contribution-weekdays" data-contribution-weekdays></div>
+                <div class="hero-contribution-grid-wrap">
+                  <div
+                    class="hero-contribution-grid"
+                    data-contribution-grid
+                    role="grid"
+                    aria-label="GitHub contribution graph"
+                  ></div>
+                </div>
+              </div>
+              <div class="hero-contribution-foot">
+                <div class="hero-contribution-summary" data-contribution-summary></div>
+                <div class="hero-contribution-legend" data-contribution-legend></div>
+              </div>
+              <div class="hero-contribution-tooltip" data-contribution-tooltip></div>
+              <p class="hero-contribution-status" data-contribution-status></p>
+            </section>
+          </div>
         </div>
       </div>
     </section>
@@ -230,6 +257,7 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 </Layout>
 
 <script>
+  import "@/scripts/contributionGraph";
   import { startTypingAnimation } from "@/utils/typingAnimation";
 
   const initHomePage = () => {

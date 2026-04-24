@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/contributionGraph.schema.json",
+  "title": "ContributionGraphResponse",
+  "description": "Normalized contribution graph payload for frontend painting. Backend owns all heavy processing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "username",
+    "range",
+    "summary",
+    "legend",
+    "months",
+    "cells",
+    "meta"
+  ],
+  "properties": {
+    "username": {
+      "type": "string",
+      "minLength": 1,
+      "description": "GitHub username or configured portfolio identity."
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "timezone"],
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date",
+          "description": "Inclusive range start."
+        },
+        "to": {
+          "type": "string",
+          "format": "date",
+          "description": "Inclusive range end."
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Timezone used for normalized display."
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["totalContributions", "totalWeeks", "maxDailyCount"],
+      "properties": {
+        "totalContributions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalWeeks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxDailyCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "legend": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["level", "label", "min", "max", "color"],
+        "properties": {
+          "level": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "min": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#?[0-9a-fA-F]{6}$",
+            "description": "Resolved backend color for this level."
+          }
+        }
+      }
+    },
+    "months": {
+      "type": "array",
+      "description": "Month labels anchored to week columns by backend.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "weekIndex"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "weekIndex": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "cells": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "weekIndex",
+          "weekday",
+          "weekdayLabel",
+          "count",
+          "level",
+          "color",
+          "isFuture",
+          "isInCurrentMonth"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "weekIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "weekday": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6,
+            "description": "0-6 normalized display weekday."
+          },
+          "weekdayLabel": {
+            "type": "string",
+            "enum": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#?[0-9a-fA-F]{6}$",
+            "description": "Resolved backend cell color."
+          },
+          "isFuture": {
+            "type": "boolean"
+          },
+          "isInCurrentMonth": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "cached",
+        "cacheTtlSeconds",
+        "fetchedAt",
+        "schemaVersion"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["github"]
+        },
+        "cached": {
+          "type": "boolean"
+        },
+        "cacheTtlSeconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fetchedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}
