@@ -16,6 +16,16 @@ const networkTimeoutMs = 12000;
 const normalizeHexColor = (value: string) =>
   value.startsWith("#") ? value : `#${value}`;
 
+const formatDate = (dateString: string) => {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+};
+
 const isHttpUrl = (value: string): boolean => {
   try {
     const url = new URL(value);
@@ -72,9 +82,14 @@ const getLegendLabel = (
   level: number
 ): string => legend.find(item => item.level === level)?.label ?? "Unknown";
 
-const toCellAriaLabel = (cell: ContributionCell, legendLabel: string) => {
+const toCellHtmlLabel = (cell: ContributionCell, legendLabel: string) => {
   const contributionWord = cell.count === 1 ? "contribution" : "contributions";
-  return `${cell.date}, ${cell.count} ${contributionWord}, ${legendLabel}`;
+  return `${formatDate(cell.date)} <span class="opacity-50 px-1">|</span> <span class="font-semibold text-foreground">${cell.count} ${contributionWord}</span> <span class="opacity-50 px-1">|</span> ${legendLabel}`;
+};
+
+const toCellPlainLabel = (cell: ContributionCell, legendLabel: string) => {
+  const contributionWord = cell.count === 1 ? "contribution" : "contributions";
+  return `${formatDate(cell.date)} | ${cell.count} ${contributionWord} | ${legendLabel}`;
 };
 
 const setState = (host: HTMLElement, state: ContributionGraphState) => {
@@ -92,17 +107,25 @@ const renderMonths = (host: HTMLElement, data: ContributionGraphResponse) => {
   if (!months) return;
 
   months.textContent = "";
-  data.months.forEach(month => {
+  let lastRenderedWeekIndex = Number.NEGATIVE_INFINITY;
+  data.months.forEach((month, index) => {
+    if (index === 0 || month.weekIndex - lastRenderedWeekIndex < 3) {
+      return;
+    }
+
     const node = document.createElement("span");
     node.className = "hero-contribution-month";
     node.textContent = month.label;
     node.style.gridColumnStart = String(month.weekIndex + 1);
     months.appendChild(node);
+    lastRenderedWeekIndex = month.weekIndex;
   });
 };
 
 const renderWeekdays = (host: HTMLElement) => {
-  const weekdays = host.querySelector<HTMLElement>("[data-contribution-weekdays]");
+  const weekdays = host.querySelector<HTMLElement>(
+    "[data-contribution-weekdays]"
+  );
   if (!weekdays) return;
 
   weekdays.textContent = "";
@@ -129,7 +152,10 @@ const renderLegend = (host: HTMLElement, data: ContributionGraphResponse) => {
     swatch.className = "hero-contribution-legend-swatch";
     label.className = "hero-contribution-legend-label";
 
-    swatch.style.setProperty("--contribution-color", normalizeHexColor(item.color));
+    swatch.style.setProperty(
+      "--contribution-color",
+      normalizeHexColor(item.color)
+    );
     label.textContent = item.label;
 
     wrapper.appendChild(swatch);
@@ -139,24 +165,28 @@ const renderLegend = (host: HTMLElement, data: ContributionGraphResponse) => {
 };
 
 const renderSummary = (host: HTMLElement, data: ContributionGraphResponse) => {
-  const summary = host.querySelector<HTMLElement>("[data-contribution-summary]");
+  const summary = host.querySelector<HTMLElement>(
+    "[data-contribution-summary]"
+  );
   if (!summary) return;
 
   const cacheStatus = data.meta.cached ? "Cached" : "Live";
-  summary.textContent = `${data.summary.totalContributions} contributions in ${data.summary.totalWeeks} weeks (${cacheStatus})`;
+  summary.innerHTML = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-50 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-70">contributions</span> <span class="opacity-50 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-70">weeks</span> <span class="text-[0.65rem] opacity-50 ml-1">(${cacheStatus})</span>`;
 };
 
 const bindInteraction = (host: HTMLElement) => {
   const grid = host.querySelector<HTMLElement>("[data-contribution-grid]");
-  const tooltip = host.querySelector<HTMLElement>("[data-contribution-tooltip]");
+  const tooltip = host.querySelector<HTMLElement>(
+    "[data-contribution-tooltip]"
+  );
 
   if (!grid || !tooltip) return;
 
-  const idleMessage = "Hover or focus a day to inspect contribution details.";
-  tooltip.textContent = idleMessage;
+  const idleMessage = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-50 px-1">/</span> contribution activity`;
+  tooltip.innerHTML = idleMessage;
 
   const updateTooltip = (value: string) => {
-    tooltip.textContent = value;
+    tooltip.innerHTML = value;
   };
 
   grid.addEventListener("pointerover", event => {
@@ -194,16 +224,19 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
   data.cells.forEach(cell => {
     const item = document.createElement("button");
     const legendLabel = getLegendLabel(data.legend, cell.level);
-    const ariaLabel = toCellAriaLabel(cell, legendLabel);
+    const htmlLabel = toCellHtmlLabel(cell, legendLabel);
+    const plainLabel = toCellPlainLabel(cell, legendLabel);
 
     item.type = "button";
     item.className = "hero-contribution-cell";
     item.style.gridColumnStart = String(cell.weekIndex + 1);
     item.style.gridRowStart = String(cell.weekday + 1);
-    item.style.setProperty("--contribution-color", normalizeHexColor(cell.color));
-    item.setAttribute("aria-label", ariaLabel);
-    item.setAttribute("title", ariaLabel);
-    item.dataset.tooltip = ariaLabel;
+    item.style.setProperty(
+      "--contribution-color",
+      normalizeHexColor(cell.color)
+    );
+    item.setAttribute("aria-label", plainLabel);
+    item.dataset.tooltip = htmlLabel;
 
     fragment.appendChild(item);
   });
@@ -231,20 +264,32 @@ const fetchContributionGraph = async (
   signal: AbortSignal
 ) => {
   const timeoutController = new AbortController();
-  const timeoutId = window.setTimeout(() => timeoutController.abort(), networkTimeoutMs);
+  let timedOut = false;
+  const timeoutId = window.setTimeout(() => {
+    timedOut = true;
+    timeoutController.abort();
+  }, networkTimeoutMs);
 
-  signal.addEventListener("abort", () => timeoutController.abort(), { once: true });
+  signal.addEventListener("abort", () => timeoutController.abort(), {
+    once: true,
+  });
 
   try {
     const combinedSignal = timeoutController.signal;
-    return await client.getContributionGraph(combinedSignal);
+    const result = await client.getContributionGraph(combinedSignal);
+    return {
+      result,
+      timedOut,
+    };
   } finally {
     window.clearTimeout(timeoutId);
   }
 };
 
 const resolveHost = async (host: HTMLElement) => {
-  const configuredBaseUrl = (import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? "").trim();
+  const configuredBaseUrl = (
+    import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? ""
+  ).trim();
 
   if (!configuredBaseUrl || !isHttpUrl(configuredBaseUrl)) {
     setState(host, "error");
@@ -259,22 +304,33 @@ const resolveHost = async (host: HTMLElement) => {
   const client = new ContributionsApiClient(configuredBaseUrl);
 
   try {
-    const result = await fetchContributionGraph(client, controller.signal);
+    const { result, timedOut } = await fetchContributionGraph(
+      client,
+      controller.signal
+    );
     if (controller.signal.aborted) return;
 
     if (!result.ok) {
-      if (result.errorType === "ABORTED") return;
+      if (result.errorType === "ABORTED" && !timedOut) {
+        return;
+      }
 
       setState(host, "error");
       settleLoaderMotion(host);
-      setStatusMessage(host, "Contribution activity is temporarily unavailable.");
+      setStatusMessage(
+        host,
+        "Activity unavailable for nxdun."
+      );
       return;
     }
 
     if (!isContributionResponse(result.data)) {
       setState(host, "error");
       settleLoaderMotion(host);
-      setStatusMessage(host, "Contribution activity is temporarily unavailable.");
+      setStatusMessage(
+        host,
+        "Activity unavailable for nxdun."
+      );
       return;
     }
 
@@ -284,7 +340,7 @@ const resolveHost = async (host: HTMLElement) => {
       renderLegend(host, payload);
       setState(host, "empty");
       settleLoaderMotion(host);
-      setStatusMessage(host, "No contribution activity yet.");
+      setStatusMessage(host, "No recent activity for nxdun.");
       return;
     }
 
@@ -317,7 +373,7 @@ const initHost = (host: HTMLElement) => {
 
   host.dataset.contributionGraphInit = "true";
   setState(host, "loading");
-  setStatusMessage(host, "Loading contribution activity...");
+  setStatusMessage(host, "Loading nxdun's activity...");
 
   deferClientWork(() => {
     resolveHost(host);

@@ -123,7 +123,32 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
                 <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
                   Social Links:
                 </div>
-                <Socials />
+                <div class="flex items-center">
+                  <Socials />
+                  <div class="pointer-events-none hidden select-none opacity-30 xl:block">
+                    <svg
+                      width="50"
+                      height="20"
+                      viewBox="0 0 50 20"
+                      fill="none"
+                      class="ms-4 -rotate-10 animate-pulse-horizontal"
+                    >
+                      <path
+                        d="M2 5C10 12 30 12 45 6"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M38 7L45 6L40 13"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             )
           }
@@ -138,35 +163,39 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
             data-contribution-graph-state="loading"
             aria-label="GitHub contribution activity"
           >
-            <Loader
-              mode="attached"
-              isSkeleton={true}
-              class="h-full min-h-40 w-full"
-              animation={true}
-              spotlight="hover"
-              sweep={true}
-              edgeHighlight={true}
-            />
+
             <section class="hero-contribution-surface" aria-live="polite">
               <div class="hero-contribution-head" aria-hidden="true">
-                <div class="hero-contribution-months" data-contribution-months></div>
+                <div class="hero-contribution-months" data-contribution-months>
+                </div>
               </div>
               <div class="hero-contribution-body">
-                <div class="hero-contribution-weekdays" data-contribution-weekdays></div>
+                <div
+                  class="hero-contribution-weekdays"
+                  data-contribution-weekdays
+                >
+                </div>
                 <div class="hero-contribution-grid-wrap">
                   <div
                     class="hero-contribution-grid"
                     data-contribution-grid
                     role="grid"
                     aria-label="GitHub contribution graph"
-                  ></div>
+                  >
+                  </div>
                 </div>
               </div>
               <div class="hero-contribution-foot">
-                <div class="hero-contribution-summary" data-contribution-summary></div>
-                <div class="hero-contribution-legend" data-contribution-legend></div>
+                <div
+                  class="hero-contribution-summary"
+                  data-contribution-summary
+                >
+                </div>
+                <div class="hero-contribution-legend" data-contribution-legend>
+                </div>
               </div>
-              <div class="hero-contribution-tooltip" data-contribution-tooltip></div>
+              <div class="hero-contribution-tooltip" data-contribution-tooltip>
+              </div>
               <p class="hero-contribution-status" data-contribution-status></p>
             </section>
           </div>
@@ -277,3 +306,18 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
   initHomePage();
   document.addEventListener("astro:page-load", initHomePage);
 </script>
+
+<style>
+  @keyframes pulse-horizontal {
+    0%,
+    100% {
+      transform: translateX(0) rotate(-10deg);
+    }
+    50% {
+      transform: translateX(4px) rotate(-10deg);
+    }
+  }
+  .animate-pulse-horizontal {
+    animation: pulse-horizontal 3s infinite ease-in-out;
+  }
+</style>
