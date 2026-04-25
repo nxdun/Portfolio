@@ -174,7 +174,7 @@ html[data-theme="dark"] .loader-container {
 }
 
 .hero-contribution-month {
-  color: color-mix(in srgb, var(--foreground) 75%, transparent);
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
   font-size: 0.65rem;
   line-height: 1;
   white-space: nowrap;
@@ -191,7 +191,7 @@ html[data-theme="dark"] .loader-container {
   display: grid;
   grid-template-rows: repeat(7, 1fr);
   align-content: stretch;
-  color: color-mix(in srgb, var(--foreground) 65%, transparent);
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
   font-size: 0.65rem;
   line-height: 1;
 }
@@ -324,7 +324,7 @@ html[data-theme="dark"] .loader-container {
   align-items: center;
   gap: 0.5rem 1rem;
   font-size: 0.72rem;
-  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
 }
 
 .hero-contribution-summary {
@@ -373,14 +373,14 @@ html[data-theme="dark"] .loader-container {
 .hero-contribution-tooltip {
   min-height: 1rem;
   font-size: 0.72rem;
-  color: color-mix(in srgb, var(--foreground) 80%, transparent);
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
 }
 
 .hero-contribution-status {
   min-height: 1rem;
   margin: 0;
   font-size: 0.72rem;
-  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
 }
 
 .hero-contribution-shell[data-contribution-graph-state="resolved"]
@@ -545,7 +545,7 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
   max-width: 28rem;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
   clip-path: inset(0 100% 0 0);
   opacity: 0;
   animation: loader-message-in 280ms steps(16, end) forwards;

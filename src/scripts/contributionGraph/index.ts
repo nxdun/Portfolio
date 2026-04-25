@@ -84,7 +84,7 @@ const getLegendLabel = (
 
 const toCellHtmlLabel = (cell: ContributionCell, legendLabel: string) => {
   const contributionWord = cell.count === 1 ? "contribution" : "contributions";
-  return `${formatDate(cell.date)} <span class="opacity-50 px-1">|</span> <span class="font-semibold text-foreground">${cell.count} ${contributionWord}</span> <span class="opacity-50 px-1">|</span> ${legendLabel}`;
+  return `${formatDate(cell.date)} <span class="opacity-70 px-1">|</span> <span class="font-semibold text-foreground">${cell.count} ${contributionWord}</span> <span class="opacity-70 px-1">|</span> ${legendLabel}`;
 };
 
 const toCellPlainLabel = (cell: ContributionCell, legendLabel: string) => {
@@ -171,7 +171,7 @@ const renderSummary = (host: HTMLElement, data: ContributionGraphResponse) => {
   if (!summary) return;
 
   const cacheStatus = data.meta.cached ? "Cached" : "Live";
-  summary.innerHTML = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-50 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-70">contributions</span> <span class="opacity-50 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-70">weeks</span> <span class="text-[0.65rem] opacity-50 ml-1">(${cacheStatus})</span>`;
+  summary.innerHTML = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-90">contributions</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-90">weeks</span> <span class="text-[0.65rem] opacity-80 ml-1">(${cacheStatus})</span>`;
 };
 
 const bindInteraction = (host: HTMLElement) => {
@@ -220,7 +220,15 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
   const grid = host.querySelector<HTMLElement>("[data-contribution-grid]");
   if (!grid) return;
 
-  const fragment = document.createDocumentFragment();
+  // Create 7 rows to satisfy ARIA grid requirements
+  const rows = Array.from({ length: 7 }, () => {
+    const row = document.createElement("div");
+    row.setAttribute("role", "row");
+    // display: contents allows the children to participate in the grid layout of the parent
+    row.style.display = "contents";
+    return row;
+  });
+
   data.cells.forEach(cell => {
     const item = document.createElement("button");
     const legendLabel = getLegendLabel(data.legend, cell.level);
@@ -229,6 +237,7 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
 
     item.type = "button";
     item.className = "hero-contribution-cell";
+    item.setAttribute("role", "gridcell");
     item.style.gridColumnStart = String(cell.weekIndex + 1);
     item.style.gridRowStart = String(cell.weekday + 1);
     item.style.setProperty(
@@ -239,11 +248,11 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
     item.setAttribute("title", plainLabel);
     item.dataset.tooltip = htmlLabel;
 
-    fragment.appendChild(item);
+    rows[cell.weekday].appendChild(item);
   });
 
   grid.textContent = "";
-  grid.appendChild(fragment);
+  rows.forEach(row => grid.appendChild(row));
 
   const totalWeeks = Math.max(1, data.summary.totalWeeks);
   host.style.setProperty("--contribution-weeks", String(totalWeeks));
