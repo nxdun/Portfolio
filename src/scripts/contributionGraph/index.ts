@@ -236,6 +236,7 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
       normalizeHexColor(cell.color)
     );
     item.setAttribute("aria-label", plainLabel);
+    item.setAttribute("title", plainLabel);
     item.dataset.tooltip = htmlLabel;
 
     fragment.appendChild(item);
