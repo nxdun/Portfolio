@@ -318,20 +318,14 @@ const resolveHost = async (host: HTMLElement) => {
 
       setState(host, "error");
       settleLoaderMotion(host);
-      setStatusMessage(
-        host,
-        "Activity unavailable for nxdun."
-      );
+      setStatusMessage(host, "Activity unavailable for nxdun.");
       return;
     }
 
     if (!isContributionResponse(result.data)) {
       setState(host, "error");
       settleLoaderMotion(host);
-      setStatusMessage(
-        host,
-        "Activity unavailable for nxdun."
-      );
+      setStatusMessage(host, "Activity unavailable for nxdun.");
       return;
     }
 
