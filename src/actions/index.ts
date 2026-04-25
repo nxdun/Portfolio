@@ -6,7 +6,7 @@ export const server = {
     accept: "form",
     input: z.object({
       name: z.string().trim().min(1, "Name is required"),
-      email: z.string().trim().email({ message: "Valid email is required" }),
+      email: z.email({ message: "Valid email is required" }),
       purpose: z.string().trim().min(1, "Purpose is required"),
       message: z.string().trim().min(1, "Message is required"),
       "g-recaptcha-response": z.string().trim().optional(),

@@ -1,4 +1,3 @@
-import { ContributionsApiClient } from "./apiClient";
 import type {
   ContributionCell,
   ContributionGraphResponse,
@@ -12,6 +11,7 @@ const initializedHosts = new WeakSet<HTMLElement>();
 const weekdayShortNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 const networkTimeoutMs = 12000;
+const CONTRIBUTIONS_PATH = "/api/v1/contributions";
 
 const normalizeHexColor = (value: string) =>
   value.startsWith("#") ? value : `#${value}`;
@@ -270,9 +270,13 @@ const settleLoaderMotion = (host: HTMLElement) => {
 };
 
 const fetchContributionGraph = async (
-  client: ContributionsApiClient,
+  baseUrl: string,
   signal: AbortSignal
-) => {
+): Promise<{
+  ok: boolean;
+  data?: ContributionGraphResponse;
+  timedOut: boolean;
+}> => {
   const timeoutController = new AbortController();
   let timedOut = false;
   const timeoutId = window.setTimeout(() => {
@@ -285,11 +289,29 @@ const fetchContributionGraph = async (
   });
 
   try {
-    const combinedSignal = timeoutController.signal;
-    const result = await client.getContributionGraph(combinedSignal);
+    const response = await fetch(
+      `${baseUrl.replace(/\/+$/, "")}${CONTRIBUTIONS_PATH}`,
+      {
+        signal: timeoutController.signal,
+      }
+    );
+
+    if (!response.ok) {
+      return { ok: false, timedOut: false };
+    }
+
+    const data = await response.json();
     return {
-      result,
-      timedOut,
+      ok: true,
+      data,
+      timedOut: false,
+    };
+  } catch (error) {
+    const isAbort =
+      error instanceof DOMException && error.name === "AbortError";
+    return {
+      ok: false,
+      timedOut: isAbort && timedOut,
     };
   } finally {
     window.clearTimeout(timeoutId);
@@ -311,17 +333,15 @@ const resolveHost = async (host: HTMLElement) => {
   const controller = new AbortController();
   activeControllers.add(controller);
 
-  const client = new ContributionsApiClient(configuredBaseUrl);
-
   try {
-    const { result, timedOut } = await fetchContributionGraph(
-      client,
+    const { ok, data, timedOut } = await fetchContributionGraph(
+      configuredBaseUrl,
       controller.signal
     );
     if (controller.signal.aborted) return;
 
-    if (!result.ok) {
-      if (result.errorType === "ABORTED" && !timedOut) {
+    if (!ok) {
+      if (!timedOut && controller.signal.aborted) {
         return;
       }
 
@@ -331,14 +351,14 @@ const resolveHost = async (host: HTMLElement) => {
       return;
     }
 
-    if (!isContributionResponse(result.data)) {
+    if (!isContributionResponse(data)) {
       setState(host, "error");
       settleLoaderMotion(host);
       setStatusMessage(host, "Activity unavailable for nxdun.");
       return;
     }
 
-    const payload = result.data;
+    const payload = data;
     if (payload.cells.length === 0) {
       renderSummary(host, payload);
       renderLegend(host, payload);
@@ -390,8 +410,7 @@ export const initContributionGraph = () => {
 };
 
 if (typeof window !== "undefined") {
-  initContributionGraph();
-  document.addEventListener("astro:page-load", initContributionGraph);
+  // Listen for navigation cleanup
   document.addEventListener("astro:before-swap", () => {
     activeControllers.forEach(controller => controller.abort());
     activeControllers.clear();

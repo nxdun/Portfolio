@@ -58,9 +58,25 @@ const getTopFeaturedProjects = (
 
 const featuredProjects = getTopFeaturedProjects(projectsData, 3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
+
+const backendUrl = import.meta.env.PUBLIC_TOOLS_BACKEND_URL;
+const contributionsUrl = backendUrl
+  ? `${backendUrl.replace(/\/+$/, "")}/api/v1/contributions`
+  : null;
 ---
 
 <Layout>
+  {
+    contributionsUrl && (
+      <link
+        rel="preload"
+        href={contributionsUrl}
+        as="fetch"
+        crossorigin
+        slot="head"
+      />
+    )
+  }
   <Header />
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
@@ -285,7 +301,6 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 </Layout>
 
 <script>
-  import "@/scripts/contributionGraph";
   import { startTypingAnimation } from "@/utils/typingAnimation";
 
   const initHomePage = () => {
@@ -300,6 +315,23 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
       "a Software Engineer",
       "a Cloud Architect",
     ]);
+
+    // Break the critical dependency chain for the contribution graph.
+    // By using a dynamic import, we defer the loading of the graph logic
+    // and its dependencies (like types) until after the main page is ready.
+    if (document.querySelector("[data-contribution-graph]")) {
+      const initGraph = async () => {
+        const { initContributionGraph } =
+          await import("@/scripts/contributionGraph");
+        initContributionGraph();
+      };
+
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(initGraph);
+      } else {
+        setTimeout(initGraph, 200);
+      }
+    }
   };
 
   initHomePage();

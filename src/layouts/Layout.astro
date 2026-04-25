@@ -125,6 +125,8 @@ const structuredData = {
 
     <meta name="theme-color" content="" />
 
+    <link rel="preconnect" href="https://api.nadzu.me" crossorigin />
+
     {
       // If PUBLIC_GOOGLE_SITE_VERIFICATION is set in the environment variable,
       // include google-site-verification tag in the heading
@@ -142,7 +144,7 @@ const structuredData = {
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
     <script is:inline>
       (function () {
-        const initialColorScheme = ""; // "light" | "dark"
+        const initialColorScheme = "dark"; // "light" | "dark"
         const currentTheme = localStorage.getItem("theme");
 
         function getPreferTheme() {
@@ -168,6 +170,7 @@ const structuredData = {
         };
       })();
     </script>
+    <slot name="head" />
   </head>
   <body>
     <Loader
