@@ -20,14 +20,21 @@ const updateSkeletonOffsets = () => {
   isUpdating = true;
 
   requestAnimationFrame(() => {
-    skeletonElements.forEach(el => {
-      const rect = el.getBoundingClientRect();
+    // 1. Read first (anti thrashing pattern)
+    const measurements = skeletonElements.map(el => ({
+      el,
+      rect: el.getBoundingClientRect(),
+    }));
+
+    // 2. writes after
+    measurements.forEach(({ el, rect }) => {
       el.style.setProperty("--bg-x", `${-rect.left}px`);
       el.style.setProperty("--bg-y", `${-rect.top}px`);
       if (el.dataset.skeletonSynced !== "true") {
         el.dataset.skeletonSynced = "true";
       }
     });
+
     isUpdating = false;
   });
 };
