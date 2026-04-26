@@ -147,6 +147,8 @@ html[data-theme="dark"] .loader-container {
   transition: opacity 220ms ease;
 }
 
+.hero-contribution-shell[data-contribution-graph-state="loading"]
+  .hero-contribution-surface,
 .hero-contribution-shell[data-contribution-graph-state="resolving"]
   .hero-contribution-surface,
 .hero-contribution-shell[data-contribution-graph-state="resolved"]

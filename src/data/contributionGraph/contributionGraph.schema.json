@@ -5,7 +5,15 @@
   "description": "Normalized contribution graph payload for frontend painting. Backend owns all heavy processing.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["username", "range", "summary", "legend", "months", "cells"],
+  "required": [
+    "username",
+    "range",
+    "summary",
+    "legend",
+    "months",
+    "cells",
+    "meta"
+  ],
   "properties": {
     "username": {
       "type": "string",

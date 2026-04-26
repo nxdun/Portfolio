@@ -179,7 +179,7 @@ const contributionsUrl = backendUrl
             data-contribution-graph-state="loading"
             aria-label="GitHub contribution activity"
           >
-            <section class="hero-contribution-surface" aria-live="polite">
+            <section class="hero-contribution-surface">
               <div class="hero-contribution-head" aria-hidden="true">
                 <div class="hero-contribution-months" data-contribution-months>
                 </div>
@@ -211,7 +211,13 @@ const contributionsUrl = backendUrl
               </div>
               <div class="hero-contribution-tooltip" data-contribution-tooltip>
               </div>
-              <p class="hero-contribution-status" data-contribution-status></p>
+              <p
+                class="hero-contribution-status"
+                data-contribution-status
+                aria-live="polite"
+                aria-atomic="true"
+              >
+              </p>
             </section>
           </div>
         </div>

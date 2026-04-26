@@ -82,9 +82,18 @@ const getLegendLabel = (
   level: number
 ): string => legend.find(item => item.level === level)?.label ?? "Unknown";
 
+const escapeHtml = (unsafe: string) => {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
 const toCellHtmlLabel = (cell: ContributionCell, legendLabel: string) => {
   const contributionWord = cell.count === 1 ? "contribution" : "contributions";
-  return `${formatDate(cell.date)} <span class="opacity-70 px-1">|</span> <span class="font-semibold text-foreground">${cell.count} ${contributionWord}</span> <span class="opacity-70 px-1">|</span> ${legendLabel}`;
+  return `${formatDate(cell.date)} <span class="opacity-70 px-1">|</span> <span class="font-semibold text-foreground">${cell.count} ${contributionWord}</span> <span class="opacity-70 px-1">|</span> ${escapeHtml(legendLabel)}`;
 };
 
 const toCellPlainLabel = (cell: ContributionCell, legendLabel: string) => {
