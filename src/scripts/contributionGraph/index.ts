@@ -78,7 +78,7 @@ const deferClientWork = (task: () => void) => {
 };
 
 const getLegendLabel = (
-  legend: ContributionLegendItem[],
+  legend: readonly ContributionLegendItem[],
   level: number
 ): string => legend.find(item => item.level === level)?.label ?? "Unknown";
 
