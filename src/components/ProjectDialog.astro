@@ -7,6 +7,7 @@ import IconX from "@/assets/icons/IconX.svg";
 type Props = {
   project: {
     project_name: string;
+    slug?: string;
     short_desc: string;
     full_desc?: string;
     tags: {
@@ -25,158 +26,173 @@ type Props = {
 };
 
 const { project } = Astro.props;
-const { project_name, short_desc, full_desc, tags, urls, time_period, photos } =
-  project;
+const {
+  project_name,
+  slug,
+  short_desc,
+  full_desc,
+  tags,
+  urls,
+  time_period,
+  photos,
+} = project;
 
-const projectId = slugifyStr(project_name);
+const projectId = slug || slugifyStr(project_name);
 const dialogId = `dialog-${projectId}`;
 const hasUrls = Array.isArray(urls) && urls.length > 0;
 ---
 
 <dialog
   id={dialogId}
+  data-slug={projectId}
   tabindex="-1"
   aria-modal="true"
-  class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[90vw] md:max-w-3xl md:rounded-xl md:border md:border-border"
+  class="project-dialog fixed z-50 m-auto h-full max-h-none w-full max-w-none overflow-hidden bg-background p-0 text-foreground shadow-2xl outline-none backdrop:bg-black/50 backdrop:backdrop-blur-sm md:h-auto md:max-h-[90vh] md:w-[95vw] md:max-w-6xl md:rounded-xl md:border md:border-border"
 >
   <div class="flex h-full max-h-full flex-col">
     <!-- Header with Title and Close Button -->
     <div
-      class="sticky top-0 z-10 border-b border-border bg-background px-6 py-4"
+      class="sticky top-0 z-10 border-b border-border bg-background px-6 py-5 md:px-10 md:py-6"
     >
-      <div class="flex items-start justify-between">
-        <div class="flex-1">
-          <h2 class="text-xl font-bold text-accent sm:text-2xl">
-            {project_name}
-          </h2>
-          <p class="mt-1 text-sm text-foreground/70">{time_period}</p>
+      <div class="mx-auto flex w-full max-w-5xl flex-col">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <h2 class="text-xl font-bold text-accent sm:text-2xl">
+              {project_name}
+            </h2>
+            <p class="mt-1 text-sm text-foreground/70">{time_period}</p>
+          </div>
+
+          <form method="dialog" class="ml-4">
+            <button
+              id={`dialog-close-${projectId}`}
+              data-dialog-close
+              class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
+              aria-label="Close modal"
+            >
+              <IconX class="size-6" />
+            </button>
+          </form>
         </div>
 
-        <form method="dialog" class="ml-4">
-          <button
-            id={`dialog-close-${projectId}`}
-            data-dialog-close
-            class="rounded-full p-2 transition-colors hover:bg-muted focus:outline-none"
-            aria-label="Close modal"
-          >
-            <IconX class="size-6" />
-          </button>
-        </form>
-      </div>
-
-      <!-- Project URLs (Horizontal Cards) -->
-      {
-        hasUrls && (
-          <div class="mt-4 flex flex-wrap items-center gap-2.5">
-            {urls.map(link => {
-              const IconImg = link.iconName
-                ? getUiIcon(link.iconName) || getTagIcon(link.iconName)
-                : null;
-              const linkText = link.description?.trim() || link.label;
-              return (
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3.5 py-2 text-sm leading-none font-medium text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-white focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:outline-none"
-                  title={link.description}
-                >
-                  {IconImg ? (
-                    <span
-                      class="icon-container block size-4.5 shrink-0"
-                      set:html={IconImg}
-                    />
-                  ) : (
-                    <svg
-                      class="size-4 shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-6l6-6m0 0l-6 6"
+        <!-- Project URLs (Horizontal Cards) -->
+        {
+          hasUrls && (
+            <div class="mt-4 flex flex-wrap items-center gap-2.5">
+              {urls.map(link => {
+                const IconImg = link.iconName
+                  ? getUiIcon(link.iconName) || getTagIcon(link.iconName)
+                  : null;
+                const linkText = link.description?.trim() || link.label;
+                return (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3.5 py-2 text-sm leading-none font-medium text-accent transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent hover:text-white focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:outline-none"
+                    title={link.description}
+                  >
+                    {IconImg ? (
+                      <span
+                        class="icon-container block size-4.5 shrink-0"
+                        set:html={IconImg}
                       />
-                    </svg>
-                  )}
-                  <span>{linkText}</span>
-                </a>
-              );
-            })}
-          </div>
-        )
-      }
+                    ) : (
+                      <svg
+                        class="size-4 shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-6l6-6m0 0l-6 6"
+                        />
+                      </svg>
+                    )}
+                    <span>{linkText}</span>
+                  </a>
+                );
+              })}
+            </div>
+          )
+        }
+      </div>
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 space-y-6 overflow-y-auto p-6">
-      <!-- Description -->
-      <div class="prose max-w-none dark:prose-invert">
-        <p class="leading-relaxed">{full_desc || short_desc}</p>
-      </div>
+    <div class="flex-1 overflow-y-auto p-6 md:p-10">
+      <div class="mx-auto flex w-full max-w-5xl flex-col space-y-8">
+        <!-- Description -->
+        <div
+          class="prose max-w-none text-foreground/90 md:text-lg dark:prose-invert"
+        >
+          <p class="leading-relaxed">{full_desc || short_desc}</p>
+        </div>
 
-      <!-- Tags Section -->
-      <div class="flex flex-wrap gap-2">
-        {
-          tags.icon.map(t => {
-            const IconImg = getTagIcon(t.iconName);
-            return (
-              <span
-                class="flex items-center justify-center p-1 transition-all hover:scale-110"
-                title={t.name}
-              >
-                {IconImg && (
-                  <span
-                    class="icon-container block size-8"
-                    set:html={IconImg}
-                  />
-                )}
-              </span>
-            );
-          })
-        }
-        {
-          tags.noIcon.map(tag => (
-            <span
-              class="project-tag rounded-md px-3 py-1.5 text-base"
-              style={`--tag-hue: ${getTagHue(tag)}`}
-            >
-              {tag}
-            </span>
-          ))
-        }
-      </div>
-
-      <!-- Gallery Section -->
-      {
-        photos && photos.length > 0 && (
-          <div class="space-y-4 pt-6">
-            <h3 class="border-b border-border pb-2 text-lg font-semibold">
-              Gallery
-            </h3>
-            <div class="grid grid-cols-1 gap-6">
-              {photos.map(url => (
-                <div
-                  class="image-wrapper relative flex min-h-75 w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background"
-                  data-src={url}
+        <!-- Tags Section -->
+        <div class="flex flex-wrap gap-2">
+          {
+            tags.icon.map(t => {
+              const IconImg = getTagIcon(t.iconName);
+              return (
+                <span
+                  class="flex items-center justify-center p-1 transition-all hover:scale-110"
+                  title={t.name}
                 >
-                  <div class="pointer-events-none absolute inset-0 z-0 h-full w-full">
-                    <Loader
-                      mode="attached"
-                      isSkeleton={true}
-                      spotlight="none"
-                      class="h-full w-full bg-transparent!"
+                  {IconImg && (
+                    <span
+                      class="icon-container block size-8"
+                      set:html={IconImg}
                     />
+                  )}
+                </span>
+              );
+            })
+          }
+          {
+            tags.noIcon.map(tag => (
+              <span
+                class="project-tag rounded-md px-3 py-1.5 text-base"
+                style={`--tag-hue: ${getTagHue(tag)}`}
+              >
+                {tag}
+              </span>
+            ))
+          }
+        </div>
+
+        <!-- Gallery Section -->
+        {
+          photos && photos.length > 0 && (
+            <div class="space-y-6 pt-6 md:pt-10">
+              <h3 class="border-b border-border pb-3 text-xl font-semibold">
+                Gallery
+              </h3>
+              <div class="grid grid-cols-1 gap-6 md:gap-8">
+                {photos.map(url => (
+                  <div
+                    class="image-wrapper relative flex min-h-75 w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background"
+                    data-src={url}
+                  >
+                    <div class="pointer-events-none absolute inset-0 z-0 h-full w-full">
+                      <Loader
+                        mode="attached"
+                        isSkeleton={true}
+                        spotlight="none"
+                        class="h-full w-full bg-transparent!"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )
-      }
+          )
+        }
+      </div>
     </div>
   </div>
 </dialog>
@@ -315,11 +331,35 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
         if (e.target === dialog) dialog.close();
       });
 
+      dialog.addEventListener("close", () => {
+        if (!document.querySelector("dialog.project-dialog[open]")) {
+          document.body.classList.remove("overflow-hidden");
+          document.documentElement.classList.remove("overflow-hidden");
+        }
+
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("project")) {
+          url.searchParams.delete("project");
+          window.history.replaceState({}, "", url);
+        }
+      });
+
       const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
           if (mutation.attributeName !== "open") return;
 
           if (dialog.open) {
+            document.body.classList.add("overflow-hidden");
+            document.documentElement.classList.add("overflow-hidden");
+            const projectSlug = dialog.dataset.slug;
+            if (projectSlug) {
+              const url = new URL(window.location.href);
+              if (url.searchParams.get("project") !== projectSlug) {
+                url.searchParams.set("project", projectSlug);
+                window.history.replaceState({}, "", url);
+              }
+            }
+
             const closeBtn = dialog.querySelector("[data-dialog-close]");
             const focusables = getFocusable(dialog);
             const firstElement = focusables[0] || closeBtn || dialog;
@@ -341,6 +381,19 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
 
       observer.observe(dialog, { attributes: true });
     });
+
+    // Check URL parameters for an auto-open project dialog
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetProject = urlParams.get("project");
+    if (targetProject) {
+      const targetDialog = document.querySelector(
+        `dialog.project-dialog[data-slug="${targetProject}"]`
+      ) as HTMLDialogElement;
+      if (targetDialog && !targetDialog.open) {
+        // use requestAnimationFrame to not drain performance excessively on immediate DOM load
+        requestAnimationFrame(() => targetDialog.showModal());
+      }
+    }
   };
 
   initProjectDialogs();

@@ -5,10 +5,22 @@
     "full_desc": "Frontend: Developed with React, including unit and integration testing; deployed on Netlify. Backend: Built with Express, featuring robust security capabilities; deployed on Heroku.",
     "tags": {
       "icon": [
-        { "name": "React", "iconName": "IconReact" },
-        { "name": "Express", "iconName": "IconExpress" },
-        { "name": "Netlify", "iconName": "IconNetlify" },
-        { "name": "Heroku", "iconName": "IconHeroku" }
+        {
+          "name": "React",
+          "iconName": "IconReact"
+        },
+        {
+          "name": "Express",
+          "iconName": "IconExpress"
+        },
+        {
+          "name": "Netlify",
+          "iconName": "IconNetlify"
+        },
+        {
+          "name": "Heroku",
+          "iconName": "IconHeroku"
+        }
       ],
       "noIcon": []
     },
@@ -24,7 +36,8 @@
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-spacia-1.jpg"
-    ]
+    ],
+    "slug": "nasa-spacia"
   },
   {
     "project_name": "Study-Forge Learning System",
@@ -32,12 +45,30 @@
     "full_desc": "Backend Services: Built and maintained high-performance and secure backend services using Express, Flask, and Spring Boot. Containerization and Orchestration: Utilized Docker and Kubernetes for efficient container orchestration.",
     "tags": {
       "icon": [
-        { "name": "React", "iconName": "IconReact" },
-        { "name": "Express", "iconName": "IconExpress" },
-        { "name": "Flask", "iconName": "IconFlask" },
-        { "name": "Spring Boot", "iconName": "IconSpringBoot" },
-        { "name": "Docker", "iconName": "IconDocker" },
-        { "name": "Kubernetes", "iconName": "IconKubernetes" }
+        {
+          "name": "React",
+          "iconName": "IconReact"
+        },
+        {
+          "name": "Express",
+          "iconName": "IconExpress"
+        },
+        {
+          "name": "Flask",
+          "iconName": "IconFlask"
+        },
+        {
+          "name": "Spring Boot",
+          "iconName": "IconSpringBoot"
+        },
+        {
+          "name": "Docker",
+          "iconName": "IconDocker"
+        },
+        {
+          "name": "Kubernetes",
+          "iconName": "IconKubernetes"
+        }
       ],
       "noIcon": []
     },
@@ -66,7 +97,8 @@
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-1.png",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-2.png"
     ],
-    "featured": 50
+    "featured": 50,
+    "slug": "study-forge-learning-system"
   },
   {
     "project_name": "Chatte - P2P and Global Messenger",
@@ -74,9 +106,18 @@
     "full_desc": "Technologies Used: Developed using Java and Apache Felix, incorporating socket programming. Development Environment: Utilized Eclipse IDE for production.",
     "tags": {
       "icon": [
-        { "name": "Java", "iconName": "IconJava" },
-        { "name": "Apache Felix", "iconName": "IconApacheFelix" },
-        { "name": "Eclipse IDE", "iconName": "IconEclipse" }
+        {
+          "name": "Java",
+          "iconName": "IconJava"
+        },
+        {
+          "name": "Apache Felix",
+          "iconName": "IconApacheFelix"
+        },
+        {
+          "name": "Eclipse IDE",
+          "iconName": "IconEclipse"
+        }
       ],
       "noIcon": ["Socket Programming"]
     },
@@ -92,7 +133,8 @@
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-1.jpg",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-2.jpg"
-    ]
+    ],
+    "slug": "chatte-p2p-and-global-messenger"
   },
   {
     "project_name": "Movie Theatre Management System",
@@ -100,9 +142,18 @@
     "full_desc": "Responsibilities: Leadership in development, Figma for wireframes, MongoDB design, RESTful API creation, and responsive UI/UX with React.",
     "tags": {
       "icon": [
-        { "name": "React", "iconName": "IconReact" },
-        { "name": "MongoDB", "iconName": "IconMongodb" },
-        { "name": "Figma", "iconName": "IconFigma" }
+        {
+          "name": "React",
+          "iconName": "IconReact"
+        },
+        {
+          "name": "MongoDB",
+          "iconName": "IconMongodb"
+        },
+        {
+          "name": "Figma",
+          "iconName": "IconFigma"
+        }
       ],
       "noIcon": ["RESTful API"]
     },
@@ -118,7 +169,8 @@
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-2.bak.jpg",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-mov-1.bak.jpg"
-    ]
+    ],
+    "slug": "movie-theatre-management-system"
   },
   {
     "project_name": "Garment And Textile Management System",
@@ -126,10 +178,22 @@
     "full_desc": "Technologies Used: Developed using JSP Servlets, SQL, PHP, and Apache Tomcat. Collaboration and Version Control: Utilized GitHub for collaboration and version control. Design Patterns: Applied design patterns to enhance system architecture and maintainability.",
     "tags": {
       "icon": [
-        { "name": "JSP Servlets", "iconName": "IconJava" },
-        { "name": "SQL", "iconName": "IconSql" },
-        { "name": "PHP", "iconName": "IconPhp" },
-        { "name": "Apache Tomcat", "iconName": "IconTomcat" }
+        {
+          "name": "JSP Servlets",
+          "iconName": "IconJava"
+        },
+        {
+          "name": "SQL",
+          "iconName": "IconSql"
+        },
+        {
+          "name": "PHP",
+          "iconName": "IconPhp"
+        },
+        {
+          "name": "Apache Tomcat",
+          "iconName": "IconTomcat"
+        }
       ],
       "noIcon": []
     },
@@ -145,7 +209,8 @@
     "photos": [
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-hms-1.png"
-    ]
+    ],
+    "slug": "garment-and-textile-management-system"
   },
   {
     "project_name": "Smart Healthcare System for Urban Hospitals",
@@ -153,13 +218,34 @@
     "full_desc": "Application For Urban Area Hospitals using MERN stack with MVC architecture. Implements design patterns such as Singleton, Factory, Strategy, and Observer. Includes unit tests.",
     "tags": {
       "icon": [
-        { "name": "Express", "iconName": "IconExpress" },
-        { "name": "Redux", "iconName": "IconRedux" },
-        { "name": "MongoDB", "iconName": "IconMongodb" },
-        { "name": "React", "iconName": "IconReact" },
-        { "name": "Tailwind", "iconName": "IconTailwind" },
-        { "name": "CSS", "iconName": "IconCss" },
-        { "name": "ThreeJS", "iconName": "IconThreejs" }
+        {
+          "name": "Express",
+          "iconName": "IconExpress"
+        },
+        {
+          "name": "Redux",
+          "iconName": "IconRedux"
+        },
+        {
+          "name": "MongoDB",
+          "iconName": "IconMongodb"
+        },
+        {
+          "name": "React",
+          "iconName": "IconReact"
+        },
+        {
+          "name": "Tailwind",
+          "iconName": "IconTailwind"
+        },
+        {
+          "name": "CSS",
+          "iconName": "IconCss"
+        },
+        {
+          "name": "ThreeJS",
+          "iconName": "IconThreejs"
+        }
       ],
       "noIcon": [
         "JWT",
@@ -184,7 +270,8 @@
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/appointment%20booking.jpg?updatedAt=1729425369292",
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Screenshot_20-10-2024_17224_localhost.jpeg?updatedAt=1729425369488",
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin%20Configuration%20Management.jpeg?updatedAt=1729425369398"
-    ]
+    ],
+    "slug": "smart-healthcare-system-for-urban-hospitals"
   },
   {
     "project_name": "Smart Healthcare System for Urban Hospitals",
@@ -192,10 +279,22 @@
     "full_desc": "JWT, Design Patterns, IIFE, Discriminators, Requirement Analysis, XP, Agile Development.",
     "tags": {
       "icon": [
-        { "name": "Express", "iconName": "IconExpress" },
-        { "name": "Redux", "iconName": "IconRedux" },
-        { "name": "MongoDB", "iconName": "IconMongodb" },
-        { "name": "React", "iconName": "IconReact" }
+        {
+          "name": "Express",
+          "iconName": "IconExpress"
+        },
+        {
+          "name": "Redux",
+          "iconName": "IconRedux"
+        },
+        {
+          "name": "MongoDB",
+          "iconName": "IconMongodb"
+        },
+        {
+          "name": "React",
+          "iconName": "IconReact"
+        }
       ],
       "noIcon": []
     },
@@ -211,7 +310,8 @@
     "photos": [
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/appointment%20booking.jpg?updatedAt=1729425369292",
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin%20Configuration%20Management.jpeg?updatedAt=1729425369398"
-    ]
+    ],
+    "slug": "smart-healthcare-system-for-urban-hospitals-1"
   },
   {
     "project_name": "CodeWizard - Microservice Based Project",
@@ -219,9 +319,18 @@
     "full_desc": "Microservices Architecture, Task Management, Real-Time Feedback, Graphical Code Visualization, Issue Tracking, and Code Quality Optimization for multi-language projects. Developed with Agile methodology and optimized for efficient project management.",
     "tags": {
       "icon": [
-        { "name": "React", "iconName": "IconReact" },
-        { "name": "MongoDB", "iconName": "IconMongodb" },
-        { "name": "Express", "iconName": "IconExpress" }
+        {
+          "name": "React",
+          "iconName": "IconReact"
+        },
+        {
+          "name": "MongoDB",
+          "iconName": "IconMongodb"
+        },
+        {
+          "name": "Express",
+          "iconName": "IconExpress"
+        }
       ],
       "noIcon": ["Microservices", "Code Analysis", "Project Management"]
     },
@@ -237,7 +346,8 @@
     "photos": [
       "https://ik.imagekit.io/nuu/Screenshot%202024-09-14%20112456.png?updatedAt=1730009713252",
       "https://ik.imagekit.io/nuu/Screenshot%202024-10-27%20114658.png?updatedAt=1730009865478"
-    ]
+    ],
+    "slug": "codewizard-microservice-based-project"
   },
   {
     "project_name": "NuusBreakfast",
@@ -245,8 +355,14 @@
     "full_desc": "Rolled out an ASP.NET-based Web API adhering to MVC patterns. Implemented robust error handling and testing for production readiness.",
     "tags": {
       "icon": [
-        { "name": "ASP.NET Core", "iconName": "IconDotNet" },
-        { "name": "C#", "iconName": "IconCsharp" }
+        {
+          "name": "ASP.NET Core",
+          "iconName": "IconDotNet"
+        },
+        {
+          "name": "C#",
+          "iconName": "IconCsharp"
+        }
       ],
       "noIcon": ["Web API", "MVC"]
     },
@@ -262,14 +378,20 @@
     "photos": [
       "https://ik.imagekit.io/nuu/nuus%20breakfast-1.jpg?updatedAt=1735893858337",
       "https://ik.imagekit.io/nuu/nuus%20breakfast-2.jpg.png?updatedAt=1735893858430"
-    ]
+    ],
+    "slug": "nuusbreakfast"
   },
   {
     "project_name": "TbX - Terabox downloading API",
     "short_desc": "Terabox - Bulk download, Single Download",
     "full_desc": "A Backend Download Manager with parallel, multi-chunks, and fast download capabilities. Features local FTP for quick file transfer using the same API. Includes heavy link fault tolerance, logs failed actions with links, backup fetching algorithm, and separate endpoints for deleting archives/current downloads.",
     "tags": {
-      "icon": [{ "name": "Express", "iconName": "IconExpress" }],
+      "icon": [
+        {
+          "name": "Express",
+          "iconName": "IconExpress"
+        }
+      ],
       "noIcon": ["FTP", "Parallel Downloads", "API"]
     },
     "urls": [
@@ -281,7 +403,8 @@
       }
     ],
     "time_period": "june 2024 - July 2025",
-    "photos": ["https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"]
+    "photos": ["https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"],
+    "slug": "tbx-terabox-downloading-api"
   },
   {
     "project_name": "Multi Agents AI-Based Chatbot for Support Automation",
@@ -289,10 +412,22 @@
     "full_desc": "Project leader for a generative AI-based chatbot designed for support automation. Led architecture design, enforced Git-Flow and conventional commit best practices, authored CI/CD pipelines, and co-authored a research paper published at the 7th ICAC (2025). Developed a core Python multi-agent system service with custom MCP-based intra-service communication and agentic task orchestration, integrated quantized open-source LLMs, and produced API documentation. Built complete IaC with Terraform, CloudFormation, Dockerized builds, and deployed production infra with OIDC using GitHub Actions, S3 Terraform state, and Cloudflare-managed domain.",
     "tags": {
       "icon": [
-        { "name": "Python", "iconName": "IconPython" },
-        { "name": "Terraform", "iconName": "IconTerraform" },
-        { "name": "Docker", "iconName": "IconDocker" },
-        { "name": "Cloudflare", "iconName": "IconCloudFlare" }
+        {
+          "name": "Python",
+          "iconName": "IconPython"
+        },
+        {
+          "name": "Terraform",
+          "iconName": "IconTerraform"
+        },
+        {
+          "name": "Docker",
+          "iconName": "IconDocker"
+        },
+        {
+          "name": "Cloudflare",
+          "iconName": "IconCloudFlare"
+        }
       ],
       "noIcon": ["LLM", "Multi-Agent Systems", "MCP", "CI/CD", "GitHub Actions"]
     },
@@ -321,6 +456,7 @@
       "https://ik.imagekit.io/cq1p7u6vo/Portfolio/MAS-diagram.svg",
       "https://ik.imagekit.io/cq1p7u6vo/Portfolio/Picture1.jpg"
     ],
-    "featured": 1
+    "featured": 1,
+    "slug": "multi-agents-ai-based-chatbot-for-support-automation"
   }
 ]

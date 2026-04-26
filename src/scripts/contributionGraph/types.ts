@@ -69,7 +69,7 @@ export type ContributionGraphResponse = {
   readonly months: readonly ContributionMonthItem[];
   readonly cells: readonly ContributionCell[];
   readonly meta: {
-    readonly provider: string;
+    readonly provider: "github";
     readonly cached: boolean;
     readonly cacheTtlSeconds: number;
     readonly fetchedAt: string;

@@ -57,6 +57,16 @@ const isContributionResponse = (
     Array.isArray(root.legend) &&
     Array.isArray(root.months) &&
     Array.isArray(root.cells) &&
+    root.cells.every(
+      (cell: unknown) =>
+        typeof cell === "object" &&
+        cell !== null &&
+        typeof cell.weekday === "number" &&
+        cell.weekday >= 0 &&
+        cell.weekday <= 6 &&
+        typeof cell.date === "string" &&
+        typeof cell.count === "number"
+    ) &&
     !!summary &&
     typeof summary.totalContributions === "number" &&
     typeof summary.totalWeeks === "number" &&

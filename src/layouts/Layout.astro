@@ -48,6 +48,16 @@ const structuredData = {
     },
   ],
 };
+
+const toolsBackendUrl = import.meta.env.PUBLIC_TOOLS_BACKEND_URL;
+let preconnectOrigin = "";
+if (toolsBackendUrl) {
+  try {
+    preconnectOrigin = new URL(toolsBackendUrl).origin;
+  } catch {
+    // ignore
+  }
+}
 ---
 
 <!doctype html>
@@ -125,7 +135,11 @@ const structuredData = {
 
     <meta name="theme-color" content="" />
 
-    <link rel="preconnect" href="https://api.nadzu.me" crossorigin />
+    {
+      preconnectOrigin && (
+        <link rel="preconnect" href={preconnectOrigin} crossorigin />
+      )
+    }
 
     {
       // If PUBLIC_GOOGLE_SITE_VERIFICATION is set in the environment variable,
