@@ -1,6 +1,10 @@
 ---
-import { slugifyStr } from "@/utils/slugify";
-import { getTagHue, getTagIcon, getUiIcon } from "@/utils/projectUtils";
+import {
+  getTagHue,
+  getTagIcon,
+  getUiIcon,
+  getProjectSlug,
+} from "@/utils/projectUtils";
 import Loader from "./Loader.astro";
 import IconX from "@/assets/icons/IconX.svg";
 
@@ -26,18 +30,10 @@ type Props = {
 };
 
 const { project } = Astro.props;
-const {
-  project_name,
-  slug,
-  short_desc,
-  full_desc,
-  tags,
-  urls,
-  time_period,
-  photos,
-} = project;
+const { project_name, short_desc, full_desc, tags, urls, time_period, photos } =
+  project;
 
-const projectId = slug || slugifyStr(project_name);
+const projectId = getProjectSlug(project);
 const dialogId = `dialog-${projectId}`;
 const hasUrls = Array.isArray(urls) && urls.length > 0;
 ---
@@ -338,9 +334,10 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
         }
 
         const url = new URL(window.location.href);
-        if (url.searchParams.has("project")) {
-          url.searchParams.delete("project");
-          window.history.replaceState({}, "", url);
+        const match = url.pathname.match(/\/projects\/([^/]+)\/?$/);
+        if (match) {
+          const backPath = history.state?.backPath || "/projects/";
+          window.history.replaceState({ ...history.state }, "", backPath);
         }
       });
 
@@ -354,9 +351,16 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
             const projectSlug = dialog.dataset.slug;
             if (projectSlug) {
               const url = new URL(window.location.href);
-              if (url.searchParams.get("project") !== projectSlug) {
-                url.searchParams.set("project", projectSlug);
-                window.history.replaceState({}, "", url);
+              const targetPath = `/projects/${projectSlug}/`;
+              if (
+                url.pathname !== targetPath &&
+                url.pathname !== `/projects/${projectSlug}`
+              ) {
+                window.history.replaceState(
+                  { backPath: url.pathname },
+                  "",
+                  targetPath
+                );
               }
             }
 
@@ -382,9 +386,13 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
       observer.observe(dialog, { attributes: true });
     });
 
-    // Check URL parameters for an auto-open project dialog
+    // Check URL parameters for an auto-open project dialog (handle both path-based and legacy query params)
     const urlParams = new URLSearchParams(window.location.search);
-    const targetProject = urlParams.get("project");
+    const legacyProject = urlParams.get("project");
+
+    const pathMatch = window.location.pathname.match(/\/projects\/([^/]+)\/?$/);
+    const targetProject = pathMatch ? pathMatch[1] : legacyProject;
+
     if (targetProject) {
       const targetDialog = document.querySelector(
         `dialog.project-dialog[data-slug="${targetProject}"]`

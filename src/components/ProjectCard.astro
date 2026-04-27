@@ -1,6 +1,5 @@
 ---
-import { slugifyStr } from "@/utils/slugify";
-import { getTagHue, getTagIcon } from "@/utils/projectUtils";
+import { getTagHue, getTagIcon, getProjectSlug } from "@/utils/projectUtils";
 import ProjectDialog from "./ProjectDialog.astro";
 
 type Props = {
@@ -26,9 +25,9 @@ type Props = {
 };
 
 const { variant: Heading = "h2", project } = Astro.props;
-const { project_name, short_desc, tags, slug } = project;
+const { project_name, short_desc, tags } = project;
 
-const projectId = slug || slugifyStr(project_name);
+const projectId = getProjectSlug(project);
 const dialogId = `dialog-${projectId}`;
 ---
 
