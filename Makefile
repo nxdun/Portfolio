@@ -102,7 +102,7 @@ lint: ## Lint code (pnpm lint)
 	$(SAY) "$(BLUE)Linting code...$(NC)"
 	$(Q)pnpm run lint
 
-check: ## Run lint and format-check in parallel
+check: lint ## Run lint and format-check in parallel
 	$(SAY) "$(BLUE)Running checks in parallel ($(NPROCS) threads)...$(NC)"
 	$(Q)$(MAKE) -j$(NPROCS) lint format-check
 	$(SAY) "$(GREEN) All checks passed$(NC)"
