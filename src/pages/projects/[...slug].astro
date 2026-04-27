@@ -1,0 +1,49 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Main from "@/layouts/Main.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { SITE } from "@/config";
+import {
+  getSortedProjects,
+  getProjectSlug,
+  getAllProjects,
+} from "@/utils/projectUtils";
+
+export async function getStaticPaths() {
+  const projects = getAllProjects();
+  const slugs = new Set<string>();
+
+  const paths = projects.map(project => {
+    const slug = getProjectSlug(project);
+    if (slugs.has(slug)) {
+      throw new Error(`Duplicate project slug detected: "${slug}"`);
+    }
+    slugs.add(slug);
+    return {
+      params: { slug },
+    };
+  });
+
+  return [
+    { params: { slug: undefined } }, // Handle /projects/
+    ...paths,
+  ];
+}
+
+const sortedProjects = getSortedProjects();
+
+// We render exactly the same layout for both the index and individual project paths.
+// The client-side script in ProjectDialog.astro detects the slug from the URL and auto-opens it.
+---
+
+<Layout title={`Projects | ${SITE.title}`}>
+  <Header activeNav="projects" />
+  <Main pageTitle="Projects" pageDesc="All the projects I've worked on.">
+    <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {sortedProjects.map(project => <ProjectCard project={project} />)}
+    </ul>
+  </Main>
+  <Footer />
+</Layout>

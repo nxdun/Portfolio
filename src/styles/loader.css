@@ -124,6 +124,277 @@ html[data-theme="dark"] .loader-container {
   transition-duration: 300ms;
 }
 
+.hero-contribution-shell {
+  position: absolute;
+  inset: 0;
+  --contribution-cell-size: 0.72rem;
+  --contribution-cell-gap: 0.16rem;
+  --contribution-dot-size: 1.25px;
+  --contribution-dot-blur: 2.1px;
+  --contribution-label-gutter: 1.35rem;
+}
+
+.hero-contribution-surface {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 0.65rem;
+  padding: clamp(0.85rem, 2.2vw, 1.15rem);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.hero-contribution-shell[data-contribution-graph-state="loading"]
+  .hero-contribution-surface,
+.hero-contribution-shell[data-contribution-graph-state="resolving"]
+  .hero-contribution-surface,
+.hero-contribution-shell[data-contribution-graph-state="resolved"]
+  .hero-contribution-surface,
+.hero-contribution-shell[data-contribution-graph-state="empty"]
+  .hero-contribution-surface,
+.hero-contribution-shell[data-contribution-graph-state="error"]
+  .hero-contribution-surface {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-contribution-head,
+.hero-contribution-body,
+.hero-contribution-foot {
+  width: 100%;
+}
+
+.hero-contribution-months {
+  display: grid;
+  grid-template-columns: repeat(var(--contribution-weeks, 53), minmax(0, 1fr));
+  column-gap: var(--contribution-cell-gap);
+  min-height: 1rem;
+  margin-inline-start: var(--contribution-label-gutter);
+}
+
+.hero-contribution-month {
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+  font-size: 0.65rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hero-contribution-body {
+  display: grid;
+  grid-template-columns: var(--contribution-label-gutter) 1fr;
+  column-gap: 0.4rem;
+  align-items: stretch;
+}
+
+.hero-contribution-weekdays {
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  align-content: stretch;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.hero-contribution-weekday {
+  display: inline-flex;
+  align-items: center;
+}
+
+.hero-contribution-grid-wrap {
+  position: relative;
+  overflow: hidden;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-contribution-shell[data-contribution-graph-state="resolving"]
+  .hero-contribution-grid-wrap,
+.hero-contribution-shell[data-contribution-graph-state="resolved"]
+  .hero-contribution-grid-wrap,
+.hero-contribution-shell[data-contribution-graph-state="empty"]
+  .hero-contribution-grid-wrap,
+.hero-contribution-shell[data-contribution-graph-state="error"]
+  .hero-contribution-grid-wrap {
+  clip-path: inset(0 0 0 0);
+}
+
+.hero-contribution-grid-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 45%, transparent) 50%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 16%,
+    #000 84%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 16%,
+    #000 84%,
+    transparent 100%
+  );
+}
+
+.hero-contribution-shell[data-contribution-graph-state="resolving"]
+  .hero-contribution-grid-wrap::after {
+  opacity: 0.35;
+  animation: loader-contribution-reveal-sweep 420ms ease-out 1;
+}
+
+.hero-contribution-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--contribution-weeks, 53), minmax(0, 1fr));
+  grid-template-rows: repeat(7, var(--contribution-cell-size));
+  column-gap: var(--contribution-cell-gap);
+  row-gap: var(--contribution-cell-gap);
+  min-height: calc(
+    (var(--contribution-cell-size) * 7) + (var(--contribution-cell-gap) * 6)
+  );
+}
+
+.hero-contribution-cell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  border-radius: 0.2rem;
+  cursor: default;
+  opacity: 0.95;
+  background-image:
+    radial-gradient(
+      circle at 30% 30%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    ),
+    radial-gradient(
+      circle at 70% 30%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    ),
+    radial-gradient(
+      circle at 30% 70%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    ),
+    radial-gradient(
+      circle at 70% 70%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    );
+  background-size: 100% 100%;
+  transition:
+    filter 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.hero-contribution-cell:hover,
+.hero-contribution-cell:focus-visible {
+  opacity: 1;
+  z-index: 10;
+  transform: scale(1.2);
+  filter: drop-shadow(
+    0 0 6px color-mix(in srgb, var(--contribution-color) 65%, transparent)
+  );
+  outline: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  outline-offset: 1px;
+}
+
+.hero-contribution-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+}
+
+.hero-contribution-summary {
+  min-height: 1rem;
+}
+
+.hero-contribution-legend {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hero-contribution-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.hero-contribution-legend-swatch {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 0.15rem;
+  background-image:
+    radial-gradient(
+      circle at 30% 30%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    ),
+    radial-gradient(
+      circle at 70% 30%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    ),
+    radial-gradient(
+      circle at 30% 70%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    ),
+    radial-gradient(
+      circle at 70% 70%,
+      var(--contribution-color) var(--contribution-dot-size),
+      transparent var(--contribution-dot-blur)
+    );
+}
+
+.hero-contribution-tooltip {
+  min-height: 1rem;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
+}
+
+.hero-contribution-status {
+  min-height: 1rem;
+  margin: 0;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
+}
+
+.hero-contribution-shell[data-contribution-graph-state="resolved"]
+  :is(.loader-grid, .loader-spotlight, .loader-sweep, .loader-edge),
+.hero-contribution-shell[data-contribution-graph-state="empty"]
+  :is(.loader-grid, .loader-spotlight, .loader-sweep, .loader-edge),
+.hero-contribution-shell[data-contribution-graph-state="error"]
+  :is(.loader-grid, .loader-spotlight, .loader-sweep, .loader-edge) {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
 :is(
     .loader-container--screen,
     .loader-container--overlay,
@@ -276,7 +547,7 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
   max-width: 28rem;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
   clip-path: inset(0 100% 0 0);
   opacity: 0;
   animation: loader-message-in 280ms steps(16, end) forwards;
@@ -344,6 +615,14 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
   .loader-sweep {
     animation: none !important;
     opacity: 0.5 !important;
+  }
+
+  .hero-contribution-surface,
+  .hero-contribution-grid-wrap,
+  .hero-contribution-shell[data-contribution-graph-state="resolving"]
+    :is(.loader-grid, .loader-spotlight, .loader-sweep, .loader-edge) {
+    transition-duration: 80ms !important;
+    animation: none !important;
   }
 }
 
@@ -414,6 +693,24 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
   }
   .loader-container.fade-out {
     transition-duration: 300ms !important;
+  }
+
+  .hero-contribution-tooltip,
+  .hero-contribution-weekdays {
+    display: none;
+  }
+
+  .hero-contribution-shell {
+    --contribution-label-gutter: 0px !important;
+  }
+
+  .hero-contribution-body {
+    column-gap: 0px !important;
+  }
+
+  .hero-contribution-surface {
+    padding: 0.75rem;
+    gap: 0.45rem;
   }
 }
 
@@ -507,5 +804,14 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
   to {
     clip-path: inset(0 100% 0 0);
     opacity: 0;
+  }
+}
+
+@keyframes loader-contribution-reveal-sweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(110%);
   }
 }

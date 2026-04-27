@@ -124,6 +124,14 @@
           "examples": ["https://example.com/project-preview.png"]
         }
       },
+      "slug": {
+        "type": "string",
+        "description": "A unique identifier for the project, used in URLs.",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        "minLength": 1,
+        "maxLength": 64,
+        "examples": ["code-wizard"]
+      },
       "featured": {
         "type": "integer",
         "minimum": 0,

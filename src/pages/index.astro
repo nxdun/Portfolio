@@ -10,10 +10,9 @@ import Card from "@/components/Card.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import ContactMe from "@/components/ContactMe.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
-import projectsData from "@/data/projects/ProjectData.json";
+import { getFeaturedProjects } from "@/utils/projectUtils";
 import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
-import LoaderSvg from "@/assets/icons/LoaderPacman.svg?raw";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
 
@@ -23,45 +22,28 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
-const getTopFeaturedProjects = (
-  projects: (typeof projectsData)[number][],
-  limit: number
-) => {
-  const top: (typeof projectsData)[number][] = [];
-
-  for (const project of projects) {
-    const featuredValue = project.featured;
-    if (typeof featuredValue !== "number") {
-      continue;
-    }
-
-    let insertAt = top.length;
-    for (let i = 0; i < top.length; i++) {
-      const currentValue = top[i].featured ?? Number.POSITIVE_INFINITY;
-      if (featuredValue < currentValue) {
-        insertAt = i;
-        break;
-      }
-    }
-
-    if (insertAt < limit) {
-      top.splice(insertAt, 0, project);
-      if (top.length > limit) {
-        top.pop();
-      }
-    } else if (top.length < limit) {
-      top.push(project);
-    }
-  }
-
-  return top;
-};
-
-const featuredProjects = getTopFeaturedProjects(projectsData, 3);
+const featuredProjects = getFeaturedProjects(3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
+
+const backendUrl = import.meta.env.PUBLIC_TOOLS_BACKEND_URL;
+const contributionsUrl = backendUrl
+  ? `${backendUrl.replace(/\/+$/, "")}/api/v1/contributions`
+  : null;
 ---
 
 <Layout>
+  {
+    contributionsUrl && (
+      <link
+        rel="preload"
+        href={contributionsUrl}
+        as="fetch"
+        crossorigin
+        media="(min-width:1280px)"
+        slot="head"
+      />
+    )
+  }
   <Header />
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
@@ -124,7 +106,32 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
                 <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
                   Social Links:
                 </div>
-                <Socials />
+                <div class="flex items-center">
+                  <Socials />
+                  <div class="pointer-events-none hidden opacity-30 select-none xl:block">
+                    <svg
+                      width="50"
+                      height="20"
+                      viewBox="0 0 50 20"
+                      fill="none"
+                      class="animate-pulse-horizontal ms-4 -rotate-10"
+                    >
+                      <path
+                        d="M2 5C10 12 30 12 45 6"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M38 7L45 6L40 13"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
             )
           }
@@ -133,16 +140,53 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
         <div
           class="relative hidden w-full flex-1 items-center overflow-hidden align-middle xl:flex"
         >
-          <Loader
-            mode="attached"
-            isSkeleton={true}
-            content={LoaderSvg}
-            class="h-full min-h-40 w-full"
-            animation={true}
-            spotlight="hover"
-            sweep={true}
-            edgeHighlight={true}
-          />
+          <div
+            class="hero-contribution-shell h-full min-h-40 w-full"
+            data-contribution-graph
+            data-contribution-graph-state="loading"
+            aria-label="GitHub contribution activity"
+          >
+            <section class="hero-contribution-surface">
+              <div class="hero-contribution-head" aria-hidden="true">
+                <div class="hero-contribution-months" data-contribution-months>
+                </div>
+              </div>
+              <div class="hero-contribution-body">
+                <div
+                  class="hero-contribution-weekdays"
+                  data-contribution-weekdays
+                >
+                </div>
+                <div class="hero-contribution-grid-wrap">
+                  <div
+                    class="hero-contribution-grid"
+                    data-contribution-grid
+                    role="grid"
+                    aria-label="GitHub contribution graph"
+                  >
+                  </div>
+                </div>
+              </div>
+              <div class="hero-contribution-foot">
+                <div
+                  class="hero-contribution-summary"
+                  data-contribution-summary
+                >
+                </div>
+                <div class="hero-contribution-legend" data-contribution-legend>
+                </div>
+              </div>
+              <div class="hero-contribution-tooltip" data-contribution-tooltip>
+              </div>
+              <p
+                class="hero-contribution-status"
+                data-contribution-status
+                aria-live="polite"
+                aria-atomic="true"
+              >
+              </p>
+            </section>
+          </div>
         </div>
       </div>
     </section>
@@ -244,8 +288,42 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
       "a Software Engineer",
       "a Cloud Architect",
     ]);
+
+    // Break the critical dependency chain for the contribution graph.
+    // By using a dynamic import, we defer the loading of the graph logic
+    // and its dependencies (like types) until after the main page is ready.
+    // We only initialize it on large screens (>=1280px) to match preload behavior.
+    const isLargeScreen = window.matchMedia("(min-width: 1280px)").matches;
+    if (isLargeScreen && document.querySelector("[data-contribution-graph]")) {
+      const initGraph = async () => {
+        const { initContributionGraph } =
+          await import("@/scripts/contributionGraph");
+        initContributionGraph();
+      };
+
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(initGraph);
+      } else {
+        setTimeout(initGraph, 200);
+      }
+    }
   };
 
   initHomePage();
   document.addEventListener("astro:page-load", initHomePage);
 </script>
+
+<style>
+  @keyframes pulse-horizontal {
+    0%,
+    100% {
+      transform: translateX(0) rotate(-10deg);
+    }
+    50% {
+      transform: translateX(4px) rotate(-10deg);
+    }
+  }
+  .animate-pulse-horizontal {
+    animation: pulse-horizontal 3s infinite ease-in-out;
+  }
+</style>

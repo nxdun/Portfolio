@@ -1,3 +1,6 @@
+import projectsData from "@/data/projects/ProjectData.json";
+import { slugifyStr } from "./slugify";
+
 // Note: This relies on Vite's glob import feature.
 const iconImports = import.meta.glob<string>("/src/assets/tags/*.svg", {
   eager: true,
@@ -79,4 +82,41 @@ export const getUiIcon = (name: string) => {
  */
 export const getIcon = (name: string) => {
   return getTagIcon(name) || getUiIcon(name);
+};
+
+/**
+ * Returns all raw project data.
+ */
+export const getAllProjects = () => {
+  return projectsData;
+};
+
+export type Project = (typeof projectsData)[number] & { featured?: number };
+
+/**
+ * Returns all projects sorted by their featured rank (lower numbers first).
+ * Non-featured projects are placed at the end.
+ */
+export const getSortedProjects = () => {
+  return [...projectsData].sort((a: Project, b: Project) => {
+    const aRank = a.featured ?? 9999;
+    const bRank = b.featured ?? 9999;
+    return aRank - bRank;
+  });
+};
+
+/**
+ * Returns the top N featured projects.
+ */
+export const getFeaturedProjects = (limit: number) => {
+  return getSortedProjects()
+    .filter(project => typeof project.featured === "number")
+    .slice(0, limit);
+};
+
+/**
+ * Returns the slug for a project.
+ */
+export const getProjectSlug = (project: Project) => {
+  return project.slug || slugifyStr(project.project_name);
 };

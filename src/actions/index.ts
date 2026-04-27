@@ -1,12 +1,50 @@
 import { defineAction } from "astro:actions";
 import { z } from "astro/zod";
 
+async function verifyRecaptcha(
+  token: string,
+  secret: string
+): Promise<boolean> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+  try {
+    const response = await fetch(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          secret,
+          response: token,
+        }),
+        signal: controller.signal,
+      }
+    );
+    const data = (await response.json()) as { success: boolean };
+    return data.success === true;
+  } catch (error) {
+    const err = error as Error;
+    if (err.name === "AbortError") {
+      // eslint-disable-next-line no-console
+      console.error("reCAPTCHA verification timed out");
+    } else {
+      // eslint-disable-next-line no-console
+      console.error("reCAPTCHA verification failed:", error);
+    }
+    return false;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export const server = {
   contact: defineAction({
     accept: "form",
     input: z.object({
       name: z.string().trim().min(1, "Name is required"),
-      email: z.string().trim().email({ message: "Valid email is required" }),
+      // z.string().email("bla bla").trim() is deprecated.
+      email: z.email("Valid email is required").trim(),
       purpose: z.string().trim().min(1, "Purpose is required"),
       message: z.string().trim().min(1, "Message is required"),
       "g-recaptcha-response": z.string().trim().optional(),
@@ -21,7 +59,25 @@ export const server = {
       }
 
       const { name, email, purpose, message } = input;
-      // You should verify the captcha here if PUBLIC_RECAPTCHA_SITE_KEY is actually used for server-side validation.
+      const recaptchaToken = input["g-recaptcha-response"];
+
+      const recaptchaSecret =
+        env.RECAPTCHA_SECRET_KEY || import.meta.env.RECAPTCHA_SECRET_KEY;
+
+      if (!recaptchaSecret) {
+        // eslint-disable-next-line no-console
+        console.error("RECAPTCHA_SECRET_KEY is missing");
+        throw new Error("Server configuration error.");
+      }
+
+      if (!recaptchaToken) {
+        throw new Error("reCAPTCHA verification is required.");
+      }
+
+      const isValid = await verifyRecaptcha(recaptchaToken, recaptchaSecret);
+      if (!isValid) {
+        throw new Error("Failed reCAPTCHA verification.");
+      }
 
       try {
         await db

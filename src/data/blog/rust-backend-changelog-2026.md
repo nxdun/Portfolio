@@ -17,6 +17,17 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 - _Redis Intergration for Caching and Pub/Sub_
 - _Add OpenGraph API Intergration and Map it with Postman_
 
+## v0.4.0 - 2026-04-25
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/11" target="_blank"><code>#11</code></a>[feat(backend)] Add GitHub contributions API endpoint
+  - New `GET /api/v1/contributions` endpoint returning GitHub-style calendar data (cells, months, legend, summary, metadata).
+  - New `ContributionsService` with GitHub GraphQL integration and 24h in-memory caching.
+  - API controller enforces default-only access for `/api/v1/contributions?username=` (only the configured default `GITHUB_USERNAME`/`GITHUB_PAT` is permitted).
+  - Full `ContributionsResponse` model matching GitHub calendar schema (remains unchanged).
+  - Env config support for `GITHUB_PAT` and `GITHUB_USERNAME`; cloud-init template updated to pass `GHCR_PAT` as `GITHUB_PAT` (remains unchanged).
+  - Postman collection includes a negative test asserting requests with non-default usernames are rejected (rejection test rather than a supported feature).
+  - Test state and config updates for contributions service.
+
 ## v0.3.1 - 2026-04-19
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/10" target="_blank"><code>#10</code></a>[refactor(api)] Standardize API errors and simplify service flows

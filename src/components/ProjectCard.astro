@@ -1,39 +1,28 @@
 ---
-import { slugifyStr } from "@/utils/slugify";
-import { getTagHue, getTagIcon } from "@/utils/projectUtils";
+import {
+  getTagHue,
+  getTagIcon,
+  getProjectSlug,
+  type Project,
+} from "@/utils/projectUtils";
 import ProjectDialog from "./ProjectDialog.astro";
 
 type Props = {
-  project: {
-    project_name: string;
-    short_desc: string;
-    full_desc?: string;
-    tags: {
-      icon: { name: string; iconName: string }[];
-      noIcon: string[];
-    };
-    urls: {
-      label: string;
-      url: string;
-      description: string;
-      iconName?: string | null;
-    }[];
-    time_period: string;
-    photos?: string[];
-  };
+  project: Project;
   variant?: "h2" | "h3";
 };
 
 const { variant: Heading = "h2", project } = Astro.props;
 const { project_name, short_desc, tags } = project;
 
-const projectId = slugifyStr(project_name);
+const projectId = getProjectSlug(project);
 const dialogId = `dialog-${projectId}`;
 ---
 
 <li class="flex h-full flex-col rounded-xl transition-all">
   <project-card
     data-dialog-id={dialogId}
+    data-slug={projectId}
     class="group relative mx-0 flex h-full w-full flex-col items-center rounded-2xl border border-border/70 bg-linear-to-b from-muted/20 to-background px-4 py-5 text-center transition-all duration-250 ease-out hover:-translate-y-0.5 hover:border-accent/80 hover:shadow-[0_0_0_1px_var(--accent),0_16px_26px_-24px_var(--accent)] sm:px-6 sm:py-6"
   >
     <button

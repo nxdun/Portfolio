@@ -48,13 +48,23 @@ const structuredData = {
     },
   ],
 };
+
+const toolsBackendUrl = (import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? "").trim();
+let preconnectOrigin = "";
+if (toolsBackendUrl) {
+  try {
+    preconnectOrigin = new URL(toolsBackendUrl).origin;
+  } catch {
+    // ignore
+  }
+}
 ---
 
 <!doctype html>
 <html
   dir={SITE.dir}
   lang=`${SITE.lang ?? "en"}`
-  class={`${scrollSmooth && "scroll-smooth"}`}
+  class:list={[{ "scroll-smooth": scrollSmooth }]}
 >
   <head>
     <meta charset="UTF-8" />
@@ -126,6 +136,12 @@ const structuredData = {
     <meta name="theme-color" content="" />
 
     {
+      preconnectOrigin && (
+        <link rel="preconnect" href={preconnectOrigin} crossorigin />
+      )
+    }
+
+    {
       // If PUBLIC_GOOGLE_SITE_VERIFICATION is set in the environment variable,
       // include google-site-verification tag in the heading
       // Learn more: https://support.google.com/webmasters/answer/9008080#meta_tag_verification&zippy=%2Chtml-tag
@@ -168,6 +184,7 @@ const structuredData = {
         };
       })();
     </script>
+    <slot name="head" />
   </head>
   <body>
     <Loader
