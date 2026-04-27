@@ -4,29 +4,13 @@ import {
   getTagIcon,
   getUiIcon,
   getProjectSlug,
+  type Project,
 } from "@/utils/projectUtils";
 import Loader from "./Loader.astro";
 import IconX from "@/assets/icons/IconX.svg";
 
 type Props = {
-  project: {
-    project_name: string;
-    slug?: string;
-    short_desc: string;
-    full_desc?: string;
-    tags: {
-      icon: { name: string; iconName: string }[];
-      noIcon: string[];
-    };
-    urls: {
-      label: string;
-      url: string;
-      description: string;
-      iconName?: string | null;
-    }[];
-    time_period: string;
-    photos?: string[];
-  };
+  project: Project;
 };
 
 const { project } = Astro.props;

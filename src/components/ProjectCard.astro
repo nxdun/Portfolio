@@ -1,26 +1,9 @@
 ---
-import { getTagHue, getTagIcon, getProjectSlug } from "@/utils/projectUtils";
+import { getTagHue, getTagIcon, getProjectSlug, type Project } from "@/utils/projectUtils";
 import ProjectDialog from "./ProjectDialog.astro";
 
 type Props = {
-  project: {
-    project_name: string;
-    slug?: string;
-    short_desc: string;
-    full_desc?: string;
-    tags: {
-      icon: { name: string; iconName: string }[];
-      noIcon: string[];
-    };
-    urls: {
-      label: string;
-      url: string;
-      description: string;
-      iconName?: string | null;
-    }[];
-    time_period: string;
-    photos?: string[];
-  };
+  project: Project;
   variant?: "h2" | "h3";
 };
 

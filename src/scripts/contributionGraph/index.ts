@@ -58,7 +58,7 @@ const isContributionResponse = (
     Array.isArray(root.months) &&
     Array.isArray(root.cells) &&
     root.cells.every(
-      (cell: unknown) =>
+      (cell: any) =>
         typeof cell === "object" &&
         cell !== null &&
         typeof cell.weekday === "number" &&

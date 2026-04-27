@@ -91,7 +91,7 @@ export const getAllProjects = () => {
   return projectsData;
 };
 
-type Project = (typeof projectsData)[number] & { featured?: number };
+export type Project = (typeof projectsData)[number] & { featured?: number };
 
 /**
  * Returns all projects sorted by their featured rank (lower numbers first).
