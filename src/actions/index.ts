@@ -31,6 +31,7 @@ export const server = {
     accept: "form",
     input: z.object({
       name: z.string().trim().min(1, "Name is required"),
+      // z.string().email("bla bla").trim() is deprecated.
       email: z.email("Valid email is required").trim(),
       purpose: z.string().trim().min(1, "Purpose is required"),
       message: z.string().trim().min(1, "Message is required"),

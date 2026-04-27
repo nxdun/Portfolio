@@ -62,8 +62,8 @@ const isContributionResponse = (
         typeof cell === "object" &&
         cell !== null &&
         typeof (cell as Record<string, unknown>).weekday === "number" &&
-        (cell as Record<string, unknown>).weekday! >= 0 &&
-        (cell as Record<string, unknown>).weekday! <= 6 &&
+        ((cell as Record<string, unknown>).weekday as number) >= 0 &&
+        ((cell as Record<string, unknown>).weekday as number) <= 6 &&
         typeof (cell as Record<string, unknown>).date === "string" &&
         typeof (cell as Record<string, unknown>).count === "number"
     ) &&
