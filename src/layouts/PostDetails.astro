@@ -247,6 +247,8 @@ const nextPost =
 
     // 2. write after
     for (const { codeBlock, hasFileNameOffset } of blockInfos) {
+      if (codeBlock.querySelector(".copy-code")) continue;
+
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
 

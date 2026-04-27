@@ -374,13 +374,27 @@ const hasUrls = Array.isArray(urls) && urls.length > 0;
     const urlParams = new URLSearchParams(window.location.search);
     const legacyProject = urlParams.get("project");
 
-    const pathMatch = window.location.pathname.match(/\/projects\/([^/]+)\/?$/);
-    const targetProject = pathMatch ? pathMatch[1] : legacyProject;
+    let targetProject: string | null = null;
+    try {
+      const pathMatch = window.location.pathname.match(
+        /\/projects\/([^/]+)\/?$/
+      );
+      const rawTarget = pathMatch ? pathMatch[1] : legacyProject;
+      if (rawTarget) {
+        targetProject = decodeURIComponent(rawTarget);
+      }
+    } catch {
+      // Ignore URIError
+    }
 
     if (targetProject) {
-      const targetDialog = document.querySelector(
-        `dialog.project-dialog[data-slug="${targetProject}"]`
-      ) as HTMLDialogElement;
+      const allDialogs = document.querySelectorAll<HTMLDialogElement>(
+        "dialog.project-dialog"
+      );
+      const targetDialog = Array.from(allDialogs).find(
+        d => d.dataset.slug === targetProject
+      );
+
       if (targetDialog && !targetDialog.open) {
         // use requestAnimationFrame to not drain performance excessively on immediate DOM load
         requestAnimationFrame(() => targetDialog.showModal());

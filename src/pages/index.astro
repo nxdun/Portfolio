@@ -292,7 +292,9 @@ const contributionsUrl = backendUrl
     // Break the critical dependency chain for the contribution graph.
     // By using a dynamic import, we defer the loading of the graph logic
     // and its dependencies (like types) until after the main page is ready.
-    if (document.querySelector("[data-contribution-graph]")) {
+    // We only initialize it on large screens (>=1280px) to match preload behavior.
+    const isLargeScreen = window.matchMedia("(min-width: 1280px)").matches;
+    if (isLargeScreen && document.querySelector("[data-contribution-graph]")) {
       const initGraph = async () => {
         const { initContributionGraph } =
           await import("@/scripts/contributionGraph");

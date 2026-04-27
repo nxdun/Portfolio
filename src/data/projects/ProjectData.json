@@ -98,7 +98,7 @@
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-studyforge-2.png"
     ],
     "featured": 50,
-    "slug": "study-forge-learning-system"
+    "slug": "study-forge"
   },
   {
     "project_name": "Chatte - P2P and Global Messenger",
@@ -134,7 +134,7 @@
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-1.jpg",
       "https://raw.githubusercontent.com/nxdun/BlaBla/main/port-osgi-2.jpg"
     ],
-    "slug": "chatte-p2p-and-global-messenger"
+    "slug": "chatte-p2p"
   },
   {
     "project_name": "Movie Theatre Management System",
@@ -311,7 +311,7 @@
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/appointment%20booking.jpg?updatedAt=1729425369292",
       "https://ik.imagekit.io/cq1p7u6vo/HealthWizard/Admin%20Configuration%20Management.jpeg?updatedAt=1729425369398"
     ],
-    "slug": "smart-healthcare-system-for-urban-hospitals-1"
+    "slug": "health-wizard"
   },
   {
     "project_name": "CodeWizard - Microservice Based Project",
@@ -347,7 +347,7 @@
       "https://ik.imagekit.io/nuu/Screenshot%202024-09-14%20112456.png?updatedAt=1730009713252",
       "https://ik.imagekit.io/nuu/Screenshot%202024-10-27%20114658.png?updatedAt=1730009865478"
     ],
-    "slug": "codewizard-microservice-based-project"
+    "slug": "codewizard"
   },
   {
     "project_name": "NuusBreakfast",
@@ -404,7 +404,7 @@
     ],
     "time_period": "june 2024 - July 2025",
     "photos": ["https://ik.imagekit.io/nuu/tbd-1.png?updatedAt=1735894430252"],
-    "slug": "tbx-terabox-downloading-api"
+    "slug": "terrabox-api"
   },
   {
     "project_name": "Multi Agents AI-Based Chatbot for Support Automation",
@@ -457,6 +457,6 @@
       "https://ik.imagekit.io/cq1p7u6vo/Portfolio/Picture1.jpg"
     ],
     "featured": 1,
-    "slug": "multi-agents-ai-based-chatbot-for-support-automation"
+    "slug": "mas-system"
   }
 ]

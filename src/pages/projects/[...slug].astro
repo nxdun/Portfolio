@@ -13,9 +13,18 @@ import {
 
 export async function getStaticPaths() {
   const projects = getAllProjects();
-  const paths = projects.map(project => ({
-    params: { slug: getProjectSlug(project) },
-  }));
+  const slugs = new Set<string>();
+
+  const paths = projects.map(project => {
+    const slug = getProjectSlug(project);
+    if (slugs.has(slug)) {
+      throw new Error(`Duplicate project slug detected: "${slug}"`);
+    }
+    slugs.add(slug);
+    return {
+      params: { slug },
+    };
+  });
 
   return [
     { params: { slug: undefined } }, // Handle /projects/

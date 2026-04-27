@@ -5,6 +5,9 @@ async function verifyRecaptcha(
   token: string,
   secret: string
 ): Promise<boolean> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+
   try {
     const response = await fetch(
       "https://www.google.com/recaptcha/api/siteverify",
@@ -15,14 +18,23 @@ async function verifyRecaptcha(
           secret,
           response: token,
         }),
+        signal: controller.signal,
       }
     );
-    const data = await response.json();
+    const data = (await response.json()) as { success: boolean };
     return data.success === true;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("reCAPTCHA verification failed:", error);
+    const err = error as Error;
+    if (err.name === "AbortError") {
+      // eslint-disable-next-line no-console
+      console.error("reCAPTCHA verification timed out");
+    } else {
+      // eslint-disable-next-line no-console
+      console.error("reCAPTCHA verification failed:", error);
+    }
     return false;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -51,11 +63,20 @@ export const server = {
 
       const recaptchaSecret =
         env.RECAPTCHA_SECRET_KEY || import.meta.env.RECAPTCHA_SECRET_KEY;
-      if (recaptchaSecret && recaptchaToken) {
-        const isValid = await verifyRecaptcha(recaptchaToken, recaptchaSecret);
-        if (!isValid) {
-          throw new Error("Failed reCAPTCHA verification.");
-        }
+
+      if (!recaptchaSecret) {
+        // eslint-disable-next-line no-console
+        console.error("RECAPTCHA_SECRET_KEY is missing");
+        throw new Error("Server configuration error.");
+      }
+
+      if (!recaptchaToken) {
+        throw new Error("reCAPTCHA verification is required.");
+      }
+
+      const isValid = await verifyRecaptcha(recaptchaToken, recaptchaSecret);
+      if (!isValid) {
+        throw new Error("Failed reCAPTCHA verification.");
       }
 
       try {

@@ -17,7 +17,7 @@ description: A comprehensive nadzu.me Rust Backend Changelog documenting updates
 - _Redis Intergration for Caching and Pub/Sub_
 - _Add OpenGraph API Intergration and Map it with Postman_
 
-## v.0.4.0 - 2026-04-25
+## v0.4.0 - 2026-04-25
 
 - <a href="https://github.com/nxdun/rust-codebase/pull/11" target="_blank"><code>#11</code></a>[feat(backend)] Add GitHub contributions API endpoint
   - New `GET /api/v1/contributions` endpoint returning GitHub-style calendar data (cells, months, legend, summary, metadata).

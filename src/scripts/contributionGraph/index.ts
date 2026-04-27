@@ -51,28 +51,49 @@ const isContributionResponse = (
 
   const summary = toRecord(root.summary);
   const meta = toRecord(root.meta);
+  const range = toRecord(root.range);
+
+  if (!summary || !meta || !range) return false;
 
   return (
     typeof root.username === "string" &&
     Array.isArray(root.legend) &&
+    root.legend.every(
+      (item: unknown) =>
+        typeof item === "object" &&
+        item !== null &&
+        typeof (item as Record<string, unknown>).level === "number" &&
+        typeof (item as Record<string, unknown>).label === "string" &&
+        typeof (item as Record<string, unknown>).color === "string"
+    ) &&
     Array.isArray(root.months) &&
+    root.months.every(
+      (month: unknown) =>
+        typeof month === "object" &&
+        month !== null &&
+        typeof (month as Record<string, unknown>).label === "string" &&
+        typeof (month as Record<string, unknown>).weekIndex === "number"
+    ) &&
     Array.isArray(root.cells) &&
     root.cells.every(
       (cell: unknown) =>
         typeof cell === "object" &&
         cell !== null &&
         typeof (cell as Record<string, unknown>).weekday === "number" &&
+        Number.isInteger((cell as Record<string, unknown>).weekday) &&
         ((cell as Record<string, unknown>).weekday as number) >= 0 &&
         ((cell as Record<string, unknown>).weekday as number) <= 6 &&
         typeof (cell as Record<string, unknown>).date === "string" &&
-        typeof (cell as Record<string, unknown>).count === "number"
+        typeof (cell as Record<string, unknown>).count === "number" &&
+        typeof (cell as Record<string, unknown>).level === "number"
     ) &&
-    !!summary &&
     typeof summary.totalContributions === "number" &&
     typeof summary.totalWeeks === "number" &&
     typeof summary.maxDailyCount === "number" &&
-    !!meta &&
-    typeof meta.cached === "boolean"
+    typeof range.from === "string" &&
+    typeof range.to === "string" &&
+    typeof meta.cached === "boolean" &&
+    typeof meta.schemaVersion === "number"
   );
 };
 
@@ -208,6 +229,9 @@ const bindInteraction = (host: HTMLElement) => {
     tooltip.innerHTML = value;
   };
 
+  const getCells = () =>
+    Array.from(grid.querySelectorAll<HTMLElement>(".hero-contribution-cell"));
+
   grid.addEventListener("pointerover", event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>(
       ".hero-contribution-cell"
@@ -223,7 +247,59 @@ const bindInteraction = (host: HTMLElement) => {
     );
     if (!target) return;
 
+    // Update roving tabindex
+    getCells().forEach(c => (c.tabIndex = -1));
+    target.tabIndex = 0;
+
     updateTooltip(target.dataset.tooltip || idleMessage);
+  });
+
+  grid.addEventListener("keydown", event => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>(
+      ".hero-contribution-cell"
+    );
+    if (!target) return;
+
+    const currentWeek = parseInt(target.dataset.weekIndex || "0");
+    const currentWeekday = parseInt(target.dataset.weekday || "0");
+    let nextWeek = currentWeek;
+    let nextWeekday = currentWeekday;
+
+    switch (event.key) {
+      case "ArrowLeft":
+        nextWeek--;
+        break;
+      case "ArrowRight":
+        nextWeek++;
+        break;
+      case "ArrowUp":
+        nextWeekday--;
+        break;
+      case "ArrowDown":
+        nextWeekday++;
+        break;
+      case "Home":
+        nextWeek = 0;
+        nextWeekday = 0;
+        break;
+      case "End": {
+        const cells = getCells();
+        const lastCell = cells[cells.length - 1];
+        nextWeek = parseInt(lastCell.dataset.weekIndex || "0");
+        nextWeekday = parseInt(lastCell.dataset.weekday || "0");
+        break;
+      }
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    const nextCell = grid.querySelector<HTMLElement>(
+      `.hero-contribution-cell[data-week-index="${nextWeek}"][data-weekday="${nextWeekday}"]`
+    );
+    if (nextCell) {
+      nextCell.focus();
+    }
   });
 
   grid.addEventListener("pointerleave", () => {
@@ -248,7 +324,7 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
     return row;
   });
 
-  data.cells.forEach(cell => {
+  data.cells.forEach((cell, index) => {
     const item = document.createElement("button");
     const legendLabel = getLegendLabel(data.legend, cell.level);
     const htmlLabel = toCellHtmlLabel(cell, legendLabel);
@@ -266,6 +342,11 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
     item.setAttribute("aria-label", plainLabel);
     item.setAttribute("title", plainLabel);
     item.dataset.tooltip = htmlLabel;
+    item.dataset.weekIndex = String(cell.weekIndex);
+    item.dataset.weekday = String(cell.weekday);
+
+    // Initial roving tabindex: only the last cell is tabbable
+    item.tabIndex = index === data.cells.length - 1 ? 0 : -1;
 
     rows[cell.weekday].appendChild(item);
   });

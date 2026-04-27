@@ -5,27 +5,29 @@ import LinkButton from "./LinkButton.astro";
 
 <div class="flex flex-wrap items-center gap-1">
   {
-    SOCIALS.map(social => (
-      <>
-        {social.name === "GitHub" && (
-          <div
-            class="mx-1.5 h-5 w-px self-center bg-border/40"
-            aria-hidden="true"
-          />
-        )}
-        <LinkButton
-          href={social.href}
-          class:list={[
-            "p-2 hover:rotate-6 sm:p-1",
-            social.name === "GitHub" &&
-              "rounded-lg bg-foreground/5 shadow-sm sm:p-1.5",
-          ]}
-          title={social.linkTitle}
-        >
-          <social.icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
-          <span class="sr-only">{social.linkTitle}</span>
-        </LinkButton>
-      </>
-    ))
+    SOCIALS.map(social => {
+      const isGitHub = social.name === "GitHub";
+      return (
+        <>
+          {isGitHub && (
+            <div
+              class="mx-1.5 h-5 w-px self-center bg-border/40"
+              aria-hidden="true"
+            />
+          )}
+          <LinkButton
+            href={social.href}
+            class:list={[
+              "p-2 hover:rotate-6 sm:p-1",
+              isGitHub && "rounded-lg bg-foreground/5 shadow-sm sm:p-1.5",
+            ]}
+            title={social.linkTitle}
+          >
+            <social.icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
+            <span class="sr-only">{social.linkTitle}</span>
+          </LinkButton>
+        </>
+      );
+    })
   }
 </div>

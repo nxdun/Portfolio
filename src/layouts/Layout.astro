@@ -49,7 +49,7 @@ const structuredData = {
   ],
 };
 
-const toolsBackendUrl = import.meta.env.PUBLIC_TOOLS_BACKEND_URL;
+const toolsBackendUrl = (import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? "").trim();
 let preconnectOrigin = "";
 if (toolsBackendUrl) {
   try {
