@@ -10,7 +10,7 @@
 ---
 
 > [!TIP]
-> Backup Domain: [nadun.eu.cc](https://nadun.eu.cc)
+> Backup Domain (Development/Preview Builds): [nadun.eu.cc](https://nadun.eu.cc)
 
 # Features
 

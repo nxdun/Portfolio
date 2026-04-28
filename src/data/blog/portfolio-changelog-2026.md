@@ -8,7 +8,7 @@ draft: false
 tags:
   - Portfolio
   - Changelog
-description: A comprehensive nadzu.me Portfolio Changelog documenting updates for humans
+description: Changelog and updates for the portfolio interface.
 ---
 
 ## Future updates - Backlog
@@ -17,6 +17,21 @@ description: A comprehensive nadzu.me Portfolio Changelog documenting updates fo
 - _Update the Projects section to reflect the latest information; the current version is outdated._
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
+
+## v.2.7.0 - 2026-04-28
+
+- <a href="https://github.com/nxdun/Portfolio/pull/32" target="_blank"><code>#32</code></a> [refactor(env)] Secure environment variables and optimize graph
+  - Fixed Contactme form BUG tying to Self Validate Site Key, Now it will work as expected.
+  - Refactored environment variable management for improved security and maintainability.
+- <a href="https://github.com/nxdun/Portfolio/pull/31" target="_blank"><code>#31</code></a>[feat(ui)] Add GitHub contribution graph to hero section
+  - NEW DOMAIN Replication : [nadun.eu.cc](https://nadun.eu.cc) Development Builds going live here for testing and preview purposes.
+  - Add Real-time GitHub contribution graph to the hero section, showcasing recent activity and contributions.
+  - Updated Social Links Design for better visibility.
+  - Aupdate For Project Data Schema.
+  - Updated dependencies.
+  - Zod email validation fix in contact form.
+  - Apply read-before-write (anti-thrashing) pattern.
+  - Project Card Path Based Routing For Better SEO and Quick Open.
 
 ## v.2.6.0 - 2026-04-23
 

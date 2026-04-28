@@ -16,6 +16,16 @@ import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
 
+// ==========================================
+// PRESENTATION LAYER CONSTANTS (COPYWRITING)
+// ==========================================
+const HERO_HEADLINE =
+  "Stop losing revenue to fragile infrastructure and slow deployments.";
+const HERO_SUB_PREFIX = "I architect ";
+const HERO_DESCRIPTION =
+  "You don't just need code; you need reliable, automated systems. I help SaaS companies and AI startups build, secure, and scale their platforms. From provisioning zero-downtime AWS infrastructure with Terraform to deploying complex Multi-Agent LLM systems, I own the technical complexity so you can ship to market faster.";
+// ==========================================
+
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
@@ -48,7 +58,7 @@ const contributionsUrl = backendUrl
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Building Scalable Clouds & Code That Ships
+        {HERO_HEADLINE}
       </h1>
       <a
         target="_blank"
@@ -66,18 +76,13 @@ const contributionsUrl = backendUrl
       </a>
 
       <h2 class="mb-4 text-xl font-medium sm:text-2xl">
-        I am <span id="dynamic-text" class="font-bold text-accent"
-          >a Student</span
+        {HERO_SUB_PREFIX}<span id="dynamic-text" class="font-bold text-accent"
+          >solutions</span
         ><span id="cursor" class="animate-pulse">|</span>
       </h2>
 
       <p class="leading-relaxed tracking-wide">
-        Graduating Software Engineer with a{" "}
-        <span class="font-medium">DevOps mindset</span>. I bridge the gap
-        between complex infrastructure and clean application code using
-        <span class="font-medium">AWS</span> and{" "}
-        <span class="font-medium">modern CI/CD</span>. Ready to deploy
-        production-grade solutions.
+        {HERO_DESCRIPTION}
       </p>
 
       <div
@@ -85,17 +90,17 @@ const contributionsUrl = backendUrl
       >
         <div class="flex flex-col gap-4">
           <LinkButton href="/posts/" class="whitespace-nowrap">
-            All Posts
+            Read Technical Logs
             <IconArrowRight class="inline-block rtl:-rotate-180" />
           </LinkButton>
 
           <LinkButton href="/projects/" class="whitespace-nowrap">
-            All Projects
+            View Systems & Architecture
             <IconArrowRight class="inline-block rtl:-rotate-180" />
           </LinkButton>
 
           <LinkButton href="/tools?tool=base64" class="whitespace-nowrap">
-            All Tools
+            Explore Developer Tools
             <IconArrowRight class="inline-block rtl:-rotate-180" />
           </LinkButton>
 
@@ -103,9 +108,7 @@ const contributionsUrl = backendUrl
             // only display if at least one social link is enabled
             SOCIALS.length > 0 && (
               <div class="mt-4 flex max-sm:flex-col sm:items-center">
-                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-                  Social Links:
-                </div>
+                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">Connect:</div>
                 <div class="flex items-center">
                   <Socials />
                   <div class="pointer-events-none hidden opacity-30 select-none xl:block">
@@ -201,7 +204,7 @@ const contributionsUrl = backendUrl
             { "border-b border-border": recentPosts.length > 0 },
           ]}
         >
-          <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
+          <h2 class="text-2xl font-semibold tracking-wide">Featured Logs</h2>
           <ul>
             {featuredPosts.map(data => (
               <Card variant="h3" {...data} />
@@ -214,7 +217,7 @@ const contributionsUrl = backendUrl
     {
       recentPosts.length > 0 && (
         <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
+          <h2 class="text-2xl font-semibold tracking-wide">Latest Logs</h2>
           <ul>
             {recentPosts.map(
               (data, index) =>
@@ -227,7 +230,7 @@ const contributionsUrl = backendUrl
 
     <div class="my-8 text-center">
       <LinkButton href="/posts/" class="whitespace-nowrap">
-        All Posts
+        All Technical Logs
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>
@@ -236,7 +239,7 @@ const contributionsUrl = backendUrl
       featuredProjects.length > 0 && (
         <section id="projects" class="border-t border-border pt-12 pb-6">
           <h2 class="mb-4 text-2xl font-semibold tracking-wide">
-            Featured Projects
+            Production Systems
           </h2>
           <ul class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {featuredProjects.map(project => (
@@ -247,7 +250,7 @@ const contributionsUrl = backendUrl
                 <Loader
                   mode="attached"
                   isSkeleton={true}
-                  content="All Projects →"
+                  content="All Production Systems →"
                   contentHref="/projects/"
                   class="h-full min-h-70 w-full rounded-2xl"
                   animation={false}
@@ -264,7 +267,7 @@ const contributionsUrl = backendUrl
 
     <div class="my-8 text-center">
       <LinkButton href="/projects/">
-        All Projects
+        All Production Systems
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>
@@ -284,10 +287,11 @@ const contributionsUrl = backendUrl
       sessionStorage.setItem("backUrl", "/");
     }
 
+    // PSYCHOLOGICAL UPGRADE: These highlight your most lucrative, enterprise-grade skills
     startTypingAnimation("dynamic-text", [
-      "a DevOps Engineer",
-      "a Software Engineer",
-      "a Cloud Architect",
+      "production-grade AI systems",
+      "auto-scaling AWS clouds",
+      "distributed microservices",
     ]);
 
     // Break the critical dependency chain for the contribution graph.
