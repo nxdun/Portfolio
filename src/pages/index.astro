@@ -25,7 +25,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const featuredProjects = getFeaturedProjects(3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 
-const backendUrl = import.meta.env.PUBLIC_TOOLS_BACKEND_URL;
+const backendUrl = import.meta.env.BACKEND_SERVER_URL;
 const contributionsUrl = backendUrl
   ? `${backendUrl.replace(/\/+$/, "")}/api/v1/contributions`
   : null;
@@ -143,6 +143,7 @@ const contributionsUrl = backendUrl
           <div
             class="hero-contribution-shell h-full min-h-40 w-full"
             data-contribution-graph
+            data-contribution-graph-url={backendUrl}
             data-contribution-graph-state="loading"
             aria-label="GitHub contribution activity"
           >

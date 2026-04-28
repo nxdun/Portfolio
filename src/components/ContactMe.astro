@@ -1,5 +1,5 @@
 ---
-
+import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 ---
 
 <section id="contact-me" class="pt-12 pb-6">
@@ -10,7 +10,11 @@
 
     <div id="contact-response-host" class="hidden w-full"></div>
 
-    <form id="contact-form" class="flex w-full flex-col gap-5">
+    <form
+      id="contact-form"
+      class="flex w-full flex-col gap-5"
+      data-site-key={RECAPTCHA_SITE_KEY}
+    >
       <div>
         <label for="name" class="mb-1 block text-sm font-medium text-foreground"
           >Name</label
@@ -105,7 +109,7 @@
 
     let captchaManager: CaptchaManager | null = null;
     let captchaDialog: CaptchaDialogController | null = null;
-    const siteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+    const siteKey = form.getAttribute("data-site-key");
 
     let depsPromise: Promise<void> | null = null;
 

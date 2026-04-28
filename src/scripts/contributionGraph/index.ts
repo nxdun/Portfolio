@@ -420,7 +420,7 @@ const fetchContributionGraph = async (
 
 const resolveHost = async (host: HTMLElement) => {
   const configuredBaseUrl = (
-    import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? ""
+    host.getAttribute("data-contribution-graph-url") ?? ""
   ).trim();
 
   if (!configuredBaseUrl || !isHttpUrl(configuredBaseUrl)) {
