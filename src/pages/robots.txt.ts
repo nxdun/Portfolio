@@ -1,46 +1,64 @@
 import type { APIRoute } from "astro";
 
-const getRobotsTxt = (sitemapURL: URL) => `
-# As a condition of accessing this website, you agree to abide by the following content signals:
-# search:   building a search index and providing search results (not AI summaries)
-# ai-input: inputting content into AI models for real-time generative answers (e.g., RAG)
-# ai-train: training or fine-tuning AI models
-# Breaking these conditions may result to autoamatic blocking of your crawler.
-
-User-agent: *
-Content-Signal: search=no,ai-input=no,ai-train=no
+const getRobotsTxt = (sitemapURL: URL) =>
+  `
+# OpenAI
+User-agent: GPTBot
 Disallow: /
 
-User-agent: Googlebot
-Content-Signal: search=yes,ai-input=no,ai-train=no
-Allow: /
+User-agent: ChatGPT-User
+Disallow: /
 
-User-agent: Googlebot-Image
-Content-Signal: search=yes,ai-input=no,ai-train=no
-Allow: /
+User-agent: OAI-SearchBot
+Disallow: /
 
-User-agent: Bingbot
-Content-Signal: search=yes,ai-input=no,ai-train=no
-Allow: /
+# Anthropic (Claude)
+User-agent: Anthropic-ai
+Disallow: /
 
-User-agent: Slurp
-Content-Signal: search=yes,ai-input=no,ai-train=no
-Allow: /
+User-agent: ClaudeBot
+Disallow: /
 
-User-agent: DuckDuckBot
-Content-Signal: search=yes,ai-input=no,ai-train=no
-Allow: /
+User-agent: Claude-Web
+Disallow: /
 
-User-agent: Baiduspider
-Content-Signal: search=yes,ai-input=no,ai-train=no
-Allow: /
+User-agent: CCBot
+Disallow: /
 
-User-agent: YandexBot
-Content-Signal: search=yes,ai-input=no,ai-train=no
+# Google AI & Extended Training
+User-agent: Google-Extended
+Disallow: /
+
+# Meta / Facebook AI
+User-agent: FacebookBot
+Disallow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Disallow: /
+
+# Other known scrapers & data miners
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: Omgili
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: Cohere-training
+Disallow: /
+
+User-agent: *
 Allow: /
 
 Sitemap: ${sitemapURL.href}
-`;
+`.trim();
+
 export const GET: APIRoute = ({ site }) => {
   const sitemapURL = new URL("sitemap-index.xml", site);
   return new Response(getRobotsTxt(sitemapURL));
