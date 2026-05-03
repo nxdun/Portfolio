@@ -3,12 +3,14 @@ layout: ../layouts/AboutLayout.astro
 title: "About Me"
 ---
 
-I’m Nadun Lakshan, a Software Engineer specializing in Cloud Infrastructure, CI/CD Automation, and Multi-Agent AI Systems.
+I’m Nadun Lakshan, a Software Engineer.
 
-> "Scaling a product shouldn't mean breaking the foundation. Build it once, build it right, and automate the rest."
+I focus on infrastructure, automation, and building systems that don't fail.
 
-I simplify complex software architectures into reliable, production-ready deployments. My focus is on removing bottlenecks for SaaS and scaling startups, enabling applications to handle enterprise traffic without downtime.
+> "Code is cheap. Reliability is hard."
 
-Whether I am provisioning multi-region AWS environments using Terraform, orchestrating distributed microservices on Kubernetes, or integrating quantized LLMs into core business logic, my goal is always the same: **deliver unbreakable systems that accelerate time-to-market.**
+A system is only as good as its weakest link. If deployments are slow, I automate them. If servers crash under load, I re-architect them. If a process requires manual intervention, I write a script to eliminate it.
 
-I Prefer Linux environments and thrive on building custom developer tooling to automate repetitive workflows. If a process is manual, I engineer a pipeline to fix it.
+I don't just write features; I engineer the entire lifecycle. My default environment is Linux, and my default mindset is that everything can be measured, tested, and automated.
+
+I build tools that make developers faster and systems that let businesses sleep at night.

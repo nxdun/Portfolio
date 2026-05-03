@@ -188,21 +188,30 @@ const nextPost =
   /** Update the progress bar
    *  when user scrolls */
   function updateScrollProgress() {
-    document.addEventListener("scroll", () => {
-      const winScroll =
-        document.body.scrollTop || document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      if (document) {
+    // Throttle scroll updates to animation frames and mark listener as passive
+    let rafId = null;
+
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
         const myBar = document.getElementById("myBar");
-        if (myBar) {
-          myBar.style.width = scrolled + "%";
-        }
-      }
-    });
+        if (myBar) myBar.style.width = scrolled + "%";
+      });
+    };
+
+    document.addEventListener("scroll", onScroll, { passive: true });
+
+    // initialize position
+    onScroll();
   }
+
   updateScrollProgress();
 
   /** Attaches links to headings in the document,
