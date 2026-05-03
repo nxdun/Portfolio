@@ -22,7 +22,7 @@ const defaultToolDocsUrl = getToolQueryParamsDocsUrl(
 );
 ---
 
-<Layout title={`Tools | ${SITE.title}`}>
+<Layout title={`Tools | ${SITE.title}`} useBackendApi={true}>
   <Header activeNav="tools" />
   <ToolsLayout pageTitle="Tools" pageDesc="Pick Your digital Swiss Army knife.">
     <section

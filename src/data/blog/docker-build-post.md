@@ -1,5 +1,5 @@
 ---
-title: Cross-platform build Docker mirror new pose, x86, arm a shuttle
+title: "Cross-Platform Docker: Building for x86 and ARM"
 author: nadzu
 pubDatetime: 2026-03-31T15:39:19Z
 slug: docker-cross-platform-build

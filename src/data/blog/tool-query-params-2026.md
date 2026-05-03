@@ -1,5 +1,5 @@
 ---
-title: "Tool Query Parameters Documentation"
+title: "Tooling Docs: Using Query Parameters for State Persistence"
 author: nadzu
 pubDatetime: 2026-04-19T12:00:00Z
 slug: tool-query-params

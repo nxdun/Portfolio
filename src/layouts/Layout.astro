@@ -17,6 +17,7 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  useBackendApi?: boolean; // Set true on pages that need the backend API
 };
 
 const {
@@ -29,6 +30,7 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  useBackendApi = false,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -49,9 +51,10 @@ const structuredData = {
   ],
 };
 
-const toolsBackendUrl = (import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? "").trim();
+const toolsBackendUrl = (import.meta.env.BACKEND_SERVER_URL ?? "").trim();
 let preconnectOrigin = "";
-if (toolsBackendUrl) {
+// Only preconnect if the page will use the backend API
+if (useBackendApi && toolsBackendUrl) {
   try {
     preconnectOrigin = new URL(toolsBackendUrl).origin;
   } catch {

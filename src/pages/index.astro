@@ -11,10 +11,18 @@ import ProjectCard from "@/components/ProjectCard.astro";
 import ContactMe from "@/components/ContactMe.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
 import { getFeaturedProjects } from "@/utils/projectUtils";
-import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
+
+// ==========================================
+// PRESENTATION LAYER CONSTANTS
+// ==========================================
+const HERO_HEADLINE = "Software breaks. Well-architected systems endure.";
+const HERO_SUB_PREFIX = "I am ";
+const HERO_DESCRIPTION =
+  "Great software is more than code; it is the entire lifecycle. As a fresh Software Engineering graduate, the philosophy is absolute. Security is the responsibility. Automation is quick delivery. Testing is accuracy. Infrastructure is the future. Map everything together, and that is where real systems are born.";
+// ==========================================
 
 const posts = await getCollection("blog");
 
@@ -25,7 +33,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const featuredProjects = getFeaturedProjects(3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 
-const backendUrl = import.meta.env.PUBLIC_TOOLS_BACKEND_URL;
+const backendUrl = import.meta.env.BACKEND_SERVER_URL;
 const contributionsUrl = backendUrl
   ? `${backendUrl.replace(/\/+$/, "")}/api/v1/contributions`
   : null;
@@ -48,36 +56,17 @@ const contributionsUrl = backendUrl
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Building Scalable Clouds & Code That Ships
+        {HERO_HEADLINE}
       </h1>
-      <a
-        target="_blank"
-        href="/rss.xml"
-        class="inline-block"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="scale-125 stroke-accent stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
 
       <h2 class="mb-4 text-xl font-medium sm:text-2xl">
-        I am <span id="dynamic-text" class="font-bold text-accent"
-          >a Student</span
+        {HERO_SUB_PREFIX}<span id="dynamic-text" class="font-bold text-accent"
+          >solutions</span
         ><span id="cursor" class="animate-pulse">|</span>
       </h2>
 
       <p class="leading-relaxed tracking-wide">
-        Graduating Software Engineer with a{" "}
-        <span class="font-medium">DevOps mindset</span>. I bridge the gap
-        between complex infrastructure and clean application code using
-        <span class="font-medium">AWS</span> and{" "}
-        <span class="font-medium">modern CI/CD</span>. Ready to deploy
-        production-grade solutions.
+        {HERO_DESCRIPTION}
       </p>
 
       <div
@@ -85,27 +74,24 @@ const contributionsUrl = backendUrl
       >
         <div class="flex flex-col gap-4">
           <LinkButton href="/posts/" class="whitespace-nowrap">
-            All Posts
+            Read My Blogs
             <IconArrowRight class="inline-block rtl:-rotate-180" />
           </LinkButton>
 
           <LinkButton href="/projects/" class="whitespace-nowrap">
-            All Projects
+            My Works
             <IconArrowRight class="inline-block rtl:-rotate-180" />
           </LinkButton>
 
           <LinkButton href="/tools?tool=base64" class="whitespace-nowrap">
-            All Tools
+            Online Tools
             <IconArrowRight class="inline-block rtl:-rotate-180" />
           </LinkButton>
 
           {
-            // only display if at least one social link is enabled
             SOCIALS.length > 0 && (
               <div class="mt-4 flex max-sm:flex-col sm:items-center">
-                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-                  Social Links:
-                </div>
+                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">Connect:</div>
                 <div class="flex items-center">
                   <Socials />
                   <div class="pointer-events-none hidden opacity-30 select-none xl:block">
@@ -143,6 +129,7 @@ const contributionsUrl = backendUrl
           <div
             class="hero-contribution-shell h-full min-h-40 w-full"
             data-contribution-graph
+            data-contribution-graph-url={backendUrl}
             data-contribution-graph-state="loading"
             aria-label="GitHub contribution activity"
           >
@@ -200,7 +187,7 @@ const contributionsUrl = backendUrl
             { "border-b border-border": recentPosts.length > 0 },
           ]}
         >
-          <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
+          <h2 class="text-2xl font-semibold tracking-wide">Featured logs</h2>
           <ul>
             {featuredPosts.map(data => (
               <Card variant="h3" {...data} />
@@ -213,7 +200,7 @@ const contributionsUrl = backendUrl
     {
       recentPosts.length > 0 && (
         <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
+          <h2 class="text-2xl font-semibold tracking-wide">Latest logs</h2>
           <ul>
             {recentPosts.map(
               (data, index) =>
@@ -226,7 +213,7 @@ const contributionsUrl = backendUrl
 
     <div class="my-8 text-center">
       <LinkButton href="/posts/" class="whitespace-nowrap">
-        All Posts
+        View all logs
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>
@@ -235,7 +222,7 @@ const contributionsUrl = backendUrl
       featuredProjects.length > 0 && (
         <section id="projects" class="border-t border-border pt-12 pb-6">
           <h2 class="mb-4 text-2xl font-semibold tracking-wide">
-            Featured Projects
+            Architecture
           </h2>
           <ul class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {featuredProjects.map(project => (
@@ -246,7 +233,7 @@ const contributionsUrl = backendUrl
                 <Loader
                   mode="attached"
                   isSkeleton={true}
-                  content="All Projects →"
+                  content="View all architecture →"
                   contentHref="/projects/"
                   class="h-full min-h-70 w-full rounded-2xl"
                   animation={false}
@@ -263,7 +250,7 @@ const contributionsUrl = backendUrl
 
     <div class="my-8 text-center">
       <LinkButton href="/projects/">
-        All Projects
+        View all architecture
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>
@@ -283,10 +270,11 @@ const contributionsUrl = backendUrl
       sessionStorage.setItem("backUrl", "/");
     }
 
+    // PSYCHOLOGICAL UPGRADE: These highlight your most lucrative, enterprise-grade skills
     startTypingAnimation("dynamic-text", [
-      "a DevOps Engineer",
-      "a Software Engineer",
-      "a Cloud Architect",
+      "DevOps Engineer",
+      "Software Designer",
+      "Natural Programmer",
     ]);
 
     // Break the critical dependency chain for the contribution graph.

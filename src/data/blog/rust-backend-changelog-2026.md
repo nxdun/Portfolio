@@ -9,7 +9,7 @@ tags:
   - Rust
   - Backend
   - Changelog
-description: A comprehensive nadzu.me Rust Backend Changelog documenting updates for humans
+description: Changelog and updates for the Rust backend.
 ---
 
 ## Future updates - Backlog

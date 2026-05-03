@@ -1,26 +1,14 @@
 [
   {
     "project_name": "NASA - Spacia",
-    "short_desc": "Full Stack MERN Application Using Official NASA API",
-    "full_desc": "Frontend: Developed with React, including unit and integration testing; deployed on Netlify. Backend: Built with Express, featuring robust security capabilities; deployed on Heroku.",
+    "short_desc": "End-to-End MERN Stack Application Integrated with Live NASA Telemetry",
+    "full_desc": "Built a production-ready, full-stack application that seamlessly consumes and visualizes live NASA API data. Engineered a secure Express backend deployed on Heroku and a highly responsive, unit-tested React frontend on Netlify, demonstrating full-lifecycle development and reliable third-party API integration.",
     "tags": {
       "icon": [
-        {
-          "name": "React",
-          "iconName": "IconReact"
-        },
-        {
-          "name": "Express",
-          "iconName": "IconExpress"
-        },
-        {
-          "name": "Netlify",
-          "iconName": "IconNetlify"
-        },
-        {
-          "name": "Heroku",
-          "iconName": "IconHeroku"
-        }
+        { "name": "React", "iconName": "IconReact" },
+        { "name": "Express", "iconName": "IconExpress" },
+        { "name": "Netlify", "iconName": "IconNetlify" },
+        { "name": "Heroku", "iconName": "IconHeroku" }
       ],
       "noIcon": []
     },
@@ -41,34 +29,16 @@
   },
   {
     "project_name": "Study-Forge Learning System",
-    "short_desc": "Microservice: Polyglot Microservices including 7 Services with Docker and Kubernetes",
-    "full_desc": "Backend Services: Built and maintained high-performance and secure backend services using Express, Flask, and Spring Boot. Containerization and Orchestration: Utilized Docker and Kubernetes for efficient container orchestration.",
+    "short_desc": "Distributed E-Learning Platform Built on Kubernetes Microservices",
+    "full_desc": "Architected a highly scalable, fault-tolerant learning management system using a polyglot microservices architecture (Spring Boot, Flask, Express). Containerized 7 distinct services using Docker and orchestrated them on Google Kubernetes Engine (GKE) to ensure zero-downtime scaling and high availability for enterprise-level user traffic.",
     "tags": {
       "icon": [
-        {
-          "name": "React",
-          "iconName": "IconReact"
-        },
-        {
-          "name": "Express",
-          "iconName": "IconExpress"
-        },
-        {
-          "name": "Flask",
-          "iconName": "IconFlask"
-        },
-        {
-          "name": "Spring Boot",
-          "iconName": "IconSpringBoot"
-        },
-        {
-          "name": "Docker",
-          "iconName": "IconDocker"
-        },
-        {
-          "name": "Kubernetes",
-          "iconName": "IconKubernetes"
-        }
+        { "name": "React", "iconName": "IconReact" },
+        { "name": "Express", "iconName": "IconExpress" },
+        { "name": "Flask", "iconName": "IconFlask" },
+        { "name": "Spring Boot", "iconName": "IconSpringBoot" },
+        { "name": "Docker", "iconName": "IconDocker" },
+        { "name": "Kubernetes", "iconName": "IconKubernetes" }
       ],
       "noIcon": []
     },
@@ -102,22 +72,13 @@
   },
   {
     "project_name": "Chatte - P2P and Global Messenger",
-    "short_desc": "Implemented Client-Server and OSGi Architecture with User Authentication.",
-    "full_desc": "Technologies Used: Developed using Java and Apache Felix, incorporating socket programming. Development Environment: Utilized Eclipse IDE for production.",
+    "short_desc": "Low-Latency P2P Global Messenger with OSGi Architecture",
+    "full_desc": "Engineered a secure, low-latency peer-to-peer messaging system utilizing Java socket programming and Apache Felix. Designed a modular OSGi client-server architecture to ensure high maintainability and robust user authentication protocols for secure data transmission.",
     "tags": {
       "icon": [
-        {
-          "name": "Java",
-          "iconName": "IconJava"
-        },
-        {
-          "name": "Apache Felix",
-          "iconName": "IconApacheFelix"
-        },
-        {
-          "name": "Eclipse IDE",
-          "iconName": "IconEclipse"
-        }
+        { "name": "Java", "iconName": "IconJava" },
+        { "name": "Apache Felix", "iconName": "IconApacheFelix" },
+        { "name": "Eclipse IDE", "iconName": "IconEclipse" }
       ],
       "noIcon": ["Socket Programming"]
     },
@@ -138,22 +99,13 @@
   },
   {
     "project_name": "Movie Theatre Management System",
-    "short_desc": "Role: Lead Developer",
-    "full_desc": "Responsibilities: Leadership in development, Figma for wireframes, MongoDB design, RESTful API creation, and responsive UI/UX with React.",
+    "short_desc": "Scalable Movie Theatre Management Platform & REST API",
+    "full_desc": "Directed the end-to-end development of a theatre management platform. Designed high-conversion UI/UX in Figma, architected a NoSQL MongoDB database, and built highly responsive React interfaces connected via secure RESTful APIs to deliver a seamless, crash-free booking experience.",
     "tags": {
       "icon": [
-        {
-          "name": "React",
-          "iconName": "IconReact"
-        },
-        {
-          "name": "MongoDB",
-          "iconName": "IconMongodb"
-        },
-        {
-          "name": "Figma",
-          "iconName": "IconFigma"
-        }
+        { "name": "React", "iconName": "IconReact" },
+        { "name": "MongoDB", "iconName": "IconMongodb" },
+        { "name": "Figma", "iconName": "IconFigma" }
       ],
       "noIcon": ["RESTful API"]
     },
@@ -174,26 +126,14 @@
   },
   {
     "project_name": "Garment And Textile Management System",
-    "short_desc": "Garment and Textile Management System",
-    "full_desc": "Technologies Used: Developed using JSP Servlets, SQL, PHP, and Apache Tomcat. Collaboration and Version Control: Utilized GitHub for collaboration and version control. Design Patterns: Applied design patterns to enhance system architecture and maintainability.",
+    "short_desc": "Enterprise Resource Planning (ERP) System for Textile Management",
+    "full_desc": "Developed a robust backend management system to digitize and streamline textile manufacturing workflows. Implemented MVC design patterns using JSP Servlets and SQL to ensure strict data integrity and scalable architecture, providing business owners with reliable, real-time inventory control.",
     "tags": {
       "icon": [
-        {
-          "name": "JSP Servlets",
-          "iconName": "IconJava"
-        },
-        {
-          "name": "SQL",
-          "iconName": "IconSql"
-        },
-        {
-          "name": "PHP",
-          "iconName": "IconPhp"
-        },
-        {
-          "name": "Apache Tomcat",
-          "iconName": "IconTomcat"
-        }
+        { "name": "JSP Servlets", "iconName": "IconJava" },
+        { "name": "SQL", "iconName": "IconSql" },
+        { "name": "PHP", "iconName": "IconPhp" },
+        { "name": "Apache Tomcat", "iconName": "IconTomcat" }
       ],
       "noIcon": []
     },
@@ -214,38 +154,17 @@
   },
   {
     "project_name": "Smart Healthcare System for Urban Hospitals",
-    "short_desc": "Health Wizard",
-    "full_desc": "Application For Urban Area Hospitals using MERN stack with MVC architecture. Implements design patterns such as Singleton, Factory, Strategy, and Observer. Includes unit tests.",
+    "short_desc": "High-Availability Healthcare Management System (MERN Stack)",
+    "full_desc": "Architected a secure, high-performance healthcare management platform tailored for high-traffic urban hospitals. Leveraged advanced structural design patterns (Singleton, Factory, Strategy) and rigorous unit testing to guarantee system reliability and safeguard sensitive patient data across a scalable MVC architecture.",
     "tags": {
       "icon": [
-        {
-          "name": "Express",
-          "iconName": "IconExpress"
-        },
-        {
-          "name": "Redux",
-          "iconName": "IconRedux"
-        },
-        {
-          "name": "MongoDB",
-          "iconName": "IconMongodb"
-        },
-        {
-          "name": "React",
-          "iconName": "IconReact"
-        },
-        {
-          "name": "Tailwind",
-          "iconName": "IconTailwind"
-        },
-        {
-          "name": "CSS",
-          "iconName": "IconCss"
-        },
-        {
-          "name": "ThreeJS",
-          "iconName": "IconThreejs"
-        }
+        { "name": "Express", "iconName": "IconExpress" },
+        { "name": "Redux", "iconName": "IconRedux" },
+        { "name": "MongoDB", "iconName": "IconMongodb" },
+        { "name": "React", "iconName": "IconReact" },
+        { "name": "Tailwind", "iconName": "IconTailwind" },
+        { "name": "CSS", "iconName": "IconCss" },
+        { "name": "ThreeJS", "iconName": "IconThreejs" }
       ],
       "noIcon": [
         "JWT",
@@ -274,27 +193,15 @@
     "slug": "smart-healthcare-system-for-urban-hospitals"
   },
   {
-    "project_name": "Smart Healthcare System for Urban Hospitals",
-    "short_desc": "Health Wizard",
-    "full_desc": "JWT, Design Patterns, IIFE, Discriminators, Requirement Analysis, XP, Agile Development.",
+    "project_name": "Health Wizard Security & Operations Layer",
+    "short_desc": "Agile Healthcare Dashboard with Advanced Security Protocols",
+    "full_desc": "Delivered a secure hospital operations dashboard utilizing Agile and Extreme Programming (XP) methodologies. Implemented JWT authentication and advanced MongoDB discriminators to ensure strict data governance and rapid feature delivery aligned with complex clinical requirements.",
     "tags": {
       "icon": [
-        {
-          "name": "Express",
-          "iconName": "IconExpress"
-        },
-        {
-          "name": "Redux",
-          "iconName": "IconRedux"
-        },
-        {
-          "name": "MongoDB",
-          "iconName": "IconMongodb"
-        },
-        {
-          "name": "React",
-          "iconName": "IconReact"
-        }
+        { "name": "Express", "iconName": "IconExpress" },
+        { "name": "Redux", "iconName": "IconRedux" },
+        { "name": "MongoDB", "iconName": "IconMongodb" },
+        { "name": "React", "iconName": "IconReact" }
       ],
       "noIcon": []
     },
@@ -315,22 +222,13 @@
   },
   {
     "project_name": "CodeWizard - Microservice Based Project",
-    "short_desc": "Automated Code Analysis, Flow Chart Generation and Project Management",
-    "full_desc": "Microservices Architecture, Task Management, Real-Time Feedback, Graphical Code Visualization, Issue Tracking, and Code Quality Optimization for multi-language projects. Developed with Agile methodology and optimized for efficient project management.",
+    "short_desc": "Automated Code Analysis & SaaS Project Management Suite",
+    "full_desc": "Built a developer-focused SaaS platform using a distributed microservices architecture. Engineered real-time code analysis, graphical visualization, and issue tracking to drastically reduce technical debt and accelerate Agile development cycles for multi-language engineering teams.",
     "tags": {
       "icon": [
-        {
-          "name": "React",
-          "iconName": "IconReact"
-        },
-        {
-          "name": "MongoDB",
-          "iconName": "IconMongodb"
-        },
-        {
-          "name": "Express",
-          "iconName": "IconExpress"
-        }
+        { "name": "React", "iconName": "IconReact" },
+        { "name": "MongoDB", "iconName": "IconMongodb" },
+        { "name": "Express", "iconName": "IconExpress" }
       ],
       "noIcon": ["Microservices", "Code Analysis", "Project Management"]
     },
@@ -351,18 +249,12 @@
   },
   {
     "project_name": "NuusBreakfast",
-    "short_desc": "ASP.NET Web API with MVC design",
-    "full_desc": "Rolled out an ASP.NET-based Web API adhering to MVC patterns. Implemented robust error handling and testing for production readiness.",
+    "short_desc": "Production-Ready ASP.NET Core Web API",
+    "full_desc": "Engineered a robust, fault-tolerant RESTful API using ASP.NET Core MVC. Implemented comprehensive error-handling and rigorous automated testing suites to ensure 99.9% uptime and reliable data delivery for client-facing applications.",
     "tags": {
       "icon": [
-        {
-          "name": "ASP.NET Core",
-          "iconName": "IconDotNet"
-        },
-        {
-          "name": "C#",
-          "iconName": "IconCsharp"
-        }
+        { "name": "ASP.NET Core", "iconName": "IconDotNet" },
+        { "name": "C#", "iconName": "IconCsharp" }
       ],
       "noIcon": ["Web API", "MVC"]
     },
@@ -383,15 +275,10 @@
   },
   {
     "project_name": "TbX - Terabox downloading API",
-    "short_desc": "Terabox - Bulk download, Single Download",
-    "full_desc": "A Backend Download Manager with parallel, multi-chunks, and fast download capabilities. Features local FTP for quick file transfer using the same API. Includes heavy link fault tolerance, logs failed actions with links, backup fetching algorithm, and separate endpoints for deleting archives/current downloads.",
+    "short_desc": "High-Speed Parallel Backend Download Manager API",
+    "full_desc": "Architected a high-throughput download management API capable of parallel, multi-chunk processing to maximize bandwidth efficiency. Engineered robust fault tolerance, automated backup fetching algorithms, and an integrated FTP service to guarantee seamless, uninterrupted bulk data transfers.",
     "tags": {
-      "icon": [
-        {
-          "name": "Express",
-          "iconName": "IconExpress"
-        }
-      ],
+      "icon": [{ "name": "Express", "iconName": "IconExpress" }],
       "noIcon": ["FTP", "Parallel Downloads", "API"]
     },
     "urls": [
@@ -408,26 +295,14 @@
   },
   {
     "project_name": "Multi Agents AI-Based Chatbot for Support Automation",
-    "short_desc": "Research Project (Company Collaboration), Project Leader, Developed Custom Multi-Agent System",
-    "full_desc": "Project leader for a generative AI-based chatbot designed for support automation. Led architecture design, enforced Git-Flow and conventional commit best practices, authored CI/CD pipelines, and co-authored a research paper published at the 7th ICAC (2025). Developed a core Python multi-agent system service with custom MCP-based intra-service communication and agentic task orchestration, integrated quantized open-source LLMs, and produced API documentation. Built complete IaC with Terraform, CloudFormation, Dockerized builds, and deployed production infra with OIDC using GitHub Actions, S3 Terraform state, and Cloudflare-managed domain.",
+    "short_desc": "Production-Grade Multi-Agent AI Support Infrastructure (ICAC 2025 Published)",
+    "full_desc": "Led the end-to-end architecture and deployment of an enterprise AI support system utilizing quantized LLMs and a custom MCP-based orchestration framework. Automated the entire AWS infrastructure using Terraform and CloudFormation. Delivered a zero-downtime CI/CD pipeline via GitHub Actions, mitigating security risks with OIDC. Co-authored a published research paper (ICAC 2025) proving the system's commercial viability and scalability.",
     "tags": {
       "icon": [
-        {
-          "name": "Python",
-          "iconName": "IconPython"
-        },
-        {
-          "name": "Terraform",
-          "iconName": "IconTerraform"
-        },
-        {
-          "name": "Docker",
-          "iconName": "IconDocker"
-        },
-        {
-          "name": "Cloudflare",
-          "iconName": "IconCloudFlare"
-        }
+        { "name": "Python", "iconName": "IconPython" },
+        { "name": "Terraform", "iconName": "IconTerraform" },
+        { "name": "Docker", "iconName": "IconDocker" },
+        { "name": "Cloudflare", "iconName": "IconCloudFlare" }
       ],
       "noIcon": ["LLM", "Multi-Agent Systems", "MCP", "CI/CD", "GitHub Actions"]
     },

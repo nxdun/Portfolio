@@ -10,7 +10,7 @@
 ---
 
 > [!TIP]
-> Backup Domain: [nadun.eu.cc](https://nadun.eu.cc)
+> Backup Domain (Development/Preview Builds): [nadun.eu.cc](https://nadun.eu.cc)
 
 # Features
 
@@ -157,7 +157,7 @@ cp .env.example .env
 
 </details>
 
-<details>
+<!-- <details>
 <summary>Key source paths explained</summary>
 
 - `src/pages/` maps every `.astro` or `.md` file directly to a URL via file-based routing.
@@ -166,7 +166,7 @@ cp .env.example .env
 - `src/utils/` holds shared utilities including OG image generation, post sorting and filtering, slug helpers, and the `CoreApiClient` used by the yt-dlp tool.
 - `wrangler.jsonc` holds the Cloudflare Workers deployment config for both production and preview environments.
 
-</details>
+</details> -->
 
 ---
 

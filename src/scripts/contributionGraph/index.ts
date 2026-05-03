@@ -13,17 +13,23 @@ const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 const networkTimeoutMs = 12000;
 const CONTRIBUTIONS_PATH = "/api/v1/contributions";
 
+const fullDateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+
 const normalizeHexColor = (value: string) =>
   value.startsWith("#") ? value : `#${value}`;
 
+const sharedDate = new Date();
+
 const formatDate = (dateString: string) => {
-  const [year, month, day] = dateString.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
+  const year = +dateString.slice(0, 4);
+  const month = +dateString.slice(5, 7);
+  const day = +dateString.slice(8, 10);
+  sharedDate.setFullYear(year, month - 1, day);
+  return fullDateFormatter.format(sharedDate);
 };
 
 const isHttpUrl = (value: string): boolean => {
@@ -55,57 +61,74 @@ const isContributionResponse = (
 
   if (!summary || !meta || !range) return false;
 
-  return (
-    typeof root.username === "string" &&
-    Array.isArray(root.legend) &&
-    root.legend.every(
-      (item: unknown) =>
-        typeof item === "object" &&
-        item !== null &&
-        typeof (item as Record<string, unknown>).level === "number" &&
-        typeof (item as Record<string, unknown>).label === "string" &&
-        typeof (item as Record<string, unknown>).color === "string"
-    ) &&
-    Array.isArray(root.months) &&
-    root.months.every(
-      (month: unknown) =>
-        typeof month === "object" &&
-        month !== null &&
-        typeof (month as Record<string, unknown>).label === "string" &&
-        typeof (month as Record<string, unknown>).weekIndex === "number"
-    ) &&
-    Array.isArray(root.cells) &&
-    root.cells.every(
-      (cell: unknown) =>
-        typeof cell === "object" &&
-        cell !== null &&
-        typeof (cell as Record<string, unknown>).weekday === "number" &&
-        Number.isInteger((cell as Record<string, unknown>).weekday) &&
-        ((cell as Record<string, unknown>).weekday as number) >= 0 &&
-        ((cell as Record<string, unknown>).weekday as number) <= 6 &&
-        typeof (cell as Record<string, unknown>).date === "string" &&
-        typeof (cell as Record<string, unknown>).count === "number" &&
-        typeof (cell as Record<string, unknown>).level === "number"
-    ) &&
-    typeof summary.totalContributions === "number" &&
-    typeof summary.totalWeeks === "number" &&
-    typeof summary.maxDailyCount === "number" &&
-    typeof range.from === "string" &&
-    typeof range.to === "string" &&
-    typeof meta.cached === "boolean" &&
-    typeof meta.schemaVersion === "number"
-  );
+  if (
+    typeof root.username !== "string" ||
+    !Array.isArray(root.legend) ||
+    !Array.isArray(root.months) ||
+    !Array.isArray(root.cells) ||
+    typeof summary.totalContributions !== "number" ||
+    typeof summary.totalWeeks !== "number" ||
+    typeof summary.maxDailyCount !== "number" ||
+    typeof range.from !== "string" ||
+    typeof range.to !== "string" ||
+    typeof meta.cached !== "boolean" ||
+    typeof meta.schemaVersion !== "number"
+  ) {
+    return false;
+  }
+
+  if (root.legend.length > 0) {
+    const item = root.legend[0] as Record<string, unknown>;
+    if (
+      typeof item !== "object" ||
+      item === null ||
+      typeof item.level !== "number" ||
+      typeof item.label !== "string" ||
+      typeof item.color !== "string"
+    ) {
+      return false;
+    }
+  }
+
+  if (root.months.length > 0) {
+    const month = root.months[0] as Record<string, unknown>;
+    if (
+      typeof month !== "object" ||
+      month === null ||
+      typeof month.label !== "string" ||
+      typeof month.weekIndex !== "number"
+    ) {
+      return false;
+    }
+  }
+
+  if (root.cells.length > 0) {
+    const cell = root.cells[0] as Record<string, unknown>;
+    if (
+      typeof cell !== "object" ||
+      cell === null ||
+      typeof cell.weekday !== "number" ||
+      !Number.isInteger(cell.weekday) ||
+      (cell.weekday as number) < 0 ||
+      (cell.weekday as number) > 6 ||
+      typeof cell.date !== "string" ||
+      typeof cell.count !== "number" ||
+      typeof cell.level !== "number"
+    ) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 const deferClientWork = (task: () => void) => {
-  requestAnimationFrame(() => {
-    if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(() => task(), { timeout: 1000 });
-      return;
-    }
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(() => task(), { timeout: 1000 });
+    return;
+  }
 
-    setTimeout(task, 180);
-  });
+  setTimeout(task, 180);
 };
 
 const getLegendLabel = (
@@ -142,12 +165,16 @@ const setStatusMessage = (host: HTMLElement, message: string) => {
   status.textContent = message;
 };
 
-const renderMonths = (host: HTMLElement, data: ContributionGraphResponse) => {
-  const months = host.querySelector<HTMLElement>("[data-contribution-months]");
-  if (!months) return;
+const renderMonths = (
+  monthsEl: HTMLElement | null,
+  data: ContributionGraphResponse
+) => {
+  if (!monthsEl) return;
 
-  months.textContent = "";
+  monthsEl.textContent = "";
   let lastRenderedWeekIndex = Number.NEGATIVE_INFINITY;
+
+  const nodes: HTMLElement[] = [];
   data.months.forEach((month, index) => {
     if (index === 0 || month.weekIndex - lastRenderedWeekIndex < 3) {
       return;
@@ -157,33 +184,36 @@ const renderMonths = (host: HTMLElement, data: ContributionGraphResponse) => {
     node.className = "hero-contribution-month";
     node.textContent = month.label;
     node.style.gridColumnStart = String(month.weekIndex + 1);
-    months.appendChild(node);
+    nodes.push(node);
     lastRenderedWeekIndex = month.weekIndex;
   });
+
+  monthsEl.append(...nodes);
 };
 
-const renderWeekdays = (host: HTMLElement) => {
-  const weekdays = host.querySelector<HTMLElement>(
-    "[data-contribution-weekdays]"
-  );
-  if (!weekdays) return;
+const renderWeekdays = (weekdaysEl: HTMLElement | null) => {
+  if (!weekdaysEl) return;
 
-  weekdays.textContent = "";
-  [1, 3, 5].forEach(dayIndex => {
+  weekdaysEl.textContent = "";
+  const nodes = [1, 3, 5].map(dayIndex => {
     const node = document.createElement("span");
     node.className = "hero-contribution-weekday";
     node.style.gridRowStart = String(dayIndex + 1);
     node.textContent = weekdayShortNames[dayIndex];
-    weekdays.appendChild(node);
+    return node;
   });
+
+  weekdaysEl.append(...nodes);
 };
 
-const renderLegend = (host: HTMLElement, data: ContributionGraphResponse) => {
-  const legend = host.querySelector<HTMLElement>("[data-contribution-legend]");
-  if (!legend) return;
+const renderLegend = (
+  legendEl: HTMLElement | null,
+  data: ContributionGraphResponse
+) => {
+  if (!legendEl) return;
 
-  legend.textContent = "";
-  data.legend.forEach(item => {
+  legendEl.textContent = "";
+  const nodes = data.legend.map(item => {
     const wrapper = document.createElement("span");
     const swatch = document.createElement("span");
     const label = document.createElement("span");
@@ -200,39 +230,40 @@ const renderLegend = (host: HTMLElement, data: ContributionGraphResponse) => {
 
     wrapper.appendChild(swatch);
     wrapper.appendChild(label);
-    legend.appendChild(wrapper);
+    return wrapper;
   });
+
+  legendEl.append(...nodes);
 };
 
-const renderSummary = (host: HTMLElement, data: ContributionGraphResponse) => {
-  const summary = host.querySelector<HTMLElement>(
-    "[data-contribution-summary]"
-  );
-  if (!summary) return;
+const renderSummary = (
+  summaryEl: HTMLElement | null,
+  data: ContributionGraphResponse
+) => {
+  if (!summaryEl) return;
 
-  const cacheStatus = data.meta.cached ? "Cached" : "Live";
-  summary.innerHTML = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-90">contributions</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-90">weeks</span> <span class="text-[0.65rem] opacity-80 ml-1">(${cacheStatus})</span>`;
+  const cacheStatus = data.meta.cached ? "Updated Today" : "Live";
+
+  summaryEl.innerHTML = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-90">contributions</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-90">weeks</span> <span class="text-[0.65rem] opacity-80 ml-1">(${cacheStatus})</span>`;
 };
 
-const bindInteraction = (host: HTMLElement) => {
-  const grid = host.querySelector<HTMLElement>("[data-contribution-grid]");
-  const tooltip = host.querySelector<HTMLElement>(
-    "[data-contribution-tooltip]"
-  );
-
-  if (!grid || !tooltip) return;
+const bindInteraction = (
+  gridEl: HTMLElement | null,
+  tooltipEl: HTMLElement | null
+) => {
+  if (!gridEl || !tooltipEl) return;
 
   const idleMessage = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-50 px-1">/</span> contribution activity`;
-  tooltip.innerHTML = idleMessage;
+  tooltipEl.innerHTML = idleMessage;
 
   const updateTooltip = (value: string) => {
-    tooltip.innerHTML = value;
+    tooltipEl.innerHTML = value;
   };
 
   const getCells = () =>
-    Array.from(grid.querySelectorAll<HTMLElement>(".hero-contribution-cell"));
+    Array.from(gridEl.querySelectorAll<HTMLElement>(".hero-contribution-cell"));
 
-  grid.addEventListener("pointerover", event => {
+  gridEl.addEventListener("pointerover", event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>(
       ".hero-contribution-cell"
     );
@@ -241,7 +272,7 @@ const bindInteraction = (host: HTMLElement) => {
     updateTooltip(target.dataset.tooltip || idleMessage);
   });
 
-  grid.addEventListener("focusin", event => {
+  gridEl.addEventListener("focusin", event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>(
       ".hero-contribution-cell"
     );
@@ -254,7 +285,7 @@ const bindInteraction = (host: HTMLElement) => {
     updateTooltip(target.dataset.tooltip || idleMessage);
   });
 
-  grid.addEventListener("keydown", event => {
+  gridEl.addEventListener("keydown", event => {
     const target = (event.target as HTMLElement).closest<HTMLElement>(
       ".hero-contribution-cell"
     );
@@ -294,7 +325,7 @@ const bindInteraction = (host: HTMLElement) => {
     }
 
     event.preventDefault();
-    const nextCell = grid.querySelector<HTMLElement>(
+    const nextCell = gridEl.querySelector<HTMLElement>(
       `.hero-contribution-cell[data-week-index="${nextWeek}"][data-weekday="${nextWeekday}"]`
     );
     if (nextCell) {
@@ -302,18 +333,21 @@ const bindInteraction = (host: HTMLElement) => {
     }
   });
 
-  grid.addEventListener("pointerleave", () => {
+  gridEl.addEventListener("pointerleave", () => {
     updateTooltip(idleMessage);
   });
 
-  grid.addEventListener("focusout", () => {
+  gridEl.addEventListener("focusout", () => {
     updateTooltip(idleMessage);
   });
 };
 
-const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
-  const grid = host.querySelector<HTMLElement>("[data-contribution-grid]");
-  if (!grid) return;
+const renderCells = (
+  gridEl: HTMLElement | null,
+  host: HTMLElement,
+  data: ContributionGraphResponse
+) => {
+  if (!gridEl) return;
 
   // Create 7 rows to satisfy ARIA grid requirements
   const rows = Array.from({ length: 7 }, () => {
@@ -351,8 +385,8 @@ const renderCells = (host: HTMLElement, data: ContributionGraphResponse) => {
     rows[cell.weekday].appendChild(item);
   });
 
-  grid.textContent = "";
-  rows.forEach(row => grid.appendChild(row));
+  gridEl.textContent = "";
+  gridEl.append(...rows);
 
   const totalWeeks = Math.max(1, data.summary.totalWeeks);
   host.style.setProperty("--contribution-weeks", String(totalWeeks));
@@ -420,7 +454,7 @@ const fetchContributionGraph = async (
 
 const resolveHost = async (host: HTMLElement) => {
   const configuredBaseUrl = (
-    import.meta.env.PUBLIC_TOOLS_BACKEND_URL ?? ""
+    host.getAttribute("data-contribution-graph-url") ?? ""
   ).trim();
 
   if (!configuredBaseUrl || !isHttpUrl(configuredBaseUrl)) {
@@ -459,21 +493,32 @@ const resolveHost = async (host: HTMLElement) => {
     }
 
     const payload = data;
+
+    // Cache DOM elements ;/
+    const elements = {
+      months: host.querySelector<HTMLElement>("[data-contribution-months]"),
+      weekdays: host.querySelector<HTMLElement>("[data-contribution-weekdays]"),
+      grid: host.querySelector<HTMLElement>("[data-contribution-grid]"),
+      summary: host.querySelector<HTMLElement>("[data-contribution-summary]"),
+      legend: host.querySelector<HTMLElement>("[data-contribution-legend]"),
+      tooltip: host.querySelector<HTMLElement>("[data-contribution-tooltip]"),
+    };
+
     if (payload.cells.length === 0) {
-      renderSummary(host, payload);
-      renderLegend(host, payload);
+      renderSummary(elements.summary, payload);
+      renderLegend(elements.legend, payload);
       setState(host, "empty");
       settleLoaderMotion(host);
       setStatusMessage(host, "No recent activity for nxdun.");
       return;
     }
 
-    renderMonths(host, payload);
-    renderWeekdays(host);
-    renderCells(host, payload);
-    renderSummary(host, payload);
-    renderLegend(host, payload);
-    bindInteraction(host);
+    renderMonths(elements.months, payload);
+    renderWeekdays(elements.weekdays);
+    renderCells(elements.grid, host, payload);
+    renderSummary(elements.summary, payload);
+    renderLegend(elements.legend, payload);
+    bindInteraction(elements.grid, elements.tooltip);
 
     setState(host, "resolving");
     settleLoaderMotion(host);

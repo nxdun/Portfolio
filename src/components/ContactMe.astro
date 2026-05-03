@@ -1,16 +1,20 @@
 ---
-
+import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 ---
 
 <section id="contact-me" class="pt-12 pb-6">
   <div class="mx-auto flex flex-col items-center gap-6 lg:w-2/3">
     <h2 id="contact-me-heading" class="mb-4 text-3xl font-bold tracking-wide">
-      Contact Me
+      Let's Discuss Your Infrastructure.
     </h2>
 
     <div id="contact-response-host" class="hidden w-full"></div>
 
-    <form id="contact-form" class="flex w-full flex-col gap-5">
+    <form
+      id="contact-form"
+      class="flex w-full flex-col gap-5"
+      data-site-key={RECAPTCHA_SITE_KEY}
+    >
       <div>
         <label for="name" class="mb-1 block text-sm font-medium text-foreground"
           >Name</label
@@ -20,7 +24,7 @@
           name="name"
           id="contact-name"
           required
-          placeholder="Your Name"
+          placeholder="Your Name or Company"
           class="w-full rounded-lg border border-border bg-muted/10 px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
         />
       </div>
@@ -43,14 +47,15 @@
       <div>
         <label
           for="purpose"
-          class="mb-1 block text-sm font-medium text-foreground">Purpose</label
+          class="mb-1 block text-sm font-medium text-foreground"
+          >Inquiry Type</label
         >
         <input
           type="text"
           name="purpose"
           id="contact-purpose"
           required
-          placeholder="Freelance Project, Job Offer, etc."
+          placeholder="e.g., Cloud Architecture, Freelance Project, Job Offer"
           class="w-full rounded-lg border border-border bg-muted/10 px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
         />
       </div>
@@ -65,7 +70,7 @@
           id="contact-message"
           rows="5"
           required
-          placeholder="Tell me more about it..."
+          placeholder="Tell me about your project, current bottlenecks, or team needs..."
           class="w-full rounded-lg border border-border bg-muted/10 px-4 py-2 focus:border-accent focus:ring-1 focus:ring-accent focus:outline-none"
         ></textarea>
       </div>
@@ -75,7 +80,7 @@
           type="submit"
           class="flex w-full items-center justify-center rounded-lg bg-accent px-8 py-3 text-sm font-bold text-background transition-colors hover:bg-accent/90 focus:ring-4 focus:ring-accent/50 sm:w-auto"
         >
-          Send Message
+          Send Inquiry
         </button>
       </div>
     </form>
@@ -105,7 +110,7 @@
 
     let captchaManager: CaptchaManager | null = null;
     let captchaDialog: CaptchaDialogController | null = null;
-    const siteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+    const siteKey = form.getAttribute("data-site-key");
 
     let depsPromise: Promise<void> | null = null;
 
