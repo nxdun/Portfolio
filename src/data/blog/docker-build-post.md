@@ -14,19 +14,24 @@ tags:
 description: How I cut a bloated 2GB+ Rust Docker image and 10-minute build time down to under 3 minutes using BuildKit's ZSTD builder, cargo-chef caching, six-stage Dockerfiles, and OCI-compliant multi-platform manifests.
 ---
 
-My Rust project was producing images over 2GB and build times crossing 10 minutes. It bundles static FFmpeg binaries, FFProbe, yt-dlp binary and a compiled Rust binary, so the dependency surface is genuinely large. Every push to main felt like waiting for a compiler that had alzheimer's disease ;] . I overhauled the whole container pipeline, and the single biggest upgrade was setting a custom ZSTD builder as default. Here is what actually changed.
 
-## Why the legacy builder hurt
+My Rust project was producing images over 2GB and build times crossing 10 minutes. It bundles static FFmpeg binaries, FFProbe, yt-dlp, and a compiled Rust binary, so the dependency surface is genuinely large. Every push to main felt like waiting for a compiler that had alzheimer's disease ;]. I overhauled the whole container pipeline, and the single biggest lever was setting a custom ZSTD builder as default. Here is what actually changed.
 
-The old Docker builder processed Dockerfiles line by line. Each step had to finish before the next one started. For a project with three completely independent build stages, that design serializes work that could run in parallel and wastes most of the cores on the machine. not to mention the **gzip** compression bottleneck during layer export.
+## Table of contents
+
+## Why the legacy builder slowed everything down
+
+The old Docker builder processed Dockerfiles line by line. Each step had to finish before the next one started. For a project with three completely independent build stages, that design serializes work that could run in parallel and wastes most of the cores on the machine, not to mention the **gzip** compression bottleneck during layer export.
 
 BuildKit reads the entire Dockerfile first, maps out which stages depend on each other, and runs the independent ones at the same time. Stages that do not end up in the final image get dropped entirely. For this project that means the FFmpeg pull, the Python environment setup, and the Rust compilation all run concurrently instead of one after another.
 
 ## Why gzip slowed everything down
 
-Gzip uses one CPU core. During layer export, the pipeline stalls while a single thread compresses gigabytes of binary data regardless of how many cores the runner has. There is no way around it with the standard implementation.
+Gzip is single-threaded with no way around it in the standard implementation. During layer export, the pipeline stalls while one core compresses gigabytes of binary data regardless of how many cores the runner has.
 
-Zstandard supports native multi-threading and a more efficient compression algorithm. The numbers speak for themselves:
+Zstandard supports native multi-threading and a more efficient compression algorithm. After running the benchmarks myself:
+
+> _"Perhaps the single most efficient compression option I have found in terms of compress/decompress time and space savings combined."_
 
 | Metric                | gzip      | zstd     |
 | --------------------- | --------- | -------- |
@@ -34,7 +39,9 @@ Zstandard supports native multi-threading and a more efficient compression algor
 | Final compressed size | 1.50GB    | 1.32GB   |
 | Layer extraction time | 25,341ms  | 6,108ms  |
 
-That extraction improvement directly cuts cold start time. In environments where every deployment pulls the image fresh, AWS testing shows zstd-compressed images reduce startup times by up to 27% through extraction alone.
+That extraction improvement directly cuts cold start time. In environments where every deployment pulls the image fresh, the gains hit both sides of the pipe.
+
+> _"90% faster compression, smaller file, 60% faster to decompress. Both ends of the pipe."_
 
 ## Setting up the builder
 
@@ -49,23 +56,23 @@ builder:
 
 Running `make builder` once is enough. Every subsequent build call routes through the `zstd-builder` instance instead of the default driver.
 
-- `make bd` (Makefile alias: local build) — loads a single-platform image into your local Docker daemon with zstd compression, fast iteration without a full push cycle
-- `make bdp` (Makefile alias: production push) — builds for `linux/amd64`, compresses with zstd, pushes to the registry
+- `make bd` (Makefile alias: local build) - loads a single-platform image into your local Docker daemon with zstd compression, fast iteration without a full push cycle
+- `make bdp` (Makefile alias: production push) - builds for `linux/amd64`, compresses with zstd, pushes to the registry
 
 ## Six stages, not two
 
 The common advice is "use multi-stage." My Dockerfile uses six stages, each doing exactly one thing:
 
-1. **chef** — base build environment with compiler tooling
-2. **planner** — reads the dependency manifest and generates a build recipe
-3. **builder** — compiles only changed dependencies using cached build artifacts, then produces the final stripped binary
-4. **ffmpeg** — pulls a static FFmpeg build, nothing else
-5. **python-builder** — sets up the Python environment and installs the downloader tool
-6. **runtime** — a minimal Alpine image that copies only the binary, FFmpeg, and the Python environment in
+1. **chef** - base build environment with compiler tooling
+2. **planner** - reads the dependency manifest and generates a build recipe
+3. **builder** - compiles only changed dependencies using cached build artifacts, then produces the final stripped binary
+4. **ffmpeg** - pulls a static FFmpeg build, nothing else
+5. **python-builder** - sets up the Python environment and installs the downloader tool
+6. **runtime** - a minimal Alpine image that copies only the binary, FFmpeg, and the Python environment in
 
 The final image has no compiler, no build artifacts, no source code. A 2GB+ build environment collapses into a deployment layer under 20MB, and zstd only has to compress that small remaining payload.
 
-## The cache mounts matter more than the builder
+## Cache mounts, not the builder
 
 The build time drop from 10 minutes to the 2 to 3 minute window comes almost entirely from three cache mounts in the builder stage:
 
@@ -124,7 +131,7 @@ BuildKit does not expose the full zstd compression range. It maps requested numb
 | 7 to 8          | Slower, smaller files                  | When size matters more than build time |
 | 9 to 22         | Maximum compression, identical above 9 | Minimum artifact size                  |
 
-`compression-level=3` is the right call for CI. Anything above 9 produces the same output, so values like `compression-level=15` just add confusion. Also include `force-compression=true` if you have older cached layers around — without it, the builder imports them as-is instead of recompressing.
+`compression-level=3` is the right call for CI. Anything above 9 produces the same output, so values like `compression-level=15` just add confusion. Also include `force-compression=true` if you have older cached layers around - without it, the builder imports them as-is instead of recompressing.
 
 ## Multi-platform builds and OCI media types
 
@@ -140,17 +147,19 @@ docker buildx build \
 
 The `oci-mediatypes=true` flag is required. The legacy Docker manifest format has no definition for zstd-compressed layers. Without it, the builder either fails or pushes a manifest the registry cannot parse correctly.
 
-The Dockerfile already handles ARM64 cross-compilation natively via a build argument that selects the correct compile target per architecture, no emulation needed. Adding `linux/arm64` to the platform list just works.
+The Dockerfile already handles ARM64 cross-compilation natively via a build argument that selects the correct compile target per architecture. Adding `linux/arm64` to the platform list handles it without any emulation overhead.
 
 ## Registry compatibility
 
 | Registry                         | Zstd Support | Notes                                          |
 | -------------------------------- | ------------ | ---------------------------------------------- |
-| AWS ECR                          | Full         | Vulnerability scanning works on zstd layers    |
-| Google Artifact Registry         | Full         | Natively handles OCI formats                   |
+| Docker Hub                       | Full         | Official Docker registry with full OCI support |
 | GitHub Container Registry (GHCR) | Full         | Used in this repo's CI pipeline                |
-| Harbor                           | Full         | Explicitly recommends zstd for large artifacts |
-| Fly.io Registry                  | Full         | Internal infrastructure optimized for zstd     |
+| AWS ECR                          | Full         | Vulnerability scanning works on zstd layers    |
 | Azure Container Registry         | Partial      | Requires newer node pool versions              |
+| Google Artifact Registry         | Full         | Natively handles OCI formats                   |
+| Fly.io Registry                  | Full         | Internal infrastructure optimized for zstd     |
+| Harbor                           | Full         | Explicitly recommends zstd for large artifacts |
+| DigitalOcean Container Registry  | Full         | Native support for OCI-compliant images        |
 
 > Always validate registry support before pushing zstd images. A mismatch between the registry and the runtime daemon causes production cold start failures that will be traced back to compression layer incompatibility.
