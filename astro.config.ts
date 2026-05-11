@@ -29,7 +29,7 @@ export default defineConfig({
     shikiConfig: {
       // visit me https://shiki.style/themes
       // for code blocks and diff syntax highlighting
-      themes: { light: "github-light", dark: "github-dark" },
+      themes: { light: "github-light", dark: "vitesse-dark" },
       defaultColor: false,
       wrap: false,
       transformers: [

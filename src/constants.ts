@@ -18,7 +18,7 @@ interface Social {
 
 export const SOCIALS: Social[] = [
   {
-    name: "TeleGram",
+    name: "Telegram",
     href: "https://t.me/DHNSA",
     linkTitle: `${SITE.title} on Telegram`,
     icon: IconNuuTelegram,
