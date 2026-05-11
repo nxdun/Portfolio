@@ -14,7 +14,6 @@ tags:
 description: How I cut a bloated 2GB+ Rust Docker image and 10-minute build time down to under 3 minutes using BuildKit's ZSTD builder, cargo-chef caching, six-stage Dockerfiles, and OCI-compliant multi-platform manifests.
 ---
 
-
 My Rust project was producing images over 2GB and build times crossing 10 minutes. It bundles static FFmpeg binaries, FFProbe, yt-dlp, and a compiled Rust binary, so the dependency surface is genuinely large. Every push to main felt like waiting for a compiler that had alzheimer's disease ;]. I overhauled the whole container pipeline, and the single biggest lever was setting a custom ZSTD builder as default. Here is what actually changed.
 
 ## Table of contents
@@ -31,7 +30,7 @@ Gzip is single-threaded with no way around it in the standard implementation. Du
 
 Zstandard supports native multi-threading and a more efficient compression algorithm. After running the benchmarks myself:
 
-> _"Perhaps the single most efficient compression option I have found in terms of compress/decompress time and space savings combined."_
+> _"Perhaps the single most efficient compression option found in terms of compress/decompress time and space savings combined."_
 
 | Metric                | gzip      | zstd     |
 | --------------------- | --------- | -------- |
@@ -114,7 +113,7 @@ c:
 
 The Makefile also detects available CPU cores automatically across Linux and macOS. For a shell alias that does the same:
 
-```bash
+```bash file=~/.bashrc
 alias m='make -j$(nproc 2>/dev/null || echo 4)'
 ```
 
