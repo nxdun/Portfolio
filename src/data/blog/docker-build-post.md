@@ -1,190 +1,164 @@
 ---
-title: "Cross-Platform Docker: Building for x86 and ARM"
+title: "Rust Docker Builds Under 3 Minutes: ZSTD Builders, Multi-Stage Pipelines, and Multi-Platform OCI Images"
 author: nadzu
-pubDatetime: 2026-03-31T15:39:19Z
+pubDatetime: 2026-05-10T15:39:19Z
 slug: docker-cross-platform-build
 featured: true
 draft: false
 tags:
   - Featured
   - multi-platform
+  - multi-stage
   - Docker
   - Buildx
-description: A guide on building multi-platform Docker images across CPU architectures like x86 and ARM using Docker buildx and QEMU.
+description: How I cut a bloated 2GB+ Rust Docker image and 10-minute build time down to under 3 minutes using BuildKit's ZSTD builder, cargo-chef caching, six-stage Dockerfiles, and OCI-compliant multi-platform manifests.
 ---
 
-## Preface
+My Rust project was producing images over 2GB and build times crossing 10 minutes. It bundles static FFmpeg binaries, FFProbe, yt-dlp, and a compiled Rust binary, so the dependency surface is genuinely large. Every push to main felt like waiting for a compiler that had alzheimer's disease ;]. I overhauled the whole container pipeline, and the single biggest lever was setting a custom ZSTD builder as default. Here is what actually changed.
 
-Running programs on different CPU architectures (like running software on a Raspberry Pi) is common. Docker makes deploying applications on ARM devices easier by hiding system differences.
+## Table of contents
 
-Building multi-platform Docker images used to be difficult. You had to build on different CPU architectures directly, use virtualization to simulate architectures, and manually merge image manifests. Docker 19.03 introduced `buildx`, a plugin that simplifies cross-platform image building.
+## Why the legacy builder slowed everything down
 
-## Methods for Compiling Across CPU Architectures
+The old Docker builder processed Dockerfiles line by line. Each step had to finish before the next one started. For a project with three completely independent build stages, that design serializes work that could run in parallel and wastes most of the cores on the machine, not to mention the **gzip** compression bottleneck during layer export.
 
-Here are the primary methods for compiling programs for different CPU architectures.
+BuildKit reads the entire Dockerfile first, maps out which stages depend on each other, and runs the independent ones at the same time. Stages that do not end up in the final image get dropped entirely. For this project that means the FFmpeg pull, the Python environment setup, and the Rust compilation all run concurrently instead of one after another.
 
-### Method 1: Compile Directly on Target Hardware
+## Why gzip slowed everything down
 
-If you have access to the target architecture, you can compile natively. For Docker, this means installing Docker on a Raspberry Pi and building the ARM image directly using a Dockerfile.
+Gzip is single-threaded with no way around it in the standard implementation. During layer export, the pipeline stalls while one core compresses gigabytes of binary data regardless of how many cores the runner has.
 
-### Method 2: Simulate Target Hardware
+Zstandard supports native multi-threading and a more efficient compression algorithm. After running the benchmarks myself:
 
-Emulators let you build programs across architectures. QEMU is a popular open-source emulator supporting ARM, Power-PC, and RISC-V. By simulating a full operating system, you can boot Linux in an ARM virtual machine and compile your program. However, simulating hardware like timers and memory controllers is resource-intensive and unnecessary for compilation.
+> _"Perhaps the single most efficient compression option found in terms of compress/decompress time and space savings combined."_
 
-### Method 3: Simulate Target User Space
+| Metric                | gzip      | zstd     |
+| --------------------- | --------- | -------- |
+| Compress 5.18GB image | 163,014ms | 14,455ms |
+| Final compressed size | 1.50GB    | 1.32GB   |
+| Layer extraction time | 25,341ms  | 6,108ms  |
 
-On Linux, QEMU offers a user-state mode. It uses `binfmt_misc` to register a binary conversion handler in the Linux kernel. This translates binaries dynamically during execution, converting system calls from the target architecture to the host architecture. This allows you to create lightweight containers and compile programs as if doing so locally. Docker uses this method for multi-platform builds.
+That extraction improvement directly cuts cold start time. In environments where every deployment pulls the image fresh, the gains hit both sides of the pipe.
 
-### Method 4: Cross-Compilation
+> _"90% faster compression, smaller file, 60% faster to decompress. Both ends of the pipe."_
 
-Cross-compilers run on one architecture but generate executables for another. For example, an amd64 C++ cross-compiler on Linux can produce an aarch64 executable. This method has no performance loss since it doesn't use an emulator, but its complexity depends on the programming language.
+## Setting up the builder
 
-## Building Multi-Platform Docker Images
+The Makefile has a `builder` target that handles this:
 
-The `buildx` plugin acts as the next-generation `docker build` command, using BuildKit to expand functionality. Here is how to use it.
-
-### Enable the buildx Plugin
-
-Ensure you are using Docker 19.03 or newer. Verify it is active:
-
-```bash
-docker buildx version
+```makefile
+builder:
+  docker buildx create --name zstd-builder --use
+  docker buildx use zstd-builder
+  docker buildx inspect --bootstrap
 ```
 
-If the plugin isn't available (e.g., on Arch Linux), compile it from source:
+Running `make builder` once is enough. Every subsequent build call routes through the `zstd-builder` instance instead of the default driver.
 
-```bash
-export DOCKER_BUILDKIT=1
-docker build --platform=local -o . git://github.com/docker/buildx
-mkdir -p ~/.docker/cli-plugins && mv buildx ~/.docker/cli-plugins/docker-buildx
-```
+- `make bd` (Makefile alias: local build) - loads a single-platform image into your local Docker daemon with zstd compression, fast iteration without a full push cycle
+- `make bdp` (Makefile alias: production push) - builds for `linux/amd64`, compresses with zstd, pushes to the registry
 
-### Enable binfmt_misc
+## Six stages, not two
 
-Docker Desktop (macOS and Windows) enables `binfmt_misc` by default. On Linux, enable it manually by running a privileged setup container (kernel 4.x or higher recommended):
+The common advice is "use multi-stage." My Dockerfile uses six stages, each doing exactly one thing:
 
-```bash
-docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
-```
+1. **chef** - base build environment with compiler tooling
+2. **planner** - reads the dependency manifest and generates a build recipe
+3. **builder** - compiles only changed dependencies using cached build artifacts, then produces the final stripped binary
+4. **ffmpeg** - pulls a static FFmpeg build, nothing else
+5. **python-builder** - sets up the Python environment and installs the downloader tool
+6. **runtime** - a minimal Alpine image that copies only the binary, FFmpeg, and the Python environment in
 
-Verify `binfmt_misc` is active:
+The final image has no compiler, no build artifacts, no source code. A 2GB+ build environment collapses into a deployment layer under 20MB, and zstd only has to compress that small remaining payload.
 
-```bash
-ls -al /proc/sys/fs/binfmt_misc/
-cat /proc/sys/fs/binfmt_misc/qemu-aarch64
-```
+## Cache mounts, not the builder
 
-### Switch to a Multi-Platform Builder
-
-Docker's default builder does not support multi-CPU architectures. Create and switch to a new builder:
-
-```bash
-docker buildx create --use --name mybuilder
-docker buildx inspect mybuilder --bootstrap
-```
-
-View the supported CPU architectures:
-
-```bash
-docker buildx ls
-```
-
-### Build Multi-Platform Images
-
-With a multi-platform builder active, you can build images supporting multiple architectures. Given a simple Golang program:
-
-```go
-// hello.go
-package main
-
-import (
-        "fmt"
-        "runtime"
-)
-
-func main() {
-        fmt.Printf("Hello, %s!\n", runtime.GOARCH)
-}
-```
-
-Create a multi-stage `Dockerfile`:
+The build time drop from 10 minutes to the 2 to 3 minute window comes almost entirely from three cache mounts in the builder stage:
 
 ```dockerfile
-# Dockerfile
-FROM golang:alpine AS builder
-RUN mkdir /app
-ADD . /app/
-WORKDIR /app
-RUN go build -o hello .
-
-FROM alpine
-RUN mkdir /app
-WORKDIR /app
-COPY --from=builder /app/hello .
-CMD ["./hello"]
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    ...
 ```
 
-Use `buildx` to build the image for ARM, arm64, and amd64 architectures, and push it to Docker Hub (requires `docker login`):
+On repeated builds, dependency compilation is skipped entirely if nothing in the dependency list changed. The compiler picks up from where the previous run stopped. Without these mounts, every CI run recompiles everything from scratch regardless of what actually changed.
 
-```bash
-docker buildx build -t nxdun/hello-arch --platform=linux/arm,linux/arm64,linux/amd64 . --push
+The GitHub Actions workflow keeps these caches alive between runs:
+
+```yaml
+- uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+  with:
+    cache-map: |
+      {
+        "app-target": "/app/target",
+        "cargo-registry": "/usr/local/cargo/registry",
+        "cargo-git": "/usr/local/cargo/git"
+      }
 ```
 
-Docker automatically pulls the correct image for your architecture when running `docker pull nxdun/hello-arch`. Behind the scenes, `buildx` uses QEMU to build three distinct images and creates a manifest list pointing to them.
+Combined with `cache-from: type=gha` and `cache-to: type=gha,mode=max`, the runner inherits compiled artifacts from the previous workflow run. Current month stats: **2m 1s average job run time**, 0% failure rate.
 
-To save images locally, you must build them separately for each architecture:
+## Local builds with `make`
 
-```bash
-docker buildx build -t nxdun/hello-arch --platform=linux/arm -o type=docker .
-docker buildx build -t nxdun/hello-arch --platform=linux/arm64 -o type=docker .
-docker buildx build -t nxdun/hello-arch --platform=linux/amd64 -o type=docker .
+The Makefile `c` target chains format check, type check, linter, and tests before anything runs:
+
+```makefile
+c:
+  cargo fmt -- --check
+  cargo check --locked
+  cargo clippy --locked --all-targets --all-features -- -D warnings
+  cargo test --locked --all-targets
 ```
 
-### Test Multi-Platform Images
+The Makefile also detects available CPU cores automatically across Linux and macOS. For a shell alias that does the same:
 
-With `binfmt_misc` active, you can run images for any CPU architecture locally.
-
-List the image digests:
-
-```bash
-docker buildx imagetools inspect nxdun/hello-arch
+```bash file=~/.bashrc
+alias m='make -j$(nproc 2>/dev/null || echo 4)'
 ```
 
-Run each image by its digest to verify:
+`nproc` asks the kernel how many cores are available. The `2>/dev/null` suppresses errors on machines where the command does not exist, and the `|| echo 4` fallback assumes four cores as a safe baseline. Running `m` instead of `make` dispatches all checks concurrently across every available core.
 
-```bash
-docker run --rm docker.io/nxdun/hello-arch:latest@sha256:38e083870044cfde7f23a2eec91e307ec645282e76fd0356a29b32122b11c639
-# Hello, arm!
+## Picking the right compression level
 
-docker run --rm docker.io/nxdun/hello-arch:latest@sha256:de273a2a3ce92a5dc1e6f2d796bb85a81fe1a61f82c4caaf08efed9cf05af66d
-# Hello, arm64!
+BuildKit does not expose the full zstd compression range. It maps requested numbers into four internal tiers:
 
-docker run --rm docker.io/nxdun/hello-arch:latest@sha256:8b735708d7d30e9cd6eb993449b1047b7229e53fbcebe940217cb36194e9e3a2
-# Hello, amd64!
+| Requested level | Behavior                               | Best for                               |
+| --------------- | -------------------------------------- | -------------------------------------- |
+| 0 to 2          | Fastest, larger files                  | Local iteration                        |
+| 3 to 6          | Balanced                               | Standard CI pipelines                  |
+| 7 to 8          | Slower, smaller files                  | When size matters more than build time |
+| 9 to 22         | Maximum compression, identical above 9 | Minimum artifact size                  |
+
+`compression-level=3` is the right call for CI. Anything above 9 produces the same output, so values like `compression-level=15` just add confusion. Also include `force-compression=true` if you have older cached layers around - without it, the builder imports them as-is instead of recompressing.
+
+## Multi-platform builds and OCI media types
+
+The `bdp` Makefile alias (production push) builds and emits a proper OCI manifest:
+
+```makefile
+docker buildx build \
+  --builder zstd-builder \
+  --platform linux/amd64 \
+  --output type=image,name=$(IMAGE):$(TAG),push=$(PUSH),compression=zstd,oci-mediatypes=true \
+  .
 ```
 
-## Summary
+The `oci-mediatypes=true` flag is required. The legacy Docker manifest format has no definition for zstd-compressed layers. Without it, the builder either fails or pushes a manifest the registry cannot parse correctly.
 
-Running software across different CPU architectures presents challenges. Docker's `buildx` simplifies this process. Without altering your `Dockerfile`, you can create and push multi-architecture images to Docker Hub. Any system with Docker can seamlessly pull the correct image for its CPU architecture.
+The Dockerfile already handles ARM64 cross-compilation natively via a build argument that selects the correct compile target per architecture. Adding `linux/arm64` to the platform list handles it without any emulation overhead.
 
-## References
+## Registry compatibility
 
-[^1]: QEMU: [https://www.wikiwand.com/zh-hans/QEMU](https://www.wikiwand.com/zh-hans/QEMU)
+| Registry                         | Zstd Support | Notes                                          |
+| -------------------------------- | ------------ | ---------------------------------------------- |
+| Docker Hub                       | Full         | Official Docker registry with full OCI support |
+| GitHub Container Registry (GHCR) | Full         | Used in this repo's CI pipeline                |
+| AWS ECR                          | Full         | Vulnerability scanning works on zstd layers    |
+| Azure Container Registry         | Partial      | Requires newer node pool versions              |
+| Google Artifact Registry         | Full         | Natively handles OCI formats                   |
+| Fly.io Registry                  | Full         | Internal infrastructure optimized for zstd     |
+| Harbor                           | Full         | Explicitly recommends zstd for large artifacts |
+| DigitalOcean Container Registry  | Full         | Native support for OCI-compliant images        |
 
-[^2]: binfmt_misc: [https://en.wikipedia.org/wiki/Binfmt_misc](https://en.wikipedia.org/wiki/Binfmt_misc)
-
-[^3]: chroot: [https://en.wikipedia.org/wiki/Chroot](https://en.wikipedia.org/wiki/Chroot)
-
-[^4]: buildx: [https://github.com/docker/buildx](https://github.com/docker/buildx)
-
-[^5]: BuildKit: [https://github.com/moby/buildkit](https://github.com/moby/buildkit)
-
-[^6]: Docker Hub: [https://hub.docker.com/](https://hub.docker.com/)
-
-[^7]: manifest: [https://docs.docker.com/engine/reference/commandline/manifest/](https://docs.docker.com/engine/reference/commandline/manifest/)
-
-[^8]: Building Multi-Arch Images for Arm and x86 with Docker Desktop: [https://engineering.docker.com/2019/04/multi-arch-images/](https://engineering.docker.com/2019/04/multi-arch-images/)
-
-[^9]: Getting started with Docker for Arm on Linux: [https://engineering.docker.com/2019/06/getting-started-with-docker-for-arm-on-linux/](https://engineering.docker.com/2019/06/getting-started-with-docker-for-arm-on-linux/)
-
-[^10]: Leverage multi-CPU architecture support: https://docs.docker.com/docker-for-mac/multi-arch/
+> Always validate registry support before pushing zstd images. A mismatch between the registry and the runtime daemon causes production cold start failures that will be traced back to compression layer incompatibility.
