@@ -161,4 +161,4 @@ The Dockerfile already handles ARM64 cross-compilation natively via a build argu
 | Harbor                           | Full         | Explicitly recommends zstd for large artifacts |
 | DigitalOcean Container Registry  | Full         | Native support for OCI-compliant images        |
 
-> Always validate registry support before pushing zstd images. A mismatch between the registry and the runtime daemon causes production cold start failures that will be traced back to compression layer incompatibility.
+> Always validate registry support before pushing zstd images. A mismatch between the registry and the runtime daemon causes production cold start failures that will be traced back to compression layer incompatibility. -nadzu

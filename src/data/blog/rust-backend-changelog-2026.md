@@ -1,7 +1,7 @@
 ---
 title: Nadzu Backend Changelog - 2026 Updates
 author: nadzu
-pubDatetime: 2026-03-09T10:00:00Z
+pubDatetime: 2026-05-12T11:23:37Z
 slug: rust-backend-changelog
 featured: true
 draft: false
@@ -16,6 +16,24 @@ description: Changelog and updates for the Rust backend.
 
 - _Redis Intergration for Caching and Pub/Sub_
 - _Add OpenGraph API Intergration and Map it with Postman_
+
+## v0.5.0 - 2026-05-12
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/14" target="_blank"><code>#14</code></a>[feat(infra)] Add Prometheus and Grafana observability stack
+  - Introduces a full observability layer using Prometheus and Grafana across local dev and production environments.
+  - Instruments core `ytdlp` services (tracking job lifecycle and processing duration) and `captcha` security middleware (tracking verification hits, failures, and API key bypasses).
+  - Automates provisioning of "Worker Health" and "Security" dashboards as code.
+  - Implements Caddy `@internal_only` global matcher to protect `/metrics`, `/nadun/fs/*`, and `/nadun/grafana/*` endpoints across all environments.
+  - Standardizes `docker-compose.dev.yml` to use production-style image builds, resolving stale binary linking issues in Alpine/musl environments.
+  - Updates Makefile, Terraform, and Cloud-init to handle automated fetching of all observability artifacts.
+
+- <a href="https://github.com/nxdun/rust-codebase/pull/13" target="_blank"><code>#13</code></a>[fix(ytdlp)] Stabilize progress streaming and temp file handling
+  - Updates the `yt-dlp` download flow to send an immediate SSE snapshot so clients receive the current job state on connect.
+  - Downloads now use per-job temp directories before safely moving completed files to the final output path.
+  - Fixes cleanup behavior for failed and timed-out jobs by removing temp artifacts directly.
+  - Refactors `aria2` progress parsing to use targeted regex extraction and simpler helpers.
+  - Updates the health endpoint to return the service version.
+  - Rewrites and reorganizes README, TOC, workflow, and architecture diagrams to match current system design.
 
 ## v0.4.0 - 2026-04-25
 
