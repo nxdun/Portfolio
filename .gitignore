@@ -31,3 +31,4 @@ public/pagefind
 .github/**/*.md
 .vscode/
 .wrangler/
+.gemini/
