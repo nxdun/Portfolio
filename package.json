@@ -1,7 +1,7 @@
 {
   "name": "Nuus Portfolio",
   "type": "module",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "packageManager": "pnpm@10.33.2",
   "scripts": {
     "dev": "astro dev --host",
@@ -15,11 +15,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.2.2",
+    "@astrojs/cloudflare": "^13.5.1",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
-    "@tailwindcss/vite": "^4.2.4",
-    "astro": "^6.1.10",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.3",
     "concurrently": "^9.2.1",
     "dayjs": "^1.11.20",
     "lodash.kebabcase": "^4.1.1",
@@ -29,7 +29,7 @@
     "satori": "^0.18.4",
     "sharp": "^0.34.5",
     "slugify": "^1.6.9",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -37,7 +37,7 @@
     "@shikijs/transformers": "^3.23.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@typescript-eslint/parser": "^8.59.1",
+    "@typescript-eslint/parser": "^8.59.3",
     "eslint": "^9.39.4",
     "eslint-plugin-astro": "^1.7.0",
     "globals": "^16.5.0",
@@ -46,8 +46,8 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.4",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.59.1",
-    "wrangler": "^4.86.0"
+    "typescript-eslint": "^8.59.3",
+    "wrangler": "^4.92.0"
   },
   "pnpm": {
     "overrides": {

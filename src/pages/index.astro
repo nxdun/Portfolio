@@ -21,7 +21,7 @@ import { SOCIALS } from "@/constants";
 const HERO_HEADLINE = "Software breaks. Well-architected systems endure.";
 const HERO_SUB_PREFIX = "I am ";
 const HERO_DESCRIPTION =
-  "Great software is more than code; it is the entire lifecycle. As a fresh Software Engineering graduate, the philosophy is absolute. Security is the responsibility. Automation is quick delivery. Testing is accuracy. Infrastructure is the future. Map everything together, and that is where real systems are born.";
+  "Great software is more than code; it is the entire lifecycle. My approach to engineering is strictly operational. Security is the baseline. Automation drives delivery. Testing guarantees precision. Infrastructure is the backbone. When these components are integrated, whole software systems are built.";
 // ==========================================
 
 const posts = await getCollection("blog");
@@ -222,7 +222,7 @@ const contributionsUrl = backendUrl
       featuredProjects.length > 0 && (
         <section id="projects" class="border-t border-border pt-12 pb-6">
           <h2 class="mb-4 text-2xl font-semibold tracking-wide">
-            Architecture
+            Projects I've Built
           </h2>
           <ul class="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {featuredProjects.map(project => (
@@ -233,7 +233,7 @@ const contributionsUrl = backendUrl
                 <Loader
                   mode="attached"
                   isSkeleton={true}
-                  content="View all architecture →"
+                  content="View all Projects →"
                   contentHref="/projects/"
                   class="h-full min-h-70 w-full rounded-2xl"
                   animation={false}
@@ -250,7 +250,7 @@ const contributionsUrl = backendUrl
 
     <div class="my-8 text-center">
       <LinkButton href="/projects/">
-        View all architecture
+        View all Projects
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>
@@ -270,7 +270,7 @@ const contributionsUrl = backendUrl
       sessionStorage.setItem("backUrl", "/");
     }
 
-    // PSYCHOLOGICAL UPGRADE: These highlight your most lucrative, enterprise-grade skills
+    // Dynamic Typing Animation
     startTypingAnimation("dynamic-text", [
       "DevOps Engineer",
       "Software Designer",
