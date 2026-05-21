@@ -1,7 +1,7 @@
 ---
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
-pubDatetime: 2026-02-13T10:00:00Z
+pubDatetime: 2026-05-21T11:21:39Z
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -13,10 +13,20 @@ description: Changelog and updates for the portfolio interface.
 
 ## Future updates - Backlog
 
-- _Design Changes for back-to-top navigation button_
-- _Update the Projects section to reflect the latest information; the current version is outdated._
-- _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
-- _Add GTAG Functionality_
+- _Loader Component and Skeleton Enhancement_
+
+## v.2.7.1 - 2026-05-18
+
+- <a href="https://github.com/nxdun/Portfolio/pull/35" target="_blank" rel="noopener noreferrer"><code>#35</code></a> [docs(changelog)] Add PR #35 to v2.7.1 release notes
+  - Updated dependencies, DOCS, Release notes.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/34" target="_blank" rel="noopener noreferrer"><code>#34</code></a> [chore(deps)] Update dependencies and refine homepage copy
+  - Updated dependencies: `@astrojs/cloudflare`, `astro`, `tailwindcss`, `wrangler`, and `@typescript-eslint/parser`.
+  - Rewritten Wording in homepage.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/33" target="_blank" rel="noopener noreferrer"><code>`#33`</code></a> [Blog] Enhance Blogger UX and Add New Post
+  - Added a new blog post about Rust Docker zstd builder and multi-platform builds.
+  - Improved the overall UX of the blog section, including better Code block styling and readability enhancements.
 
 ## v.2.7.0 - 2026-05-03
 
@@ -211,33 +221,3 @@ description: Changelog and updates for the portfolio interface.
 - <a href="https://github.com/nxdun/Portfolio/pull/3" target="_blank" rel="noopener noreferrer"><code>#3</code></a> PR: Breaking Changes (Closed) - ~~UNSTABLE~~
 - <a href="https://github.com/nxdun/Portfolio/pull/2" target="_blank" rel="noopener noreferrer"><code>#2</code></a> Experimental-branch (Closed) - ~~Useless Functionality~~
 - <a href="https://github.com/nxdun/Portfolio/pull/1" target="_blank" rel="noopener noreferrer"><code>#1</code></a> PR: Experimental branch (Closed) - ~~Dependency update made it non-future-proof~~
-
-<!-- Link references -->
-
-[PR5]: https://github.com/nxdun/Portfolio/pull/5
-[PR6]: https://github.com/nxdun/Portfolio/pull/6
-[PR7]: https://github.com/nxdun/Portfolio/pull/7
-[PR8]: https://github.com/nxdun/Portfolio/pull/8
-[PR10]: https://github.com/nxdun/Portfolio/pull/10
-[PR11]: https://github.com/nxdun/Portfolio/pull/11
-[PR12]: https://github.com/nxdun/Portfolio/pull/12
-[PR13]: https://github.com/nxdun/Portfolio/pull/13
-[PR14]: https://github.com/nxdun/Portfolio/pull/14
-[PR15]: https://github.com/nxdun/Portfolio/pull/15
-[PR16]: https://github.com/nxdun/Portfolio/pull/16
-[PR17]: https://github.com/nxdun/Portfolio/pull/17
-[PR18]: https://github.com/nxdun/Portfolio/pull/18
-[PR19]: https://github.com/nxdun/Portfolio/pull/19
-[PR20]: https://github.com/nxdun/Portfolio/pull/20
-[PR21]: https://github.com/nxdun/Portfolio/pull/21
-[PR22]: https://github.com/nxdun/Portfolio/pull/22
-[PR23]: https://github.com/nxdun/Portfolio/pull/23
-[PR24]: https://github.com/nxdun/Portfolio/pull/24
-[PR25]: https://github.com/nxdun/Portfolio/pull/25
-[PR26]: https://github.com/nxdun/Portfolio/pull/26
-[PR27]: https://github.com/nxdun/Portfolio/pull/27
-[PR28]: https://github.com/nxdun/Portfolio/pull/28
-[PR29]: https://github.com/nxdun/Portfolio/pull/29
-[PR30]: https://github.com/nxdun/Portfolio/pull/30
-[PR31]: https://github.com/nxdun/Portfolio/pull/31
-[PR32]: https://github.com/nxdun/Portfolio/pull/32

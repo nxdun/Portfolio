@@ -1,7 +1,7 @@
 ---
 title: Nadzu Backend Changelog - 2026 Updates
 author: nadzu
-pubDatetime: 2026-05-12T11:23:37Z
+pubDatetime: 2026-05-21T11:23:33Z
 slug: rust-backend-changelog
 featured: true
 draft: false
@@ -14,8 +14,9 @@ description: Changelog and updates for the Rust backend.
 
 ## Future updates - Backlog
 
-- _Redis Intergration for Caching and Pub/Sub_
-- _Add OpenGraph API Intergration and Map it with Postman_
+- DevOps: Infiscal Secret Management Integration.
+- DevOps: Pipeline for infrawise Exceptions.
+- Integration: Telegram Bot for Job Status Notifications.
 
 ## v0.5.0 - 2026-05-12
 
