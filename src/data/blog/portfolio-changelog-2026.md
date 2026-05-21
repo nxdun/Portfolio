@@ -25,7 +25,6 @@ description: Changelog and updates for the portfolio interface.
   - Added a new blog post about Rust Docker zstd builder and multi-platform builds.
   - Improved the overall UX of the blog section, including better Code block styling and readability enhancements.
 
-
 ## v.2.7.0 - 2026-05-03
 
 - <a href="https://github.com/nxdun/Portfolio/pull/32" target="_blank" rel="noopener noreferrer"><code>#32</code></a> [refactor(env)] Secure environment variables and optimize graph
