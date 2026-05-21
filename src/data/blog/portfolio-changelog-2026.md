@@ -17,11 +17,14 @@ description: Changelog and updates for the portfolio interface.
 
 ## v.2.7.1 - 2026-05-18
 
+- <a href="https://github.com/nxdun/Portfolio/pull/35" target="_blank" rel="noopener noreferrer"><code>#35</code></a> [docs(changelog)] Add PR #35 to v2.7.1 release notes
+  - Updated dependencies, DOCS, Release notes.
+
 - <a href="https://github.com/nxdun/Portfolio/pull/34" target="_blank" rel="noopener noreferrer"><code>#34</code></a> [chore(deps)] Update dependencies and refine homepage copy
   - Updated dependencies: `@astrojs/cloudflare`, `astro`, `tailwindcss`, `wrangler`, and `@typescript-eslint/parser`.
   - Rewritten Wording in homepage.
 
-- <a href="https://github.com/nxdun/Portfolio/pull/33" target="_blank" rel="noopener noreferrer"><code>#33</code></a> [Blog] Enchance Blogger UX and Add New Post
+- <a href="https://github.com/nxdun/Portfolio/pull/33" target="_blank" rel="noopener noreferrer"><code>`#33`</code></a> [Blog] Enhance Blogger UX and Add New Post
   - Added a new blog post about Rust Docker zstd builder and multi-platform builds.
   - Improved the overall UX of the blog section, including better Code block styling and readability enhancements.
 
