@@ -1,7 +1,7 @@
 ---
 title: Nadzu Backend Changelog - 2026 Updates
 author: nadzu
-pubDatetime: 2026-05-21T11:23:33Z
+pubDatetime: 2026-05-21T11:23:33+05:30
 slug: rust-backend-changelog
 featured: true
 draft: false

@@ -1,7 +1,7 @@
 ---
 title: Example Draft Post
 author: nadzu
-pubDatetime: 2022-06-06T04:06:31Z
+pubDatetime: 2022-06-06T04:06:31+05:30
 slug: example-draft-post
 featured: false
 draft: true
