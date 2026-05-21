@@ -1,7 +1,7 @@
 ---
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
-pubDatetime: 2026-02-13T10:00:00Z
+pubDatetime: 2026-05-21T11:21:39Z
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -13,20 +13,18 @@ description: Changelog and updates for the portfolio interface.
 
 ## Future updates - Backlog
 
-- _Design Changes for back-to-top navigation button_
-- _Update the Projects section to reflect the latest information; the current version is outdated._
-- _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
-- _Add GTAG Functionality_
-
-
+- _Loader Component and Skeleton Enhancement_
 
 ## v.2.7.1 - 2026-05-18
 
 - <a href="https://github.com/nxdun/Portfolio/pull/34" target="_blank" rel="noopener noreferrer"><code>#34</code></a> [chore(deps)] Update dependencies and refine homepage copy
-  - Bumped version to 2.7.1.
   - Updated dependencies: `@astrojs/cloudflare`, `astro`, `tailwindcss`, `wrangler`, and `@typescript-eslint/parser`.
-  - Refined homepage copy for a more operational engineering focus.
-  - Updated Projects section titles for better clarity.
+  - Rewritten Wording in homepage.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/33" target="_blank" rel="noopener noreferrer"><code>#33</code></a> [Blog] Enchance Blogger UX and Add New Post
+  - Added a new blog post about Rust Docker zstd builder and multi-platform builds.
+  - Improved the overall UX of the blog section, including better Code block styling and readability enhancements.
+
 
 ## v.2.7.0 - 2026-05-03
 

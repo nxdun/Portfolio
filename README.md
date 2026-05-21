@@ -25,15 +25,22 @@
 
 A personal site that doubles as a blog platform and Additioonal Awsome tools. Built fast. Kept useful.
 
-- Static-first architecture via Astro with zero client-side JS by default
-- Full-text search powered by Pagefind with no external search service required
-- Auto-generated Open Graph images per post and site-wide
-- RSS feed for automation `/rss.xml`, robots configuration at `/robots.txt`
-- Health check endpoint at `/api/health`
-- Tag-based post grouping with paginated archive
+- Real-Time GitHub Contribution Graph (GitHub API) + Custom UI  
+- Search powered by Pagefind (100% client-side, no external dependencies)  
+- Blog System (Markdown-based, Syntax Highlighting, Tags, Featured Posts)  
+- Toolkit (Base64 Encoder/Decoder, yt-dlp Downloader)  
+- Contact Form (Serverless form handling via Cloudflare Workers + Cloudflare D1 SQLite)  
+- Projects Showcase (Shareable project links, images, URLs, tags, and descriptions all managed via JSON)  
 
-- CI pipleines For Linting / Formatting and Build
-- CD pipelines for Deploying into Cloudflare Workers
+- Auto-generated Open Graph images for each post and site-wide  
+- Backend services provided by [nxdun/rust-codebase](https://github.com/nxdun/rust-codebase) (Live)  
+- Blog archive  
+- RSS feed [`/rss.xml`](https://nadzu.me/rss.xml) (used for live post automation [`nxdun/nxdun`](https://github.com/nxdun/nxdun))  
+- Theme toggle  
+- Interconnected background loader/skeleton with hover effects  
+
+- CI pipelines for linting, formatting, and building  
+- CD pipelines for deploying to Cloudflare Workers
 
 ## Toolkit
 
@@ -41,8 +48,8 @@ Quick-launch browser tools accessible directly via URL query parameters. No inst
 Refer Developer Documentation at :
 | Tool | URL | Description |
 | ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Base64 | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
-| yt-dlp Downloader | [`/tools/?tool=ytdlp`](https://nadzu.me/tools/?tool=ytdlp) | Download from 1,700+ supported sites with reCAPTCHA protection |
+| Base64 | [` /tools/?tool=base64 `](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
+| yt-dlp Downloader | [` /tools/?tool=ytdlp `](https://nadzu.me/tools/?tool=ytdlp) | Download from 1,700+ supported sites with reCAPTCHA protection |
 
 ---
 
