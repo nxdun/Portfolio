@@ -18,6 +18,16 @@ description: Changelog and updates for the portfolio interface.
 - _Resolve issues with the Manual Deployment Pipeline, as it is currently non-functional._
 - _Add GTAG Functionality_
 
+
+
+## v.2.7.1 - 2026-05-18
+
+- <a href="https://github.com/nxdun/Portfolio/pull/34" target="_blank" rel="noopener noreferrer"><code>#34</code></a> [chore(deps)] Update dependencies and refine homepage copy
+  - Bumped version to 2.7.1.
+  - Updated dependencies: `@astrojs/cloudflare`, `astro`, `tailwindcss`, `wrangler`, and `@typescript-eslint/parser`.
+  - Refined homepage copy for a more operational engineering focus.
+  - Updated Projects section titles for better clarity.
+
 ## v.2.7.0 - 2026-05-03
 
 - <a href="https://github.com/nxdun/Portfolio/pull/32" target="_blank" rel="noopener noreferrer"><code>#32</code></a> [refactor(env)] Secure environment variables and optimize graph
@@ -211,33 +221,3 @@ description: Changelog and updates for the portfolio interface.
 - <a href="https://github.com/nxdun/Portfolio/pull/3" target="_blank" rel="noopener noreferrer"><code>#3</code></a> PR: Breaking Changes (Closed) - ~~UNSTABLE~~
 - <a href="https://github.com/nxdun/Portfolio/pull/2" target="_blank" rel="noopener noreferrer"><code>#2</code></a> Experimental-branch (Closed) - ~~Useless Functionality~~
 - <a href="https://github.com/nxdun/Portfolio/pull/1" target="_blank" rel="noopener noreferrer"><code>#1</code></a> PR: Experimental branch (Closed) - ~~Dependency update made it non-future-proof~~
-
-<!-- Link references -->
-
-[PR5]: https://github.com/nxdun/Portfolio/pull/5
-[PR6]: https://github.com/nxdun/Portfolio/pull/6
-[PR7]: https://github.com/nxdun/Portfolio/pull/7
-[PR8]: https://github.com/nxdun/Portfolio/pull/8
-[PR10]: https://github.com/nxdun/Portfolio/pull/10
-[PR11]: https://github.com/nxdun/Portfolio/pull/11
-[PR12]: https://github.com/nxdun/Portfolio/pull/12
-[PR13]: https://github.com/nxdun/Portfolio/pull/13
-[PR14]: https://github.com/nxdun/Portfolio/pull/14
-[PR15]: https://github.com/nxdun/Portfolio/pull/15
-[PR16]: https://github.com/nxdun/Portfolio/pull/16
-[PR17]: https://github.com/nxdun/Portfolio/pull/17
-[PR18]: https://github.com/nxdun/Portfolio/pull/18
-[PR19]: https://github.com/nxdun/Portfolio/pull/19
-[PR20]: https://github.com/nxdun/Portfolio/pull/20
-[PR21]: https://github.com/nxdun/Portfolio/pull/21
-[PR22]: https://github.com/nxdun/Portfolio/pull/22
-[PR23]: https://github.com/nxdun/Portfolio/pull/23
-[PR24]: https://github.com/nxdun/Portfolio/pull/24
-[PR25]: https://github.com/nxdun/Portfolio/pull/25
-[PR26]: https://github.com/nxdun/Portfolio/pull/26
-[PR27]: https://github.com/nxdun/Portfolio/pull/27
-[PR28]: https://github.com/nxdun/Portfolio/pull/28
-[PR29]: https://github.com/nxdun/Portfolio/pull/29
-[PR30]: https://github.com/nxdun/Portfolio/pull/30
-[PR31]: https://github.com/nxdun/Portfolio/pull/31
-[PR32]: https://github.com/nxdun/Portfolio/pull/32
