@@ -4,6 +4,7 @@ import type {
   ContributionGraphState,
   ContributionLegendItem,
 } from "./types";
+import { SITE } from "@/config";
 
 const hostSelector = "[data-contribution-graph]";
 const activeControllers = new Set<AbortController>();
@@ -244,7 +245,7 @@ const renderSummary = (
 
   const cacheStatus = data.meta.cached ? "Updated Today" : "Live";
 
-  summaryEl.innerHTML = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-90">contributions</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-90">weeks</span> <span class="text-[0.65rem] opacity-80 ml-1">(${cacheStatus})</span>`;
+  summaryEl.innerHTML = `<span class="font-semibold text-foreground">${SITE.githubUsername}</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalContributions} <span class="opacity-90">contributions</span> <span class="opacity-70 px-1">/</span> ${data.summary.totalWeeks} <span class="opacity-90">weeks</span> <span class="text-[0.65rem] opacity-80 ml-1">(${cacheStatus})</span>`;
 };
 
 const bindInteraction = (
@@ -253,7 +254,7 @@ const bindInteraction = (
 ) => {
   if (!gridEl || !tooltipEl) return;
 
-  const idleMessage = `<span class="font-semibold text-foreground">nxdun</span> <span class="opacity-50 px-1">/</span> contribution activity`;
+  const idleMessage = `<span class="font-semibold text-foreground">${SITE.githubUsername}</span> <span class="opacity-50 px-1">/</span> contribution activity`;
   tooltipEl.innerHTML = idleMessage;
 
   const updateTooltip = (value: string) => {
@@ -481,14 +482,20 @@ const resolveHost = async (host: HTMLElement) => {
 
       setState(host, "error");
       settleLoaderMotion(host);
-      setStatusMessage(host, "Activity unavailable for nxdun.");
+      setStatusMessage(
+        host,
+        `Activity unavailable for ${SITE.githubUsername}.`
+      );
       return;
     }
 
     if (!isContributionResponse(data)) {
       setState(host, "error");
       settleLoaderMotion(host);
-      setStatusMessage(host, "Activity unavailable for nxdun.");
+      setStatusMessage(
+        host,
+        `Activity unavailable for ${SITE.githubUsername}.`
+      );
       return;
     }
 
@@ -509,7 +516,7 @@ const resolveHost = async (host: HTMLElement) => {
       renderLegend(elements.legend, payload);
       setState(host, "empty");
       settleLoaderMotion(host);
-      setStatusMessage(host, "No recent activity for nxdun.");
+      setStatusMessage(host, `No recent activity for ${SITE.githubUsername}.`);
       return;
     }
 
@@ -542,7 +549,7 @@ const initHost = (host: HTMLElement) => {
 
   host.dataset.contributionGraphInit = "true";
   setState(host, "loading");
-  setStatusMessage(host, "Loading nxdun's activity...");
+  setStatusMessage(host, `Loading ${SITE.githubUsername}'s activity...`);
 
   deferClientWork(() => {
     resolveHost(host);
