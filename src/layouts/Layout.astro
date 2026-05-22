@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
+import { BACKEND_SERVER_URL } from "astro:env/server";
 import { SITE } from "@/config";
 import "@/styles/global.css";
 import Loader from "@/components/Loader.astro";
@@ -51,7 +52,7 @@ const structuredData = {
   ],
 };
 
-const toolsBackendUrl = (import.meta.env.BACKEND_SERVER_URL ?? "").trim();
+const toolsBackendUrl = (BACKEND_SERVER_URL ?? "").trim();
 let preconnectOrigin = "";
 // Only preconnect if the page will use the backend API
 if (useBackendApi && toolsBackendUrl) {
