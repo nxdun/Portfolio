@@ -1,7 +1,7 @@
 ---
 title: Example Non-Draft Post
 author: nadzu
-pubDatetime: 2024-06-06T04:06:31Z
+pubDatetime: 2024-06-06T04:06:31+05:30
 slug: example-non-draft-post
 featured: false
 draft: true

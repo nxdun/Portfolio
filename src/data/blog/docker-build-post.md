@@ -1,7 +1,7 @@
 ---
 title: "Rust Docker Builds Under 3 Minutes: ZSTD Builders, Multi-Stage Pipelines, and Multi-Platform OCI Images"
 author: nadzu
-pubDatetime: 2026-05-10T15:39:19Z
+pubDatetime: 2026-05-10T15:39:19+05:30
 slug: docker-cross-platform-build
 featured: true
 draft: false

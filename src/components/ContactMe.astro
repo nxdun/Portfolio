@@ -5,7 +5,7 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 <section id="contact-me" class="pt-12 pb-6">
   <div class="mx-auto flex flex-col items-center gap-6 lg:w-2/3">
     <h2 id="contact-me-heading" class="mb-4 text-3xl font-bold tracking-wide">
-      Let's Discuss Your Infrastructure.
+      Let's Discuss Your Requirements.
     </h2>
 
     <div id="contact-response-host" class="hidden w-full"></div>
@@ -89,6 +89,7 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 
 <script>
   import { actions } from "astro:actions";
+  import { SITE } from "@/config";
   import type { ToolResponseDock } from "@/scripts/tools/ui/responseDock";
   import type { CaptchaDialogController } from "@/scripts/tools/ui/captchaDialog";
   import type { CaptchaManager } from "@/utils/captchaManager";
@@ -208,7 +209,7 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
           console.error(err);
           responseDock?.setState(
             "fail",
-            "Something went wrong on my end. Please email me directly at hello@nadzu.me"
+            `Something went wrong on my end. Please email me directly at ${SITE.email}`
           );
           submitButton!.disabled = false;
         }

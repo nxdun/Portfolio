@@ -17,8 +17,8 @@
 <div align="center">
   <p><strong>Achieves a perfect PageSpeed score (100/100).</strong></p>
   <p>
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=mobile">Mobile score</a> ·
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/jvq4q0nv5q?form_factor=desktop">Desktop score</a>
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/ns7tgah87m?form_factor=mobile">Mobile score</a> ·
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/ns7tgah87m?form_factor=desktop">Desktop score</a>
   </p>
   <img src="./public/PageSpeed%20Insights.png" alt="PageSpeed Insights" style="max-width: 100%; height: auto; display: block; margin: 1rem 0;" />
 </div>

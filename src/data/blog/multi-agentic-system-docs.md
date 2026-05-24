@@ -1,7 +1,7 @@
 ---
 title: "Multi-Agentic System: Extended Documentation"
 author: nadzu
-pubDatetime: 2026-04-30T10:00:00Z
+pubDatetime: 2026-04-30T10:00:00+05:30
 slug: multi-agentic-system-docs
 featured: false
 draft: true

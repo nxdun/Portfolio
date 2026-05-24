@@ -1,7 +1,7 @@
 ---
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
-pubDatetime: 2026-05-21T11:21:39Z
+pubDatetime: 2026-05-21T11:21:39+05:30
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -18,7 +18,12 @@ description: Changelog and updates for the portfolio interface.
 ## v.2.7.1 - 2026-05-18
 
 - <a href="https://github.com/nxdun/Portfolio/pull/35" target="_blank" rel="noopener noreferrer"><code>#35</code></a> [docs(changelog)] Add PR #35 to v2.7.1 release notes
-  - Updated dependencies, DOCS, Release notes.
+- Updated dependencies, documentation, and release notes.
+- Added RAW Markdown support for post content; included a "View Raw" button.
+- Moved reusable hardcoded values to the configuration for better maintainability.
+- Bug fix: Off-by-one error in next post calculation.
+- Bug fix: `package.json` has an invalid `name` field.
+- Bug fix: Inconsistency between `import.meta.env` and `astro:env`.
 
 - <a href="https://github.com/nxdun/Portfolio/pull/34" target="_blank" rel="noopener noreferrer"><code>#34</code></a> [chore(deps)] Update dependencies and refine homepage copy
   - Updated dependencies: `@astrojs/cloudflare`, `astro`, `tailwindcss`, `wrangler`, and `@typescript-eslint/parser`.

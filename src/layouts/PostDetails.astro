@@ -13,6 +13,7 @@ import { getPath } from "@/utils/getPath";
 import { slugifyStr } from "@/utils/slugify";
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
+import IconHash from "@/assets/icons/IconHash.svg";
 import { SITE } from "@/config";
 
 type Props = {
@@ -79,7 +80,9 @@ const currentPostIndex = allPosts.findIndex(a => a.id === post.id);
 
 const prevPost = currentPostIndex !== 0 ? allPosts[currentPostIndex - 1] : null;
 const nextPost =
-  currentPostIndex !== allPosts.length ? allPosts[currentPostIndex + 1] : null;
+  currentPostIndex !== allPosts.length - 1
+    ? allPosts[currentPostIndex + 1]
+    : null;
 ---
 
 <Layout {...layoutProps}>
@@ -98,14 +101,26 @@ const nextPost =
     </h1>
     <div class="my-2 flex items-center gap-2">
       <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-      <span
-        aria-hidden="true"
-        class:list={[
-          "max-sm:hidden",
-          { hidden: !SITE.editPost.enabled || hideEditPost },
-        ]}>|</span
+      {
+        SITE.editPost.enabled && !hideEditPost && (
+          <>
+            <span aria-hidden="true" class="max-sm:hidden">
+              |
+            </span>
+            <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+          </>
+        )
+      }
+      <span aria-hidden="true" class="max-sm:hidden">|</span>
+      <a
+        href={`${getPath(post.id, post.filePath, true)}.md`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex justify-baseline gap-1.5 opacity-80 hover:text-accent max-sm:hidden"
       >
-      <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+        <IconHash class="inline-block" />
+        <span>View raw</span>
+      </a>
     </div>
     <article
       id="article"
@@ -116,7 +131,18 @@ const nextPost =
 
     <hr class="my-8 border-dashed" />
 
-    <EditPost class="sm:hidden" {hideEditPost} {post} />
+    <div class="flex flex-col gap-2 sm:hidden">
+      <EditPost {hideEditPost} {post} />
+      <a
+        href={`${getPath(post.id, post.filePath, true)}.md`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex justify-baseline gap-1.5 opacity-80 hover:text-accent"
+      >
+        <IconHash class="inline-block" />
+        <span>View raw</span>
+      </a>
+    </div>
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
