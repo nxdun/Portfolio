@@ -7,8 +7,8 @@ interface Props {
   mode?: "attached" | "screen" | "overlay" | "background";
   globalHover?: boolean;
   spotlight?: "hover" | "always" | "none";
-  animation?: boolean;
   sweep?: boolean;
+  sweepCount?: number;
   edgeHighlight?: boolean;
   content?: string;
   contentHref?: string;
@@ -24,8 +24,8 @@ const {
   mode = "attached",
   globalHover = false,
   spotlight = "hover",
-  animation = false,
   sweep = mode === "attached",
+  sweepCount = 1,
   edgeHighlight = mode === "attached",
   content = null,
   contentHref = undefined,
@@ -60,6 +60,7 @@ const spotlightEnabled = spotlight !== "none";
     },
     className,
   ]}
+  style={{ "--loader-sweep-count": sweepCount }}
   data-loader
   popover={isOverlay ? "manual" : undefined}
   role="status"
@@ -68,7 +69,6 @@ const spotlightEnabled = spotlight !== "none";
   aria-label={label}
   data-loader-spotlight={spotlight}
   data-loader-global-hover={boolAttr(globalHover || isScreen)}
-  data-loader-animation={boolAttr(animation)}
   data-loader-sweep={boolAttr(sweep)}
   data-loader-edge={boolAttr(edgeHighlight)}
   data-loader-content={boolAttr(hasContent)}

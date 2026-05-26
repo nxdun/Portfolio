@@ -328,20 +328,7 @@ class LoaderSpotlight {
   }
 
   private setSpotlightToCenter(): void {
-    const isMobile = window.innerWidth < 768;
-
-    this.loader.style.setProperty(
-      "--loader-spotlight-x",
-      isMobile ? "0%" : "50%"
-    );
-    this.loader.style.setProperty(
-      "--loader-spotlight-y",
-      isMobile ? "0%" : "50%"
-    );
-    this.loader.style.setProperty(
-      "--loader-spotlight-size",
-      isMobile ? "0px" : "110px"
-    );
+    this.loader.style.setProperty("--loader-spotlight-size", "0px");
   }
 }
 
