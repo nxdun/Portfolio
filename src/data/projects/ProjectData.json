@@ -333,5 +333,33 @@
     ],
     "featured": 1,
     "slug": "mas-system"
+  },
+  {
+    "project_name": "ChatBot IAAC - Infrastructure as Code for AI Systems",
+    "short_desc": "IaC Automation for Multi-Agent AI Systems on AWS",
+    "full_desc": "",
+    "tags": {
+      "icon": [
+        { "name": "Terraform", "iconName": "IconTerraform" },
+        { "name": "GitHub", "iconName": "IconGitHub" },
+        { "name": "GitLab", "iconName": "IconGitLab" },
+        { "name": "AWS", "iconName": "IconAws" },
+        { "name": "CloudFormation", "iconName": "IconCloudFormation" }
+      ],
+      "noIcon": ["OIDC", "CI/CD"]
+    },
+    "urls": [
+      {
+        "label": "Deployment IaC",
+        "url": "https://github.com/nxdun/chatbot-iaac",
+        "description": "Terraform IaC Repository",
+        "iconName": "IconGitHub"
+      }
+    ],
+    "time_period": "Jan 2025 - Dec 2025",
+    "photos": [
+      ""
+    ],
+    "slug": "code-review-assistant"
   }
 ]

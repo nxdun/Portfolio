@@ -17,8 +17,8 @@
 <div align="center">
   <p><strong>Achieves a perfect PageSpeed score (100/100).</strong></p>
   <p>
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/ns7tgah87m?form_factor=mobile">Mobile score</a> ·
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/ns7tgah87m?form_factor=desktop">Desktop score</a>
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/2d92ahmyps?form_factor=mobile">Mobile score</a> ·
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/2d92ahmyps?form_factor=desktop">Desktop score</a>
   </p>
   <img src="./public/PageSpeed%20Insights.png" alt="PageSpeed Insights" style="max-width: 100%; height: auto; display: block; margin: 1rem 0;" />
 </div>
@@ -71,6 +71,13 @@ Refer Developer Documentation at :
 | Deployment | [Cloudflare Workers](https://workers.cloudflare.com/) [Cloudflare KV](https://developers.cloudflare.com/kv/) |
 
 </div>
+
+## Schemas
+
+- [`contributionGraph.schema.json`](src/data/contributionGraph/contributionGraph.schema.json) - JSON schema for parsing GitHub contribution graph data.
+- [`schema.sql`](src/data/form/schema.sql) - SQL Schema for the contact form submissions stored in Cloudflare D1 SQLite.
+- [`ProjectData.schema.json`](src/data/projects/ProjectData.schema.json) - JSON schema for validating project data entries used in the Projects Showcase.
+
 
 ## Running Locally
 
