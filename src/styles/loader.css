@@ -552,9 +552,10 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
   mask-size: 250% 100%;
 }
 
-.loader-container[data-loader-sweep="true"][data-loader-state="ready"] .loader-sweep {
+.loader-container[data-loader-sweep="true"][data-loader-state="ready"]
+  .loader-sweep {
   opacity: 0.9;
-  animation: 
+  animation:
     sweep-back-and-forth 1.6s var(--loader-sweep-count, 1) ease-in-out forwards,
     colored-idle 0s forwards calc(1.6s * var(--loader-sweep-count, 1));
 }
