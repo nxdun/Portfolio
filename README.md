@@ -78,7 +78,6 @@ Refer Developer Documentation at :
 - [`schema.sql`](src/data/form/schema.sql) - SQL Schema for the contact form submissions stored in Cloudflare D1 SQLite.
 - [`ProjectData.schema.json`](src/data/projects/ProjectData.schema.json) - JSON schema for validating project data entries used in the Projects Showcase.
 
-
 ## Running Locally
 
 Requires `make`. Install it first if not already present, then use `make help` to list all available targets.
