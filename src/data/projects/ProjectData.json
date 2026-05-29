@@ -315,9 +315,9 @@
       },
       {
         "label": "Deployment IaC",
-        "url": "https://github.com/nxdun/chatbot-iaac",
-        "description": "Terraform IaC Repository",
-        "iconName": "IconGitHub"
+        "url": "https://nadzu.me/projects/mas-iaac",
+        "description": "Terraform IaC Project Page",
+        "iconName": "IconArrowRight"
       },
       {
         "label": "Research Paper",
@@ -333,5 +333,42 @@
     ],
     "featured": 1,
     "slug": "mas-system"
+  },
+  {
+    "project_name": "ChatBot IAAC - Cheap IaC for Multi-Agent AI Systems",
+    "short_desc": "IaC Automation for Multi-Agent AI Systems on AWS",
+    "full_desc": "Complete AWS Deployment with Local Inference Infrastructure Automation For the MAS Including Terraform Deployment Scripts, CloudFormation Templates, and a GitHub Actions CI/CD Pipeline. Ensured secure, scalable infrastructure provisioning with OIDC-based authentication and zero-downtime deployments, enabling rapid iteration and commercial viability for enterprise AI applications.",
+    "tags": {
+      "icon": [
+        { "name": "Terraform", "iconName": "IconTerraform" },
+        { "name": "Docker", "iconName": "IconDocker" },
+        { "name": "GitHub", "iconName": "IconGitHub" },
+        { "name": "GitLab", "iconName": "IconGitLab" }
+      ],
+      "noIcon": ["AWS", "CloudFormation", "OIDC", "CI/CD"]
+    },
+    "urls": [
+      {
+        "label": "Deployment IaCSource Code",
+        "url": "https://github.com/nxdun/chatbot-iaac",
+        "description": "Terraform IaC Repository",
+        "iconName": "IconGitHub"
+      },
+      {
+        "label": "Deployed Project Source Code",
+        "url": "https://nadzu.me/projects/mas-system",
+        "description": "MAS System Project Repository",
+        "iconName": "IconArrowRight"
+      }
+    ],
+    "time_period": "July 2025 - Dec 2025",
+    "photos": [
+      "https://ik.imagekit.io/cq1p7u6vo/Portfolio/iac-diag.png",
+      "https://ik.imagekit.io/cq1p7u6vo/Portfolio/image(2).png",
+      "https://ik.imagekit.io/cq1p7u6vo/Portfolio/image(1).png",
+      "https://ik.imagekit.io/cq1p7u6vo/Portfolio/image.png"
+    ],
+    "featured": 2,
+    "slug": "mas-iaac"
   }
 ]

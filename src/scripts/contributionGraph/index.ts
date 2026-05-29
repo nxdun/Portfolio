@@ -400,7 +400,6 @@ const settleLoaderMotion = (host: HTMLElement) => {
   const loader = getLoaderElement(host);
   if (!loader) return;
 
-  loader.dataset.loaderAnimation = "false";
   loader.dataset.loaderSweep = "false";
 };
 
