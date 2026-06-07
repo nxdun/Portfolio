@@ -6,13 +6,13 @@ export type Base64ToolOptions = {
   action?: Base64ToolAction;
 };
 
-export type YtdlpToolAction = "verify-captcha" | "enqueue";
+export type AioToolAction = "verify-captcha" | "enqueue";
 
-export type YtdlpToolOptions = {
+export type AioToolOptions = {
   url?: string;
 };
 
-export type ToolMountOptions = Base64ToolOptions | YtdlpToolOptions | undefined;
+export type ToolMountOptions = Base64ToolOptions | AioToolOptions | undefined;
 
 export type ToolMountUiSlots = {
   responseHost?: HTMLElement | null;
