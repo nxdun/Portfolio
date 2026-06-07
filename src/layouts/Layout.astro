@@ -5,8 +5,8 @@ import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { BACKEND_SERVER_URL } from "astro:env/server";
 import { SITE } from "@/config";
 import "@/styles/global.css";
-import Loader from "@/components/Loader.astro";
-import ImageViewer from "@/components/ImageViewer.astro";
+import Loader from "@/components/core/Loader.astro";
+import ImageViewer from "@/components/ui/ImageViewer.astro";
 
 type Props = {
   title?: string;

@@ -4,22 +4,22 @@ import { getCollection } from "astro:content";
 
 // --- Layouts ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
+import Header from "@/components/core/Header.astro";
+import Footer from "@/components/core/Footer.astro";
 
 // --- Components (Above-Fold) ---
-import Socials from "@/components/Socials.astro";
-import LinkButton from "@/components/LinkButton.astro";
+import Socials from "@/components/ui/Socials.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
 
 // --- Components (Below-Fold) ---
-import Card from "@/components/Card.astro";
-import ProjectCard from "@/components/ProjectCard.astro";
-import ContactMe from "@/components/ContactMe.astro";
-import Loader from "@/components/Loader.astro";
+import Card from "@/components/ui/Card.astro";
+import ProjectCard from "@/features/projects/components/ProjectCard.astro";
+import ContactMe from "@/features/contact-form/components/ContactMe.astro";
+import Loader from "@/components/core/Loader.astro";
 
 // --- Utilities & Config ---
-import getSortedPosts from "@/utils/getSortedPosts";
-import { getFeaturedProjects } from "@/utils/projectUtils";
+import { getSortedPosts } from "@/features/blog";
+import { getFeaturedProjects } from "@/features/projects";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";

@@ -6,7 +6,7 @@ export const TOOL_CATALOG = [
     subtitle: "Encode plain text or decode Base64 values.",
   },
   {
-    key: "ytdlp",
+    key: "aio",
     title: "AIO Downloader",
     description: "Multi-site video downloader",
     subtitle: "Submit a video URL from one of 2000+ supported sites.",

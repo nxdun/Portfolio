@@ -22,27 +22,9 @@ export const initHomePage = () => {
   ]);
 
   // Contribution Graph Initialization
-  // We defer the loading of the graph logic until the main page is ready.
-  const isLargeScreen = window.matchMedia("(min-width: 1280px)").matches;
-  const graphContainer = document.querySelector("[data-contribution-graph]");
-
-  if (isLargeScreen && graphContainer) {
-    const initGraph = async () => {
-      try {
-        const { initContributionGraph } =
-          await import("@/scripts/contributionGraph");
-        initContributionGraph();
-      } catch (error) {
-        console.error("Failed to initialize contribution graph:", error);
-      }
-    };
-
-    if ("requestIdleCallback" in window) {
-      window.requestIdleCallback(initGraph);
-    } else {
-      setTimeout(initGraph, 200);
-    }
-  }
+  import("@/features/contribution-graph").then(({ bootContributionGraph }) => {
+    bootContributionGraph();
+  });
 };
 
 // Auto-initialize on page load
