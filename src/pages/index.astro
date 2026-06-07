@@ -1,38 +1,40 @@
 ---
+// --- Framework ---
 import { getCollection } from "astro:content";
+
+// --- Layouts ---
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+
+// --- Components (Above-Fold) ---
 import Socials from "@/components/Socials.astro";
-import Loader from "@/components/Loader.astro";
 import LinkButton from "@/components/LinkButton.astro";
+
+// --- Components (Below-Fold) ---
 import Card from "@/components/Card.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import ContactMe from "@/components/ContactMe.astro";
+import Loader from "@/components/Loader.astro";
+
+// --- Utilities & Config ---
 import getSortedPosts from "@/utils/getSortedPosts";
 import { getFeaturedProjects } from "@/utils/projectUtils";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
 
-// ==========================================
-// PRESENTATION LAYER CONSTANTS
-// ==========================================
-const HERO_HEADLINE = "Software breaks. Well-architected systems endure.";
-const HERO_SUB_PREFIX = "I am ";
-const HERO_DESCRIPTION =
-  "Great software is more than code; it is the entire lifecycle. My approach to engineering is strictly operational. Security is the baseline. Automation drives delivery. Testing guarantees precision. Infrastructure is the backbone. When these components are integrated, whole software systems are built.";
-// ==========================================
-
+// --- Data: Blogs ---
 const posts = await getCollection("blog");
-
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
+// --- Data: Projects ---
 const featuredProjects = getFeaturedProjects(3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 
+// --- Config: Environment & APIs ---
 const backendUrl = import.meta.env.BACKEND_SERVER_URL;
 const contributionsUrl = backendUrl
   ? `${backendUrl.replace(/\/+$/, "")}/api/v1/contributions`
@@ -40,6 +42,7 @@ const contributionsUrl = backendUrl
 ---
 
 <Layout>
+  {/* --- Head: Resource Hints --- */}
   {
     contributionsUrl && (
       <link
@@ -47,26 +50,33 @@ const contributionsUrl = backendUrl
         href={contributionsUrl}
         as="fetch"
         crossorigin
+        fetchpriority="low"
         media="(min-width:1280px)"
         slot="head"
       />
     )
   }
+
   <Header />
+
   <main id="main-content" data-layout="index" class="app-layout">
+    {/* --- Hero Section --- */}
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        {HERO_HEADLINE}
+        Software breaks. Well-architected systems endure.
       </h1>
 
       <h2 class="mb-4 text-xl font-medium sm:text-2xl">
-        {HERO_SUB_PREFIX}<span id="dynamic-text" class="font-bold text-accent"
-          >solutions</span
+        I am <span id="dynamic-text" class="font-bold text-accent"
+          >DevOps Engineer</span
         ><span id="cursor" class="animate-pulse">|</span>
       </h2>
 
       <p class="leading-relaxed tracking-wide">
-        {HERO_DESCRIPTION}
+        Great software is more than code; it is the entire lifecycle. Security
+        is the baseline, automation drives delivery. Testing guarantees
+        precision. Infrastructure is the backbone. When these components are
+        integrated, complete software systems are built.
       </p>
 
       <div
@@ -101,6 +111,7 @@ const contributionsUrl = backendUrl
                       viewBox="0 0 50 20"
                       fill="none"
                       class="animate-pulse-horizontal ms-4 -rotate-10"
+                      aria-hidden="true"
                     >
                       <path
                         d="M2 5C10 12 30 12 45 6"
@@ -123,6 +134,7 @@ const contributionsUrl = backendUrl
           }
         </div>
 
+        {/* --- Hero: Contribution Graph --- */}
         <div
           class="relative hidden w-full flex-1 items-center overflow-hidden align-middle xl:flex"
         >
@@ -178,6 +190,7 @@ const contributionsUrl = backendUrl
       </div>
     </section>
 
+    {/* --- Featured Blogs --- */}
     {
       featuredPosts.length > 0 && (
         <section
@@ -197,6 +210,7 @@ const contributionsUrl = backendUrl
       )
     }
 
+    {/* --- Recent Blogs --- */}
     {
       recentPosts.length > 0 && (
         <section id="recent-posts" class="pt-12 pb-6">
@@ -218,6 +232,7 @@ const contributionsUrl = backendUrl
       </LinkButton>
     </div>
 
+    {/* --- Projects --- */}
     {
       featuredProjects.length > 0 && (
         <section id="projects" class="border-t border-border pt-12 pb-6">
@@ -254,63 +269,11 @@ const contributionsUrl = backendUrl
       </LinkButton>
     </div>
 
+    {/* --- Contact --- */}
     <ContactMe />
   </main>
+
   <Footer />
 </Layout>
 
-<script>
-  import { startTypingAnimation } from "@/utils/typingAnimation";
-
-  const initHomePage = () => {
-    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
-      ?.dataset?.layout;
-    if (indexLayout) {
-      sessionStorage.setItem("backUrl", "/");
-    }
-
-    // Dynamic Typing Animation
-    startTypingAnimation("dynamic-text", [
-      "DevOps Engineer",
-      "Software Designer",
-      "Natural Programmer",
-    ]);
-
-    // Break the critical dependency chain for the contribution graph.
-    // By using a dynamic import, we defer the loading of the graph logic
-    // and its dependencies (like types) until after the main page is ready.
-    // We only initialize it on large screens (>=1280px) to match preload behavior.
-    const isLargeScreen = window.matchMedia("(min-width: 1280px)").matches;
-    if (isLargeScreen && document.querySelector("[data-contribution-graph]")) {
-      const initGraph = async () => {
-        const { initContributionGraph } =
-          await import("@/scripts/contributionGraph");
-        initContributionGraph();
-      };
-
-      if ("requestIdleCallback" in window) {
-        window.requestIdleCallback(initGraph);
-      } else {
-        setTimeout(initGraph, 200);
-      }
-    }
-  };
-
-  initHomePage();
-  document.addEventListener("astro:page-load", initHomePage);
-</script>
-
-<style>
-  @keyframes pulse-horizontal {
-    0%,
-    100% {
-      transform: translateX(0) rotate(-10deg);
-    }
-    50% {
-      transform: translateX(4px) rotate(-10deg);
-    }
-  }
-  .animate-pulse-horizontal {
-    animation: pulse-horizontal 3s infinite ease-in-out;
-  }
-</style>
+<script src="../scripts/home.ts"></script>
