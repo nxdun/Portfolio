@@ -3,7 +3,7 @@
   <h1><code>~/nadzu.me</code></h1>
   <p><em>Fast by default. Useful by design.</em></p>
 
-[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.me/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase/pulls)
+[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.me/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase)
 
 </div>
 
