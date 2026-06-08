@@ -3,7 +3,7 @@
   <h1><code>~/nadzu.me</code></h1>
   <p><em>Fast by default. Useful by design.</em></p>
 
-[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.me/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase/pulls)
+[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.me/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase)
 
 </div>
 
@@ -17,18 +17,18 @@
 <div align="center">
   <p><strong>Achieves a perfect PageSpeed score (100/100).</strong></p>
   <p>
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/2d92ahmyps?form_factor=mobile">Mobile score</a> ·
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/2d92ahmyps?form_factor=desktop">Desktop score</a>
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/k3a4phvgu0?form_factor=mobile">Mobile score</a> ·
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/k3a4phvgu0?form_factor=desktop">Desktop score</a>
   </p>
   <img src="./public/PageSpeed%20Insights.png" alt="PageSpeed Insights" style="max-width: 100%; height: auto; display: block; margin: 1rem 0;" />
 </div>
 
-A personal site that doubles as a blog platform and Additioonal Awsome tools. Built fast. Kept useful.
+A personal site that doubles as a blog platform and Additional Awesome tools. Built fast. Kept useful.
 
 - Real-Time GitHub Contribution Graph (GitHub API) + Custom UI
 - Search powered by Pagefind (100% client-side, no external dependencies)
 - Blog System (Markdown-based, Syntax Highlighting, Tags, Featured Posts)
-- Toolkit (Base64 Encoder/Decoder, yt-dlp Downloader)
+- Toolkit (Base64 Encoder/Decoder, AIO Downloader)
 - Contact Form (Serverless form handling via Cloudflare Workers + Cloudflare D1 SQLite)
 - Projects Showcase (Shareable project links, images, URLs, tags, and descriptions all managed via JSON)
 
@@ -44,16 +44,20 @@ A personal site that doubles as a blog platform and Additioonal Awsome tools. Bu
 
 ## Toolkit
 
-Quick-launch browser tools accessible directly via URL query parameters. No install, no sign-in.
-Refer Developer Documentation at :
-| Tool | URL | Description |
-| ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Base64 | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
-| yt-dlp Downloader | [`/tools/?tool=ytdlp`](https://nadzu.me/tools/?tool=ytdlp) | Download from 1,700+ supported sites with reCAPTCHA protection |
+Quickly launch browser tools directly via URL query parameters — no install or sign-in required.
+
+Refer Developer Documentation at:
+
+| Tool           | URL                                                          | Description                                                    |
+| -------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| Base64         | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI             |
+| AIO Downloader | [`/tools/?tool=aio`](https://nadzu.me/tools/?tool=aio)       | Download from 1,700+ supported sites with reCAPTCHA protection |
 
 ---
 
 # Development
+
+Read [ARCHITECTURE.md](./ARCHITECTURE.md) for technical details on feature boundaries and project structure.
 
 ## Tech Stack
 
@@ -74,13 +78,13 @@ Refer Developer Documentation at :
 
 ## Schemas
 
-- [`contributionGraph.schema.json`](src/data/contributionGraph/contributionGraph.schema.json) - JSON schema for parsing GitHub contribution graph data.
-- [`schema.sql`](src/data/form/schema.sql) - SQL Schema for the contact form submissions stored in Cloudflare D1 SQLite.
-- [`ProjectData.schema.json`](src/data/projects/ProjectData.schema.json) - JSON schema for validating project data entries used in the Projects Showcase.
+- [`contributionGraph.schema.json`](src/features/contribution-graph/data/contributionGraph.schema.json) - JSON schema for GitHub contribution data.
+- [`schema.sql`](src/features/contact-form/data/schema.sql) - SQL Schema for contact form submissions.
+- [`ProjectData.schema.json`](src/features/projects/data/ProjectData.schema.json) - JSON schema for project showcase entries.
 
 ## Running Locally
 
-Requires `make`. Install it first if not already present, then use `make help` to list all available targets.
+Requires make. Install it first, then use make help to see all commands.
 
 ```bash
 # macOS
@@ -90,7 +94,7 @@ brew install make
 choco install make
 ```
 
-Once `make` is available:
+Once make is available:
 
 ```bash
 make install   # install dependencies via pnpm
@@ -121,7 +125,7 @@ make preview   # preview the production build locally
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in the required values before running locally.
+Copy .env.example to .env and fill in the values.
 
 ```bash
 cp .env.example .env
@@ -130,10 +134,11 @@ cp .env.example .env
 ## File Structure
 
 <details>
-<summary>Full directory tree</summary>
+<summary>Directory tree</summary>
 
 ```text
 .
+|-- ARCHITECTURE.md
 |-- Dockerfile
 |-- LICENSE
 |-- Makefile
@@ -152,18 +157,14 @@ cp .env.example .env
 |-- src/
 |   |-- actions/         # Astro server actions
 |   |-- assets/          # SVG icons (ui + tech tags)
-|   |-- components/      # Reusable Astro components
-|   |-- data/
-|   |   |-- blog/        # Markdown blog posts
-|   |   |-- form/        # Contact form schema
-|   |   `-- projects/    # ProjectData.json + schema
+|   |-- components/      # Shared components (core, ui)
+|   |-- data/            # Static data (blog)
+|   |-- features/        # Modular feature domains (aio, blog, projects, etc.)
 |   |-- layouts/         # Page layout wrappers
 |   |-- pages/           # File-based routing
-|   |-- scripts/
-|   |   |-- theme.ts
-|   |   `-- tools/       # Tool-specific TS modules (base64, ytdlp)
+|   |-- scripts/         # Global scripts and tools workbench
 |   |-- styles/          # Global CSS and typography
-|   `-- utils/           # Helpers: OG gen, slug, post filters, etc.
+|   `-- utils/           # Helpers: OG gen, slug, etc.
 |-- tsconfig.json
 `-- wrangler.jsonc
 ```
@@ -173,11 +174,10 @@ cp .env.example .env
 <!-- <details>
 <summary>Key source paths explained</summary>
 
-- `src/pages/` maps every `.astro` or `.md` file directly to a URL via file-based routing.
-- `src/data/projects/ProjectData.json` is the single source of truth for all project cards on the site.
-- `src/scripts/tools/` isolates each tool (base64, ytdlp) into its own module set: controller, dom, template, validation, urlOptions, uiController.
-- `src/utils/` holds shared utilities including OG image generation, post sorting and filtering, slug helpers, and the `CoreApiClient` used by the yt-dlp tool.
-- `wrangler.jsonc` holds the Cloudflare Workers deployment config for both production and preview environments.
+- src/pages/ maps every .astro or .md file directly to a URL via file-based routing.
+- src/features/ contains modular feature domains following the architecture rules.
+- src/scripts/tools/ houses the generic tools workbench core.
+- wrangler.jsonc holds the Cloudflare Workers deployment config.
 
 </details> -->
 
@@ -185,21 +185,21 @@ cp .env.example .env
 
 ## Docker
 
-A `Dockerfile` and `docker-compose.yml` are included for containerized local development or self-hosting.
+A Dockerfile and docker-compose.yml are included for local development.
 
 ```bash
 docker compose up
 ```
 
-The `.dockerignore` excludes `node_modules`, `dist`, and other non-essential paths from the image context.
+The .dockerignore excludes node_modules and other non-essential paths.
 
 ---
 
 ## Notes
 
-- Disable Cloudflare Rocket Loader permanently. It interferes with client-side scripts. See [#19](https://github.com/nxdun/Portfolio/issues/19).
-- Run `npx astro telemetry disable` once after cloning to opt out of Astro anonymous usage telemetry on your machine.
-- Commitizen is configured via `cz.yaml` for consistent conventional commit messages.
+- Disable Cloudflare Rocket Loader. It interferes with scripts.
+- Run npx astro telemetry disable once to opt out of telemetry.
+- Commitizen is used for consistent commit messages.
 
 ---
 

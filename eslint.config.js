@@ -13,6 +13,26 @@ export default [
       },
     },
   },
-  { rules: { "no-console": "error" } },
+  {
+    rules: {
+      "no-console": "error",
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@/features/*/*/**",
+                "!@/features/*/components/**",
+                "!@/features/*/data/**",
+              ],
+              message:
+                "Deep imports into feature internals are forbidden. Import from the feature's root index.ts instead. Astro components and JSON data are exempted.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   { ignores: ["dist/**", ".astro", "public/pagefind/**"] },
 ];
