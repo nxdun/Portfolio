@@ -44,12 +44,14 @@ A personal site that doubles as a blog platform and Additional Awesome tools. Bu
 
 ## Toolkit
 
-Quick launch browser tools accessible directly via URL query parameters. No install, no sign in.
+Quickly launch browser tools directly via URL query parameters — no install or sign-in required.
+
 Refer Developer Documentation at:
-| Tool | URL | Description |
-| ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Base64 | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
-| AIO Downloader | [`/tools/?tool=aio`](https://nadzu.me/tools/?tool=aio) | Download from 1,700+ supported sites with reCAPTCHA protection |
+
+| Tool           | URL                                                          | Description                                                    |
+| -------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| Base64         | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI             |
+| AIO Downloader | [`/tools/?tool=aio`](https://nadzu.me/tools/?tool=aio)       | Download from 1,700+ supported sites with reCAPTCHA protection |
 
 ---
 

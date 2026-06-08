@@ -65,7 +65,7 @@ export const AIO_TOOL_TEMPLATE = `
 
         <div class="border-b border-border/50 px-5 py-3 sm:px-6 sm:py-4">
           <div class="relative">
-            <input type="text" id="aio-sites-search" placeholder="Search by domain or platform name..." class="h-11 w-full rounded-xl border border-border/60 bg-muted/5 px-4 text-sm outline-none transition-all focus:border-accent focus:ring-1 focus:ring-accent" />
+            <input type="text" id="aio-sites-search" aria-label="Search sites by domain or platform name" placeholder="Search by domain or platform name..." class="h-11 w-full rounded-xl border border-border/60 bg-muted/5 px-4 text-sm outline-none transition-all focus:border-accent focus:ring-1 focus:ring-accent" />
           </div>
         </div>
 

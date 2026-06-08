@@ -15,7 +15,9 @@ export function isAioSuccessStatus(status: string): boolean {
 
 export function isAioFailureStatus(status: string): boolean {
   const normalized = normalizeAioJobStatus(status);
-  return ["failed", "error", "cancelled", "canceled"].includes(normalized);
+  return ["failed", "fail", "error", "cancelled", "canceled"].includes(
+    normalized
+  );
 }
 
 export function toAioTerminalState(status: string): AioTerminalState | null {

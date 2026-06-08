@@ -10,9 +10,9 @@ export const initHomePage = () => {
   ) as HTMLElement | null;
   const indexLayout = mainContent?.dataset?.layout;
 
-  if (indexLayout === "index") {
-    sessionStorage.setItem("backUrl", "/");
-  }
+  if (indexLayout !== "index") return;
+
+  sessionStorage.setItem("backUrl", "/");
 
   // Dynamic Typing Animation
   startTypingAnimation("dynamic-text", [
@@ -22,9 +22,13 @@ export const initHomePage = () => {
   ]);
 
   // Contribution Graph Initialization
-  import("@/features/contribution-graph").then(({ bootContributionGraph }) => {
-    bootContributionGraph();
-  });
+  import("@/features/contribution-graph")
+    .then(({ bootContributionGraph }) => {
+      bootContributionGraph();
+    })
+    .catch(() => {
+      // Gracefully handle module load failure
+    });
 };
 
 // Auto-initialize on page load

@@ -31,10 +31,16 @@ export class TypingAnimation {
       throw new Error(`Element with id "${elementId}" not found.`);
     }
     this.element = el;
-    this.words = options.words;
+    this.words =
+      options.words && options.words.length > 0 ? options.words : [""];
     this.typingSpeed = options.typingSpeed ?? 150;
     this.deletingSpeed = options.deletingSpeed ?? 75;
     this.pauseDuration = options.pauseDuration ?? 1500;
+
+    if (this.words[0] === "") {
+      this.isRunning = false;
+      return;
+    }
 
     // Preserve initial content if it exists to avoid double-typing on init
     const initialText = this.element.textContent?.trim() || "";
@@ -45,7 +51,7 @@ export class TypingAnimation {
   }
 
   public start() {
-    if (this.isRunning) return;
+    if (this.isRunning || this.words[0] === "") return;
     this.isRunning = true;
     this.tick();
   }
@@ -59,12 +65,21 @@ export class TypingAnimation {
   }
 
   private tick() {
-    if (!this.isRunning || !document.body.contains(this.element)) {
+    if (
+      !this.isRunning ||
+      !document.body.contains(this.element) ||
+      this.words.length === 0 ||
+      this.words[0] === ""
+    ) {
       this.stop();
       return;
     }
 
     const currentWord = this.words[this.wordIndex];
+    if (!currentWord) {
+      this.stop();
+      return;
+    }
 
     if (this.isDeleting) {
       this.charIndex--;

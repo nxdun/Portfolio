@@ -74,16 +74,16 @@ The AIO tool accepts a single media URL and opens the downloader with that targe
 
 ### Examples
 
-<a href="https://nadzu.me/tools/?tool=aio&url=https://youtu.be/dQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the AIO downloader with a YouTube URL</a>
+<a href="https://nadzu.me/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the AIO downloader with a YouTube URL</a>
 
 ```text
-https://nadzu.me/tools/?tool=aio&url=https://youtu.be/dQw4w9WgXcQ
+https://nadzu.me/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
 ```
 
-<a href="https://nadzu.me/tools/?t=aio&u=https://youtu.be/dQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the downloader using short alias parameters</a>
+<a href="https://nadzu.me/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the downloader using short alias parameters</a>
 
 ```text
-https://nadzu.me/tools/?t=aio&u=https://youtu.be/dQw4w9WgXcQ
+https://nadzu.me/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
 ```
 
 ## Best practices
