@@ -15,6 +15,31 @@ description: Changelog and updates for the portfolio interface.
 
 - _Loader Component and Skeleton Enhancement_
 
+## v.3.0.0 - 2026-06-08
+
+- <a href="https://github.com/nxdun/Portfolio/pull/38" target="_blank" rel="noopener noreferrer"><code>#38</code></a> [refactor(architecture)] Move domain code into src/features
+  - Relocated domain-specific code into `src/features/*` with feature-first structure.
+  - Split shared components into `core` and `ui`; added public feature entrypoints.
+  - Moved AIO downloader, Base64, blog, projects, contact form, and contribution graph into feature modules.
+  - Added `ARCHITECTURE.md` and updated `README.md`; removed obsolete layout leftovers.
+  - Added ESLint rules to block deep imports into feature internals.
+  - **Breaking change:** canonical downloader query key is now `?tool=aio`; old `?tool=ytdlp` links are not preserved.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/37" target="_blank" rel="noopener noreferrer"><code>#37</code></a> [feat(loader)] Replace animation prop with sweepCount and refine sweep behavior
+  - Replaced boolean `animation` prop on `Loader` component with configurable `sweepCount` number.
+  - Simplified spotlight logic to unconditionally hide on center, removing mobile/desktop branching.
+  - Removed `grid-nebula-drift`, `spotlight-breathe`, and `icon-levitate` keyframes to reduce CSS complexity.
+  - Set `initialColorScheme` default to `"dark"` in `theme.ts`.
+  - Added new project entry "ChatBot IAAC" to `ProjectData.json`.
+  - Added `ProjectData.schema.json`, `contributionGraph.schema.json`, and `schema.sql` schema docs to README.
+
+- <a href="https://github.com/nxdun/Portfolio/pull/36" target="_blank" rel="noopener noreferrer"><code>#36</code></a> [fix(portfolio)] Fix env usage, raw post view, and hardcoded metadata
+  - Fixed `BACKEND_SERVER_URL` usage by switching from `import.meta.env` to `astro:env/server`.
+  - Fixed off-by-one error in next post calculation within PostDetails layout.
+  - Added raw Markdown view endpoint for blog posts with path traversal protection.
+  - Refactored hardcoded email, author, and GitHub username into `SITE` config.
+  - Updated blog post `pubDatetime` values to include `+05:30` timezone offset.
+
 ## v.2.7.1 - 2026-05-18
 
 - <a href="https://github.com/nxdun/Portfolio/pull/35" target="_blank" rel="noopener noreferrer"><code>#35</code></a> [docs(changelog)] Add PR #35 to v2.7.1 release notes

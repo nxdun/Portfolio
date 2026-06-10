@@ -5,11 +5,11 @@ import {
   normalizeAioJobStatus,
 } from "../../utils/aioStatus";
 
-const AIO_ENQUEUE_PATH = "/api/v1/aio";
-const AIO_JOB_PATH = "/api/v1/aio/jobs";
+const AIO_ENQUEUE_PATH = "/api/v1/ytdlp";
+const AIO_JOB_PATH = "/api/v1/ytdlp/jobs";
 const AIO_STREAM_SUFFIX = "/stream";
-const AIO_DOWNLOAD_PATH = "/api/v1/aio/download";
-const AIO_SITES_PATH = "/api/v1/aio/sites";
+const AIO_DOWNLOAD_PATH = "/api/v1/ytdlp/download";
+const AIO_SITES_PATH = "/api/v1/ytdlp/sites";
 
 export type AioJobState = "pending" | "success" | "fail" | "unknown";
 
