@@ -57,6 +57,15 @@ export class MaleeRenderer {
         this.renderCheckoutForm(event.draft as CheckoutDraft, event.missing_fields as string[]);
         break;
 
+      case "checkout_progress":
+        this.renderCheckoutProgress(
+          event.current_step as number,
+          event.total_steps as number,
+          event.step_name as string,
+          event.missing_fields as string[]
+        );
+        break;
+
       case "checkout_ready":
         this.renderCheckoutReady(event.pay_url as string, event.order_ref as string, event.expires_in_minutes as number, event.cart_summary as CartItem[]);
         break;
@@ -502,6 +511,33 @@ export class MaleeRenderer {
     });
 
     wrapper.appendChild(grid);
+    this.container.appendChild(wrapper);
+    this.scrollToBottom();
+  }
+
+  private renderCheckoutProgress(currentStep: number, totalSteps: number, stepName: string, missingFields: string[]): void {
+    this.removeEmptyState();
+    const wrapper = document.createElement("div");
+    wrapper.className = "mb-4 w-full";
+    
+    wrapper.innerHTML = `
+      <div class="p-3 rounded-xl border border-accent/30 bg-accent/5 text-sm">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-semibold text-accent">Checkout Progress</span>
+          <span class="text-xs opacity-70">Step ${currentStep} of ${totalSteps}</span>
+        </div>
+        
+        <div class="w-full bg-border/50 rounded-full h-1.5 mb-3">
+          <div class="bg-accent h-1.5 rounded-full" style="width: ${(currentStep / totalSteps) * 100}%"></div>
+        </div>
+        
+        <div class="font-medium mb-1">${stepName}</div>
+        ${missingFields && missingFields.length > 0 ? 
+          `<div class="text-xs opacity-70 mt-2">Missing: <span class="text-amber-500">${missingFields.join(", ")}</span></div>` 
+          : '<div class="text-xs opacity-70 mt-2 text-green-500">All fields complete</div>'}
+      </div>
+    `;
+
     this.container.appendChild(wrapper);
     this.scrollToBottom();
   }

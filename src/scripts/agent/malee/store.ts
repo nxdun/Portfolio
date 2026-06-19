@@ -59,6 +59,34 @@ export interface TrackingResult {
   timeline: TrackingTimeline[];
 }
 
+export interface OrderHistoryItem {
+  order_ref: string;
+  date: string;
+  items: string[];
+  total_lkr: number;
+}
+
+export interface UserProfile {
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  phone: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  zip_code: string | null;
+  currency: string | null;
+  preferred_language: string | null;
+  favorite_categories: string[];
+  memories: string[];
+  order_history: OrderHistoryItem[];
+}
+
+export interface SessionProfileResponse {
+  session_id: string;
+  profile: UserProfile;
+}
+
 export interface SseLogEntry {
   id: number;
   timestamp: Date;
@@ -75,6 +103,7 @@ export interface MaleeDebugStore {
   connectionStatus: "disconnected" | "connecting" | "connected" | "error";
   lastActivity: Date | null;
   sseEventLog: SseLogEntry[];
+  profile: UserProfile | null;
 }
 
 type StoreListener = (store: MaleeDebugStore) => void;
@@ -98,6 +127,7 @@ const getInitialState = (): MaleeDebugStore => ({
   connectionStatus: "disconnected",
   lastActivity: null,
   sseEventLog: [],
+  profile: null,
 });
 
 export class MaleeStore {

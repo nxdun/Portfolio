@@ -29,6 +29,7 @@ export function initMaleeDebug(): void {
   maleeStore.subscribe(state => {
     updateSessionPanel(state);
     updateCartPanel(state);
+    updateProfilePanel(state);
     updateEventLogPanel(state);
     updateHeaderStatus(state.connectionStatus, state.sessionId);
   });
@@ -89,6 +90,33 @@ function updateCartPanel(state: ReturnType<typeof maleeStore.get>) {
     <div class="flex justify-between items-center pt-2 border-t border-border/50 font-semibold">
       <span>Subtotal</span>
       <span class="text-accent font-mono">Rs. ${state.cart.subtotal_lkr.toLocaleString()}</span>
+    </div>
+  `;
+}
+
+function updateProfilePanel(state: ReturnType<typeof maleeStore.get>) {
+  const el = document.getElementById("panel-profile-content");
+  if (!el) return;
+
+  if (!state.profile) {
+    el.innerHTML = `<div class="text-sm opacity-50 italic py-2">Profile not loaded</div>`;
+    return;
+  }
+
+  const p = state.profile;
+  el.innerHTML = `
+    <div class="grid grid-cols-2 gap-2 text-xs">
+      <div class="opacity-70">Name</div>
+      <div class="font-medium">${p.first_name || ''} ${p.last_name || ''}</div>
+      
+      <div class="opacity-70">Email</div>
+      <div class="font-medium break-all">${p.email || 'None'}</div>
+      
+      <div class="opacity-70">Phone</div>
+      <div class="font-medium">${p.phone || 'None'}</div>
+      
+      <div class="opacity-70">City</div>
+      <div class="font-medium">${p.city || 'None'}</div>
     </div>
   `;
 }
@@ -177,8 +205,22 @@ function setupChatInput() {
 
   if (!input || !sendBtn || !langSelect) return;
 
-  langSelect.addEventListener("change", () => {
-    maleeStore.update({ languageMode: langSelect.value as "auto" | "english" | "sinhala" | "mixed" });
+  langSelect.addEventListener("change", async () => {
+    const newLang = langSelect.value as "auto" | "english" | "sinhala" | "mixed";
+    maleeStore.update({ languageMode: newLang });
+    
+    const sid = maleeStore.get().sessionId;
+    if (client && sid) {
+      try {
+        await client.sendAction({
+          session_id: sid,
+          action: "set_language",
+          payload: { mode: newLang }
+        });
+      } catch (e) {
+        console.error("Failed to sync language mode with server", e);
+      }
+    }
   });
 
   const send = async () => {
@@ -263,6 +305,7 @@ function setupActionButtons() {
   const btnRefresh = document.getElementById("qa-refresh") as HTMLButtonElement;
   const btnClearCart = document.getElementById("qa-clear-cart") as HTMLButtonElement;
   const btnDeleteSession = document.getElementById("qa-delete-session") as HTMLButtonElement;
+  const btnLoadProfile = document.getElementById("qa-load-profile") as HTMLButtonElement;
 
   btnTrack?.addEventListener("click", async () => {
     if (!client || !renderer) return;
@@ -326,6 +369,25 @@ function setupActionButtons() {
       renderer.appendNotice(`Delete failed: ${err.message}`, "error");
     } finally {
       btnDeleteSession.disabled = false;
+    }
+  });
+
+  btnLoadProfile?.addEventListener("click", async () => {
+    const sid = maleeStore.get().sessionId;
+    if (!client || !renderer || !sid) {
+      if (renderer) renderer.appendNotice("Need active session to load profile", "warning");
+      return;
+    }
+    try {
+      btnLoadProfile.disabled = true;
+      const res = await client.getUserProfile(sid);
+      maleeStore.update({ profile: res.profile });
+      renderer.appendNotice("Profile loaded", "success");
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e : new Error(String(e));
+      renderer.appendNotice(`Load profile failed: ${err.message}`, "error");
+    } finally {
+      btnLoadProfile.disabled = false;
     }
   });
 }

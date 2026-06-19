@@ -1,4 +1,4 @@
-import type { SessionView, TrackingResult, CartView } from "./store";
+import type { SessionView, TrackingResult, CartView, UserProfile, SessionProfileResponse } from "./store";
 
 export interface MaleeClientConfig {
   baseUrl: string;
@@ -177,6 +177,32 @@ export class MaleeClient {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify({ order_number: orderNumber }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+  async getUserProfile(sessionId: string): Promise<SessionProfileResponse> {
+    const response = await fetch(`${this.baseUrl}/session/${sessionId}/profile`, {
+      method: "GET",
+      headers: this.headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async updateUserProfile(sessionId: string, profile: UserProfile): Promise<SessionProfileResponse> {
+    const response = await fetch(`${this.baseUrl}/session/${sessionId}/profile`, {
+      method: "PUT",
+      headers: this.headers,
+      body: JSON.stringify({ profile }),
     });
 
     if (!response.ok) {
