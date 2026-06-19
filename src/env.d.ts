@@ -26,3 +26,8 @@ declare module "cloudflare:workers" {
     portfolio_db: import("@cloudflare/workers-types").D1Database;
   };
 }
+
+interface ImportMetaEnv {
+  readonly PUBLIC_MALEE_API_URL: string;
+  readonly PUBLIC_MALEE_API_KEY: string;
+}
