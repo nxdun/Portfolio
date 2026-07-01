@@ -81,7 +81,11 @@ import maleeAvatar from "../../../assets/malee/malee-avatar.png";
     </div>
   </div>
 
-  <div class="messages-area hidden">
+  <div id="component-canvas" class="hidden lg:flex fixed left-0 top-0 bottom-0 w-[60%] flex-col items-center justify-center z-10 px-8 pointer-events-none [&>*]:pointer-events-auto pt-24 pb-32">
+    <!-- Rich components injected here -->
+  </div>
+
+  <div class="messages-area hidden relative z-20">
     <!-- Messages injected by JS -->
   </div>
 

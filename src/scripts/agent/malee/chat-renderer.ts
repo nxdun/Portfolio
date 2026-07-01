@@ -23,8 +23,41 @@ export class ChatRenderer {
     
     if (this.messagesArea) {
       this.messagesArea.innerHTML = '';
-      this.messagesArea.classList.remove('hidden');
+      // We will show it only when chat starts
     }
+  }
+
+  private appendComponent(element: HTMLElement): void {
+    const lastChild = this.messagesArea.lastElementChild as HTMLElement;
+
+    if (window.innerWidth >= 1024 && lastChild && lastChild.classList.contains("msg-assistant-finished")) {
+      // Inline split view for a single response
+      const splitWrapper = document.createElement("div");
+      splitWrapper.className = "w-full flex flex-row items-center gap-12 my-12 animate-in fade-in slide-in-from-bottom-8 duration-1000";
+      
+      const leftCol = document.createElement("div");
+      leftCol.className = "w-[60%] flex items-center justify-center";
+      leftCol.appendChild(element);
+
+      const rightCol = document.createElement("div");
+      rightCol.className = "w-[40%] flex flex-col shrink-0 pr-8 border-l border-white/5 pl-8 bg-background/20 rounded-3xl py-8";
+      
+      // Move the text bubble to the right column
+      lastChild.classList.remove("msg-constrained", "mb-8", "mb-10");
+      lastChild.classList.add("mb-0", "w-full");
+      this.messagesArea.removeChild(lastChild);
+      rightCol.appendChild(lastChild);
+
+      splitWrapper.appendChild(leftCol);
+      splitWrapper.appendChild(rightCol);
+      
+      this.messagesArea.appendChild(splitWrapper);
+    } else {
+      element.classList.add("msg-constrained");
+      this.messagesArea.appendChild(element);
+    }
+    
+    this.scrollToBottom();
   }
 
   handleEvent(event: { type: string; [key: string]: unknown }): void {
@@ -93,15 +126,19 @@ export class ChatRenderer {
     }
   }
 
-  hideWelcome(): void {
+  private hideWelcome(): void {
     if (this.welcomeHero && !this.welcomeHero.classList.contains('hidden')) {
       this.welcomeHero.classList.add('hidden');
+    }
+    if (this.messagesArea && this.messagesArea.classList.contains('hidden')) {
+      this.messagesArea.classList.remove('hidden');
+      this.messagesArea.classList.add('flex', 'flex-col');
     }
   }
 
   appendUserMessage(text: string): void {
     const bubble = document.createElement("div");
-    bubble.className = "flex flex-col items-end mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full";
+    bubble.className = "msg-constrained flex flex-col items-end mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700";
     bubble.innerHTML = `
       <span class="text-[9px] font-mono uppercase tracking-[0.3em] font-bold text-white/40 mb-2 mr-2">You</span>
       <div class="text-xl sm:text-2xl font-light tracking-wide text-white italic text-right max-w-[85%] leading-relaxed">${text}</div>
@@ -112,27 +149,29 @@ export class ChatRenderer {
 
   appendSystemNotice(text: string, type: 'info' | 'error' = 'info'): void {
     const notice = document.createElement("div");
-    notice.className = `text-xs text-center py-2 opacity-70 self-center ${type === 'error' ? 'text-red-500 font-bold' : ''}`;
+    notice.className = `msg-constrained text-xs text-center py-2 opacity-70 self-center ${type === 'error' ? 'text-red-500 font-bold' : ''}`;
     notice.textContent = text;
     this.messagesArea.appendChild(notice);
     this.scrollToBottom();
   }
 
   private getStreamingBubble(): HTMLElement {
-    let bubble = this.messagesArea.querySelector(".msg-streaming div:last-child") as HTMLElement | null;
+    let bubble = this.messagesArea.querySelector(".msg-streaming .prose") as HTMLElement | null;
     if (!bubble) {
       const container = document.createElement("div");
-      container.className = "msg-streaming flex flex-col items-start mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full";
+      container.className = "msg-streaming msg-constrained flex flex-col items-start mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700";
       
       const header = document.createElement("div");
-      header.className = "flex items-center gap-3 mb-3 ml-1";
+      header.className = "flex items-center gap-4 mb-4";
       header.innerHTML = `
-        <img src="${imgMaleeAvatar}" alt="Malee" class="w-6 h-6 rounded-full border border-white/20 object-cover shadow-sm" onerror="this.style.display='none'" />
-        <span class="text-[9px] font-mono uppercase tracking-[0.3em] font-bold text-accent/80">Malee</span>
+        <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-inner overflow-hidden">
+          <img src="${imgMaleeAvatar}" alt="Malee" class="w-full h-full object-contain" />
+        </div>
+        <span class="text-[9px] font-mono uppercase tracking-[0.3em] font-bold text-white/90">Malee</span>
       `;
 
       bubble = document.createElement("div");
-      bubble.className = "text-lg sm:text-xl font-light tracking-wide text-white/95 leading-relaxed app-prose dark:prose-invert prose-p:my-2 prose-a:text-accent max-w-[90%]";
+      bubble.className = "prose text-lg sm:text-xl font-light tracking-wide text-white/95 leading-relaxed dark:prose-invert prose-p:my-2 prose-a:text-accent w-full";
       
       container.appendChild(header);
       container.appendChild(bubble);
@@ -154,7 +193,11 @@ export class ChatRenderer {
 
   private finishAssistantMessage(fullText: string): void {
     const bubble = this.getStreamingBubble();
-    bubble.classList.remove("msg-streaming");
+    const container = bubble.closest('.msg-streaming');
+    if (container) {
+      container.classList.remove("msg-streaming");
+      container.classList.add("msg-assistant-finished");
+    }
     this.currentStreamBuffer = "";
     bubble.innerHTML = marked.parse(fullText) as string;
     this.scrollToBottom();
@@ -164,13 +207,12 @@ export class ChatRenderer {
     const bubble = this.getStreamingBubble();
     bubble.innerHTML = "";
     const span = document.createElement("span");
-    span.className = "text-sm font-mono uppercase tracking-[0.1em] text-white/30 animate-pulse flex items-center gap-2 mt-2";
+    span.className = "text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-white/50 animate-pulse flex items-center gap-3 mt-4 mb-2";
     span.innerHTML = `
-      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white/30" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      ${text || "Processing..."}
+      <div class="w-6 h-6 sm:w-7 sm:h-7 animate-[spin_4s_linear_infinite]">
+        <img src="${imgMaleeAvatar}" alt="Thinking..." class="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(249,168,212,0.4)]" />
+      </div>
+      ${text || "Thinking..."}
     `;
     bubble.appendChild(span);
     this.scrollToBottom();
@@ -391,8 +433,7 @@ export class ChatRenderer {
     wrapper.appendChild(carouselArea);
     wrapper.appendChild(paginationArea);
     
-    this.messagesArea.appendChild(wrapper);
-    this.scrollToBottom();
+    this.appendComponent(wrapper);
   }
 
   private renderProductDetail(item: ProductDetailView): void {
@@ -478,8 +519,7 @@ export class ChatRenderer {
       };
     }
     
-    this.messagesArea.appendChild(card);
-    this.scrollToBottom();
+    this.appendComponent(card);
   }
 
   private renderCategoryGrid(categories: string[]): void {
@@ -518,8 +558,7 @@ export class ChatRenderer {
       grid.appendChild(btn);
     });
     
-    this.messagesArea.appendChild(wrapper);
-    this.scrollToBottom();
+    this.appendComponent(wrapper);
   }
 
   private renderCitySuggestions(cities: string[]): void {
@@ -565,7 +604,7 @@ export class ChatRenderer {
       list.appendChild(btn);
     });
     
-    this.messagesArea.appendChild(wrapper);
+    this.appendComponent(wrapper);
     this.scrollToBottom();
   }
 
@@ -628,8 +667,7 @@ export class ChatRenderer {
       </div>
     `;
 
-    this.messagesArea.appendChild(wrapper);
-    this.scrollToBottom();
+    this.appendComponent(wrapper);
   }
 
   private renderCheckoutForm(draft: CheckoutDraft, missingFields: string[]): void {
@@ -689,7 +727,7 @@ export class ChatRenderer {
       </div>
     `;
 
-    this.messagesArea.appendChild(wrapper);
+    this.appendComponent(wrapper);
     this.scrollToBottom();
   }
 
@@ -744,8 +782,7 @@ export class ChatRenderer {
       </div>
     `;
 
-    this.messagesArea.appendChild(wrapper);
-    this.scrollToBottom();
+    this.appendComponent(wrapper);
   }
 
   private renderCheckoutReady(payUrl: string, orderRef: string, expiresMins: number, cartSummary: CartItem[]): void {
@@ -803,8 +840,7 @@ export class ChatRenderer {
       </div>
     `;
 
-    this.messagesArea.appendChild(wrapper);
-    this.scrollToBottom();
+    this.appendComponent(wrapper);
   }
 
   private renderQuestionPrompt(questions: any[]): void {
@@ -866,8 +902,7 @@ export class ChatRenderer {
       };
     }
 
-    this.messagesArea.appendChild(wrapper);
-    this.scrollToBottom();
+    this.appendComponent(wrapper);
   }
 
   private renderTrackingResult(result: TrackingResult): void {
@@ -927,7 +962,7 @@ export class ChatRenderer {
       </div>
     `;
     
-    this.messagesArea.appendChild(wrapper);
+    this.appendComponent(wrapper);
     this.scrollToBottom();
   }
 

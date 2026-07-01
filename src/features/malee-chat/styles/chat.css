@@ -70,13 +70,19 @@ html, body {
 
 /* ─── Messages ─── */
 .messages-area {
-  display: flex;
-  flex-direction: column;
   gap: 16px;
-  max-width: 750px;
   width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   padding-top: 24px;
+  min-height: 100%;
+}
+
+.msg-constrained {
+  width: 100%;
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ─── Gravity Dock (Cart) ─── */
@@ -101,4 +107,19 @@ html, body {
 .gravity-dock-placeholder:hover {
   transform: translateY(-4px);
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+
+/* --- Loader Background Overrides --- */
+.malee-chat-loader.loader-container--background {
+  background: transparent !important; /* Let the #09090b chat shell show through */
+  z-index: 0; /* Keep it behind text but inside the chat shell */
+}
+.malee-chat-loader .loader-frame {
+  background: transparent !important;
+}
+.malee-chat-loader {
+  --loader-highlight-color: rgba(249, 168, 212, 0.45); /* Soft pink hover glow */
+  --loader-dot-color: rgba(255, 255, 255, 0.04); /* Very faint white dots */
+  --loader-spotlight-size: 350px !important; /* Large, soft spotlight radius */
+  --loader-grid-size: 24px; /* Slightly larger grid spacing for a clean look */
 }

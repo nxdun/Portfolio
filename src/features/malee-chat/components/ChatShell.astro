@@ -2,9 +2,18 @@
 import StatusBar from "./StatusBar.astro";
 import ConversationCanvas from "./ConversationCanvas.astro";
 import ComposerBar from "./ComposerBar.astro";
+import Loader from "@/components/core/Loader.astro";
 ---
 
-<div id="malee-chat-root" class="chat-shell selection:bg-accent/30">
+<div id="malee-chat-root" class="chat-shell selection:bg-accent/30 relative">
+  <!-- Interactive Dotted Background with Spotlight -->
+  <Loader 
+    mode="background" 
+    spotlight="hover" 
+    globalHover={true}
+    class="malee-chat-loader" 
+  />
+  
   <StatusBar />
   <ConversationCanvas />
   
