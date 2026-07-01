@@ -1,0 +1,16 @@
+---
+import StatusBar from "./StatusBar.astro";
+import ConversationCanvas from "./ConversationCanvas.astro";
+import ComposerBar from "./ComposerBar.astro";
+---
+
+<div id="malee-chat-root" class="chat-shell selection:bg-accent/30">
+  <StatusBar />
+  <ConversationCanvas />
+  
+  <div class="gravity-dock-placeholder group">
+    <!-- JS will hydrate this -->
+  </div>
+  
+  <ComposerBar />
+</div>

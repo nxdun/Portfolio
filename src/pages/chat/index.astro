@@ -1,0 +1,20 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ChatShell from "@/features/malee-chat/components/ChatShell.astro";
+import DebugPanel from "@/features/malee-chat/components/DebugPanel.astro";
+import "@/features/malee-chat/styles/chat.css";
+
+// This is the production Malee Chat page
+---
+
+<Layout title="Malee | The Fluid Canvas" useBackendApi={true}>
+  <DebugPanel />
+  <ChatShell />
+</Layout>
+
+<script>
+  import { initMaleeChatUI } from "@/scripts/agent/malee/chat-ui";
+  document.addEventListener("astro:page-load", () => {
+    initMaleeChatUI();
+  });
+</script>

@@ -1,0 +1,17 @@
+---
+import chatSendImg from "../../../assets/malee/chat-send.png";
+---
+<footer class="composer-bar fixed bottom-6 inset-x-0 flex justify-center pointer-events-none z-50 px-4">
+  <div class="composer-inner relative w-full max-w-[750px] flex items-end bg-background/80 backdrop-blur-3xl border border-white/15 rounded-[32px] p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.6)] pointer-events-auto group focus-within:border-white/30 focus-within:bg-background/90 transition-all duration-[600ms]">
+    
+    <button class="lang-toggle shrink-0 w-[52px] h-[52px] rounded-full bg-white/5 hover:bg-white/10 text-white/70 text-[11px] font-mono uppercase tracking-widest font-bold outline-none transition-colors border border-white/10 mb-0.5 ml-0.5 shadow-inner flex items-center justify-center">
+      EN
+    </button>
+    
+    <textarea class="chat-input flex-grow bg-transparent text-white/95 font-light text-lg sm:text-xl px-5 py-3 outline-none resize-none placeholder-white/20 italic tracking-wide" rows="1" placeholder="What are you looking for today?"></textarea>
+    
+    <button class="send-btn shrink-0 w-16 h-16 flex items-center justify-center transition-transform duration-[600ms] hover:scale-105 active:scale-95 group -mr-1">
+      <img src={chatSendImg.src} alt="Send" class="w-full h-full object-contain drop-shadow-sm group-hover:drop-shadow-[0_0_12px_rgba(249,168,212,0.65)] transition-all duration-500" />
+    </button>
+  </div>
+</footer>
