@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.7.0",
-    "@astrojs/rss": "^4.0.18",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "@tailwindcss/vite": "^4.3.1",
+    "@tailwindcss/vite": "^4.3.2",
     "astro": "^6.4.8",
     "concurrently": "^9.2.3",
     "dayjs": "^1.11.21",
@@ -29,7 +29,7 @@
     "satori": "^0.18.4",
     "sharp": "^0.34.5",
     "slugify": "^1.6.9",
-    "tailwindcss": "^4.3.1"
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -37,17 +37,17 @@
     "@shikijs/transformers": "^3.23.0",
     "@tailwindcss/typography": "^0.5.20",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@typescript-eslint/parser": "^8.62.0",
+    "@typescript-eslint/parser": "^8.62.1",
     "eslint": "^9.39.4",
     "eslint-plugin-astro": "^1.7.0",
     "globals": "^16.5.0",
     "pagefind": "^1.5.2",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.4",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.4",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.62.0",
-    "wrangler": "^4.104.0"
+    "typescript-eslint": "^8.62.1",
+    "wrangler": "^4.106.0"
   },
   "pnpm": {
     "overrides": {
