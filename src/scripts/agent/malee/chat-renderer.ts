@@ -30,28 +30,38 @@ export class ChatRenderer {
   private appendComponent(element: HTMLElement): void {
     const lastChild = this.messagesArea.lastElementChild as HTMLElement;
 
-    if (window.innerWidth >= 1024 && lastChild && lastChild.classList.contains("msg-assistant-finished")) {
+    if (window.innerWidth >= 1024 && lastChild && (lastChild.classList.contains("msg-assistant-finished") || lastChild.classList.contains("msg-streaming"))) {
       // Inline split view for a single response
       const splitWrapper = document.createElement("div");
-      splitWrapper.className = "w-full flex flex-row items-center gap-12 my-12 animate-in fade-in slide-in-from-bottom-8 duration-1000";
+      splitWrapper.className = "split-wrapper w-full flex flex-row items-center gap-12 my-12";
       
       const leftCol = document.createElement("div");
-      leftCol.className = "w-[60%] flex items-center justify-center";
-      leftCol.appendChild(element);
-
-      const rightCol = document.createElement("div");
-      rightCol.className = "w-[40%] flex flex-col shrink-0 pr-8 border-l border-white/5 pl-8 bg-background/20 rounded-3xl py-8";
+      leftCol.className = "w-[40%] flex flex-col shrink-0 pl-8 border-r border-white/5 pr-8 bg-background/20 rounded-3xl py-8 max-h-[60vh] overflow-y-auto overscroll-contain animate-in slide-in-from-right-8 duration-1000";
       
-      // Move the text bubble to the right column
+      // Move the text bubble to the left column
       lastChild.classList.remove("msg-constrained", "mb-8", "mb-10");
       lastChild.classList.add("mb-0", "w-full");
       this.messagesArea.removeChild(lastChild);
-      rightCol.appendChild(lastChild);
+      leftCol.appendChild(lastChild);
+
+      const rightCol = document.createElement("div");
+      rightCol.className = "right-col w-[60%] flex flex-col items-center justify-center animate-in fade-in slide-in-from-left-8 duration-1000";
+      rightCol.appendChild(element);
 
       splitWrapper.appendChild(leftCol);
       splitWrapper.appendChild(rightCol);
       
       this.messagesArea.appendChild(splitWrapper);
+    } else if (window.innerWidth >= 1024 && lastChild && lastChild.classList.contains("split-wrapper")) {
+      // If we already created a split wrapper for this response, append additional components to the right column
+      const rightCol = lastChild.querySelector('.right-col') as HTMLElement;
+      if (rightCol) {
+        element.classList.add("mt-8"); // add spacing between components
+        rightCol.appendChild(element);
+      } else {
+        element.classList.add("msg-constrained");
+        this.messagesArea.appendChild(element);
+      }
     } else {
       element.classList.add("msg-constrained");
       this.messagesArea.appendChild(element);
@@ -95,15 +105,17 @@ export class ChatRenderer {
         );
         break;
       case "checkout_form":
-        this.renderCheckoutForm(event.draft as CheckoutDraft, event.missing_fields as string[]);
+        // Disabled per request: this.renderCheckoutForm(event.draft as CheckoutDraft, event.missing_fields as string[]);
         break;
       case "checkout_progress":
-        this.renderCheckoutProgress(
-          event.current_step as number,
-          event.total_steps as number,
-          event.step_name as string,
-          event.missing_fields as string[]
-        );
+        this.store.update({
+          checkoutProgress: {
+            currentStep: event.current_step as number,
+            totalSteps: event.total_steps as number,
+            stepName: event.step_name as string,
+            missingFields: event.missing_fields as string[]
+          }
+        });
         break;
       case "checkout_ready":
         this.renderCheckoutReady(event.pay_url as string, event.order_ref as string, event.expires_in_minutes as number, event.cart_summary as CartItem[]);
@@ -137,6 +149,7 @@ export class ChatRenderer {
   }
 
   appendUserMessage(text: string): void {
+    this.activeQuestionPrompt = null;
     const bubble = document.createElement("div");
     bubble.className = "msg-constrained flex flex-col items-end mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700";
     bubble.innerHTML = `
@@ -731,59 +744,6 @@ export class ChatRenderer {
     this.scrollToBottom();
   }
 
-  private renderCheckoutProgress(currentStep: number, totalSteps: number, stepName: string, missingFields: string[]): void {
-    const wrapper = document.createElement("div");
-    wrapper.className = "relative w-full max-w-[340px] sm:max-w-[400px] self-start my-6 z-10 animate-in fade-in slide-in-from-bottom-6 duration-1000";
-    
-    const segments = Array.from({length: totalSteps}).map((_, i) => {
-       if (i + 1 < currentStep) return `<div class="h-1.5 flex-grow rounded-full bg-accent"></div>`;
-       if (i + 1 === currentStep) return `<div class="h-1.5 flex-grow rounded-full bg-accent shadow-[0_0_12px_rgba(var(--color-accent),0.6)] animate-pulse"></div>`;
-       return `<div class="h-1.5 flex-grow rounded-full bg-white/10"></div>`;
-    }).join("");
-
-    wrapper.innerHTML = `
-      <div class="relative w-full rounded-[28px] bg-background/80 backdrop-blur-3xl border border-white/15 p-6 shadow-2xl overflow-hidden group">
-         <div class="absolute -top-10 -right-10 w-40 h-40 bg-accent/20 rounded-full blur-[40px] pointer-events-none opacity-50"></div>
-
-         <div class="flex items-center justify-between mb-5 relative z-10">
-            <h4 class="text-[10px] font-mono uppercase tracking-[0.3em] font-bold text-accent/90">Progress</h4>
-            <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-white/50">${currentStep} / ${totalSteps}</span>
-         </div>
-
-         <div class="flex items-center gap-2 mb-6 relative z-10">
-            ${segments}
-         </div>
-
-         <div class="flex flex-col gap-2 relative z-10">
-            <div class="flex items-center gap-3 mb-1">
-               <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-inner">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-white"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-               </div>
-               <span class="text-lg font-light tracking-wide text-white/95">${stepName}</span>
-            </div>
-            
-            ${missingFields && missingFields.length > 0 ? `
-               <div class="mt-2 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col gap-2 shadow-[inset_0_0_15px_rgba(245,158,11,0.05)]">
-                  <div class="flex items-center gap-2 text-[9px] uppercase tracking-widest font-bold text-amber-500">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                     Action Required
-                  </div>
-                  <div class="text-xs text-white/60 leading-relaxed pl-5">Please provide: <span class="text-white/90 font-medium">${missingFields.join(", ")}</span></div>
-               </div>
-            ` : `
-               <div class="mt-2 p-3 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center gap-3 shadow-[inset_0_0_15px_rgba(34,197,94,0.05)]">
-                  <div class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </div>
-                  <span class="text-xs font-medium text-green-500 tracking-wide">All fields complete</span>
-               </div>
-            `}
-         </div>
-      </div>
-    `;
-
-    this.appendComponent(wrapper);
-  }
 
   private renderCheckoutReady(payUrl: string, orderRef: string, expiresMins: number, cartSummary: CartItem[]): void {
     const wrapper = document.createElement("div");
@@ -835,7 +795,7 @@ export class ChatRenderer {
          
          <div class="flex items-center justify-center gap-2 text-[10px] font-mono uppercase tracking-widest font-bold text-white/30">
            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-           Link expires in <span class="text-amber-500/80">${expiresMins} mins</span>
+         Link expires in <span class="text-amber-500/80">${expiresMins} mins</span>
          </div>
       </div>
     `;
@@ -843,23 +803,63 @@ export class ChatRenderer {
     this.appendComponent(wrapper);
   }
 
+  private activeQuestionPrompt: { wrapper: HTMLElement, questions: any[], currentSlide: number } | null = null;
+
   private renderQuestionPrompt(questions: any[]): void {
+    if (this.activeQuestionPrompt) {
+       const existingFields = new Set(this.activeQuestionPrompt.questions.map(q => q.field));
+       const newQuestions = questions.filter(q => !existingFields.has(q.field));
+       if (newQuestions.length > 0) {
+         this.activeQuestionPrompt.questions.push(...newQuestions);
+         this.updateQuestionPromptDOM(this.activeQuestionPrompt.wrapper, this.activeQuestionPrompt.questions, this.activeQuestionPrompt.currentSlide);
+       }
+       return;
+    }
+
     const wrapper = document.createElement("div");
     wrapper.className = "relative w-full max-w-[340px] sm:max-w-[400px] self-start my-6 z-10 animate-in fade-in slide-in-from-bottom-6 duration-1000";
     
-    let fieldsHtml = "";
-    questions.forEach(q => {
-      const ph = q.placeholder ? `placeholder="${q.placeholder}"` : "";
-      const baseClass = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white/90 focus:outline-none focus:border-accent focus:bg-white/10 transition-colors shadow-inner placeholder:text-white/20";
-      
-      let inputHtml = q.input_type === 'textarea'
-        ? `<textarea name="${q.field}" class="${baseClass} min-h-[100px] resize-none" ${ph} required></textarea>`
-        : `<input type="${q.input_type === 'date' ? 'date' : (q.input_type === 'tel' ? 'tel' : 'text')}" name="${q.field}" class="${baseClass}" ${ph} required />`;
+    this.activeQuestionPrompt = { wrapper, questions: [...questions], currentSlide: 0 };
+    this.updateQuestionPromptDOM(wrapper, this.activeQuestionPrompt.questions, this.activeQuestionPrompt.currentSlide);
+    this.appendComponent(wrapper);
+  }
 
-      fieldsHtml += `
-        <div class="mb-4">
-          <label class="block text-[10px] font-mono uppercase tracking-[0.2em] font-bold text-white/50 mb-2 pl-1">${q.label}</label>
-          ${inputHtml}
+  private updateQuestionPromptDOM(wrapper: HTMLElement, questions: any[], currentSlide: number): void {
+    const existingForm = wrapper.querySelector("form");
+    const existingValues: Record<string, string> = {};
+    if (existingForm) {
+      const inputs = Array.from(existingForm.querySelectorAll("input, textarea")) as HTMLInputElement[];
+      inputs.forEach(i => { existingValues[i.name] = i.value; });
+    }
+
+    const chunkSize = 3;
+    const slides = [];
+    for (let i = 0; i < questions.length; i += chunkSize) {
+      slides.push(questions.slice(i, i + chunkSize));
+    }
+
+    let trackHtml = "";
+    slides.forEach((slide, idx) => {
+      let slideHtml = "";
+      slide.forEach(q => {
+        const ph = q.placeholder ? `placeholder="${q.placeholder}"` : "";
+        const baseClass = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white/90 focus:outline-none focus:border-accent focus:bg-white/10 transition-colors shadow-inner placeholder:text-white/20";
+        
+        let inputHtml = q.input_type === 'textarea'
+          ? `<textarea name="${q.field}" class="${baseClass} min-h-[100px] resize-none" ${ph} required></textarea>`
+          : `<input type="${q.input_type === 'date' ? 'date' : (q.input_type === 'tel' ? 'tel' : 'text')}" name="${q.field}" class="${baseClass}" ${ph} required />`;
+
+        slideHtml += `
+          <div class="mb-4">
+            <label class="block text-[10px] font-mono uppercase tracking-[0.2em] font-bold text-white/50 mb-2 pl-1">${q.label}</label>
+            ${inputHtml}
+          </div>
+        `;
+      });
+
+      trackHtml += `
+        <div class="w-full shrink-0 px-1">
+          ${slideHtml}
         </div>
       `;
     });
@@ -868,41 +868,122 @@ export class ChatRenderer {
       <div class="relative w-full rounded-[32px] bg-background/80 backdrop-blur-3xl border border-white/15 p-7 shadow-2xl overflow-hidden group">
          <div class="absolute -top-10 -right-10 w-48 h-48 bg-accent/20 rounded-full blur-[40px] pointer-events-none opacity-40"></div>
          
-         <div class="flex items-center gap-3 mb-6 relative z-10">
-            <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-inner">
-               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-accent"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+         <div class="flex items-center justify-between mb-6 relative z-10">
+            <div class="flex items-center gap-3">
+               <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-inner">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-accent"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+               </div>
+               <h4 class="text-xs font-mono uppercase tracking-[0.2em] font-bold text-white/90">Required Info</h4>
             </div>
-            <h4 class="text-xs font-mono uppercase tracking-[0.2em] font-bold text-white/90">Required Info</h4>
+            <span class="step-indicator text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">1 / ${slides.length}</span>
          </div>
 
-         <form class="flex flex-col relative z-10">
-            ${fieldsHtml}
-            <button type="submit" class="mt-2 relative flex items-center justify-center gap-2 w-full bg-white text-black font-semibold tracking-wide py-3.5 rounded-[16px] transition-all duration-[600ms] hover:scale-[1.02] hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] group/btn">
-              <span>Submit</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>
+         <form class="flex flex-col relative z-10 overflow-hidden w-full">
+            <div class="flex transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]" id="carousel-track" style="width: 100%;">
+               ${trackHtml}
+            </div>
+            
+            <div class="flex gap-3 mt-4">
+               <button type="button" id="prev-btn" class="hidden relative items-center justify-center gap-2 px-4 bg-white/5 border border-white/10 text-white font-semibold tracking-wide py-3.5 rounded-[16px] transition-all duration-300 hover:bg-white/10">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+               </button>
+               <button type="button" id="next-btn" class="${slides.length > 1 ? 'flex' : 'hidden'} flex-1 relative items-center justify-center gap-2 bg-white/10 text-white font-semibold tracking-wide py-3.5 rounded-[16px] transition-all duration-[600ms] hover:scale-[1.02] hover:bg-white/20">
+                 <span>Next</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="translate-x-0.5"><path d="M9 18l6-6-6-6"/></svg>
+               </button>
+               <button type="submit" id="submit-btn" class="${slides.length === 1 ? 'flex' : 'hidden'} flex-1 relative items-center justify-center gap-2 bg-white text-black font-semibold tracking-wide py-3.5 rounded-[16px] transition-all duration-[600ms] hover:scale-[1.02] hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] group/btn">
+                 <span>Submit</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+               </button>
+            </div>
          </form>
       </div>
     `;
 
+    const totalSlides = slides.length;
+    const track = wrapper.querySelector("#carousel-track") as HTMLElement;
+    const prevBtn = wrapper.querySelector("#prev-btn") as HTMLButtonElement;
+    const nextBtn = wrapper.querySelector("#next-btn") as HTMLButtonElement;
+    const submitBtn = wrapper.querySelector("#submit-btn") as HTMLButtonElement;
+    const indicator = wrapper.querySelector(".step-indicator") as HTMLElement;
+
+    const updateCarousel = () => {
+      const offset = currentSlide * 100;
+      track.style.transform = `translateX(-${offset}%)`;
+      indicator.textContent = totalSlides > 0 ? `${currentSlide + 1} / ${totalSlides}` : '0 / 0';
+      
+      if (currentSlide === 0) {
+        prevBtn.classList.add("hidden");
+        prevBtn.classList.remove("flex");
+      } else {
+        prevBtn.classList.remove("hidden");
+        prevBtn.classList.add("flex");
+      }
+
+      if (currentSlide >= totalSlides - 1) {
+        nextBtn.classList.add("hidden");
+        nextBtn.classList.remove("flex");
+        submitBtn.classList.remove("hidden");
+        submitBtn.classList.add("flex");
+      } else {
+        nextBtn.classList.remove("hidden");
+        nextBtn.classList.add("flex");
+        submitBtn.classList.add("hidden");
+        submitBtn.classList.remove("flex");
+      }
+    };
+    
+    updateCarousel();
+
+    if (prevBtn && nextBtn) {
+       prevBtn.addEventListener("click", () => {
+         if (currentSlide > 0) {
+           currentSlide--;
+           if (this.activeQuestionPrompt) this.activeQuestionPrompt.currentSlide = currentSlide;
+           updateCarousel();
+         }
+       });
+       nextBtn.addEventListener("click", () => {
+         const slideElement = track.children[currentSlide];
+         if (!slideElement) return;
+         const currentInputs = Array.from(slideElement.querySelectorAll("input, textarea")) as HTMLInputElement[];
+         for (const currentInput of currentInputs) {
+           if (!currentInput.checkValidity()) {
+             currentInput.reportValidity();
+             return;
+           }
+         }
+         if (currentSlide < totalSlides - 1) {
+           currentSlide++;
+           if (this.activeQuestionPrompt) this.activeQuestionPrompt.currentSlide = currentSlide;
+           updateCarousel();
+         }
+       });
+    }
+
     const form = wrapper.querySelector("form");
     if (form) {
+      const inputs = Array.from(form.querySelectorAll("input, textarea")) as HTMLInputElement[];
+      inputs.forEach(i => {
+        if (existingValues[i.name] !== undefined) {
+          i.value = existingValues[i.name];
+        }
+      });
       form.onsubmit = (e) => {
         e.preventDefault();
         const inputs = Array.from(form.querySelectorAll("input, textarea")) as HTMLInputElement[];
         if (inputs.every(i => i.value.trim() !== "")) {
-          const answers = inputs.map(i => i.value).join(", ");
-          wrapper.dispatchEvent(new CustomEvent("action:send_message", { bubbles: true, detail: { text: answers } }));
+          const answerObj: Record<string, string> = {};
+          inputs.forEach(i => { answerObj[i.name] = i.value; });
+          const answers = JSON.stringify(answerObj);
+          wrapper.dispatchEvent(new CustomEvent("action:send_chat", { bubbles: true, detail: { text: answers, silent: true } }));
           inputs.forEach(i => { i.disabled = true; i.classList.add('opacity-50'); });
-          const btn = form.querySelector("button")!;
-          btn.disabled = true;
-          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg> <span class="text-gray-500">Submitted</span>`;
-          btn.className = "mt-2 flex items-center justify-center gap-2 w-full bg-white/5 border border-white/10 py-3.5 rounded-[16px] cursor-not-allowed";
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg> <span class="text-gray-500">Submitted</span>`;
+          submitBtn.className = "flex-1 mt-2 flex items-center justify-center gap-2 w-full bg-white/5 border border-white/10 py-3.5 rounded-[16px] cursor-not-allowed";
         }
       };
     }
-
-    this.appendComponent(wrapper);
   }
 
   private renderTrackingResult(result: TrackingResult): void {

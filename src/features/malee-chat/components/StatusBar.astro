@@ -1,5 +1,6 @@
 ---
 import maleeAvatar from "../../../assets/malee/malee-avatar.png";
+import kaprukaLogo from "../../../assets/malee/kapruka-logo.png";
 ---
 <header class="status-bar relative flex justify-between items-center px-6 py-3 z-50">
   <!-- Left: Brand mark -->
@@ -7,7 +8,11 @@ import maleeAvatar from "../../../assets/malee/malee-avatar.png";
     <div class="w-7 h-7 animate-[spin_20s_linear_infinite]">
       <img src={maleeAvatar.src} alt="Malee" class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(168,130,255,0.3)]" />
     </div>
-    <span class="text-[11px] font-mono uppercase tracking-[0.3em] font-bold text-white/70">Malee</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[11px] font-mono uppercase tracking-[0.3em] font-bold text-white/70">Malee</span>
+      <span class="text-[11px] font-mono font-bold text-white/40 lowercase">x</span>
+      <img src={kaprukaLogo.src} alt="Kapruka" class="h-[11px] object-contain" />
+    </div>
   </a>
 
   <!-- Center: Connection status -->

@@ -2,8 +2,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow: hidden;
+  height: 100% !important;
+  overflow: hidden !important;
   background-color: var(--color-background);
 }
 
@@ -11,7 +11,9 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
   position: relative;
   background-color: var(--color-background);
   color: var(--color-foreground);
@@ -52,7 +54,8 @@ html, body {
 .conversation-canvas {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 0 24px 120px 24px; /* Extra bottom padding for floating composer */
+  overflow-x: hidden;
+  padding: 0 24px 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -90,8 +93,9 @@ html, body {
   position: absolute;
   bottom: 100px;
   right: 24px;
-  width: 280px;
+  width: 320px;
   min-height: 180px;
+  max-height: 400px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 28px;
@@ -101,12 +105,39 @@ html, body {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: 40;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease, opacity 0.6s ease;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
-.gravity-dock-placeholder:hover {
+
+/* Expand hover area below the dock to prevent glitching when mouse moves down after it translates up */
+.gravity-dock-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  background: transparent;
+}
+
+.gravity-dock-placeholder:not(.is-empty):hover,
+.gravity-dock-placeholder.is-empty:hover {
   transform: translateY(-4px);
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+}
+
+.gravity-dock-placeholder.is-empty {
+  transform: translateY(145px);
+  opacity: 0.8;
+}
+
+.gravity-dock-placeholder.has-items {
+  transform: translateY(calc(100% - 84px));
+}
+
+.gravity-dock-placeholder.is-empty:hover {
+  transform: translateY(-4px);
+  opacity: 1;
 }
 
 /* --- Loader Background Overrides --- */
@@ -122,4 +153,13 @@ html, body {
   --loader-dot-color: rgba(255, 255, 255, 0.04); /* Very faint white dots */
   --loader-spotlight-size: 350px !important; /* Large, soft spotlight radius */
   --loader-grid-size: 24px; /* Slightly larger grid spacing for a clean look */
+}
+
+/* --- Flip Animation --- */
+@keyframes flipInY {
+  from { transform: perspective(800px) rotateY(90deg); opacity: 0; }
+  to { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+}
+.animate-flip-in-y {
+  animation: flipInY 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }

@@ -94,12 +94,20 @@ export interface SseLogEntry {
   payload: unknown;
 }
 
+export interface CheckoutProgressState {
+  currentStep: number;
+  totalSteps: number;
+  stepName: string;
+  missingFields: string[];
+}
+
 export interface MaleeDebugStore {
   sessionId: string | null;
   phase: string;
   languageMode: "auto" | "english" | "sinhala" | "mixed";
   cart: CartView;
   checkoutDraft: CheckoutDraft;
+  checkoutProgress: CheckoutProgressState | null;
   connectionStatus: "disconnected" | "connecting" | "connected" | "error";
   lastActivity: Date | null;
   sseEventLog: SseLogEntry[];
@@ -124,6 +132,7 @@ const getInitialState = (): MaleeDebugStore => ({
     sender_name: null,
     gift_message: null,
   },
+  checkoutProgress: null,
   connectionStatus: "disconnected",
   lastActivity: null,
   sseEventLog: [],
