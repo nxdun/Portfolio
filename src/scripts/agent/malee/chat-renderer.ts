@@ -71,20 +71,6 @@ export class ChatRenderer {
       splitWrapper.appendChild(rightCol);
 
       this.messagesArea.appendChild(splitWrapper);
-    } else if (
-      window.innerWidth >= 1024 &&
-      lastChild &&
-      lastChild.classList.contains("split-wrapper")
-    ) {
-      // If we already created a split wrapper for this response, append additional components to the right column
-      const rightCol = lastChild.querySelector(".right-col") as HTMLElement;
-      if (rightCol) {
-        element.classList.add("mt-8"); // add spacing between components
-        rightCol.appendChild(element);
-      } else {
-        element.classList.add("msg-constrained");
-        this.messagesArea.appendChild(element);
-      }
     } else {
       element.classList.add("msg-constrained");
       this.messagesArea.appendChild(element);
@@ -113,6 +99,14 @@ export class ChatRenderer {
       ".msg-streaming .prose"
     ) as HTMLElement | null;
     if (!bubble) return;
+
+    if (bubble.querySelector(".inline-lotus-skeleton") || !this.currentStreamBuffer.trim()) {
+      const container = bubble.closest(".msg-streaming");
+      if (container) container.remove();
+      this.currentStreamBuffer = "";
+      return;
+    }
+
     const container = bubble.closest(".msg-streaming");
     if (container) {
       container.classList.remove("msg-streaming");
@@ -283,6 +277,13 @@ export class ChatRenderer {
   private finishAssistantMessage(fullText: string): void {
     const bubble = this.getStreamingBubble();
     const container = bubble.closest(".msg-streaming");
+
+    if (!fullText.trim()) {
+      if (container) container.remove();
+      this.currentStreamBuffer = "";
+      return;
+    }
+
     if (container) {
       container.classList.remove("msg-streaming");
       container.classList.add("msg-assistant-finished");

@@ -1,6 +1,7 @@
 import { MaleeClient } from "./client";
 import { maleeStore, chatUIStore } from "./chat-store";
 import { ChatRenderer } from "./chat-renderer";
+import { initSinglishToSinhala } from "./sinhala-converter";
 
 import imgEmptyCart from "../../../assets/malee/empty-cart-graphic.png?url";
 
@@ -109,7 +110,7 @@ function updateGravityDock(state: any, root: HTMLElement) {
       .join("");
 
     dock.innerHTML = `
-      <div class="flex flex-col w-full h-full min-h-[240px] p-6 relative overflow-hidden group/full bg-background/70 backdrop-blur-2xl border border-white/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] rounded-[28px] animate-flip-in-y">
+      <div class="flex flex-col w-full h-full min-h-[240px] p-6 relative overflow-hidden group/full bg-background/70 backdrop-blur-2xl border border-white/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] rounded-[28px]">
          <div class="absolute -top-10 -right-10 w-40 h-40 bg-accent/20 rounded-full blur-[40px] pointer-events-none opacity-50"></div>
 
          <div class="flex items-center justify-between mb-5 relative z-10">
@@ -153,10 +154,9 @@ function updateGravityDock(state: any, root: HTMLElement) {
         <!-- Abstract Glow -->
         <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-accent/20 rounded-full blur-[40px] opacity-50 pointer-events-none transition-opacity duration-[800ms] group-hover/full:opacity-100"></div>
         
-        <button class="relative overflow-hidden w-full bg-white text-black rounded-[20px] py-3.5 mb-4 font-semibold tracking-wide hover:scale-[1.02] shadow-[0_15px_40px_rgba(255,255,255,0.2)] transition-all duration-[600ms] group/btn z-10 shrink-0" onclick="this.dispatchEvent(new CustomEvent('action:checkout', { bubbles: true }))">
+        <button class="relative overflow-hidden w-full bg-white text-black rounded-[20px] py-3.5 mb-4 font-semibold tracking-wide hover:scale-[1.02] shadow-[0_15px_40px_rgba(255,255,255,0.2)] transition-all duration-[600ms] group/btn z-10 shrink-0 ${state.connectionStatus === 'connecting' ? 'opacity-80 pointer-events-none' : ''}" ${state.connectionStatus === 'connecting' ? 'disabled' : ''} onclick="this.dispatchEvent(new CustomEvent('action:checkout', { bubbles: true }))">
           <span class="relative z-10 flex items-center justify-center gap-2">
-             Checkout Now
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+             ${state.connectionStatus === 'connecting' ? 'Processing... <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>' : 'Checkout Now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>'}
           </span>
         </button>
 
@@ -235,16 +235,22 @@ function setupInputHandlers(root: HTMLElement) {
   if (!input || !sendBtn) return;
 
   let currentLang = "english";
+  
+  const sinhalaInstance = initSinglishToSinhala(false);
+
   langToggle?.addEventListener("click", () => {
     if (currentLang === "english") {
       currentLang = "sinhala";
       langToggle.textContent = "SI";
+      sinhalaInstance.enable();
     } else if (currentLang === "sinhala") {
       currentLang = "auto";
       langToggle.textContent = "AU";
+      sinhalaInstance.disable();
     } else {
       currentLang = "english";
       langToggle.textContent = "EN";
+      sinhalaInstance.disable();
     }
     maleeStore.update({ languageMode: currentLang as any });
   });
@@ -452,7 +458,25 @@ function setupEventDelegation(root: HTMLElement) {
     }
   });
 
-  root.addEventListener("action:checkout", () => {
+  root.addEventListener("action:checkout", (e: Event) => {
+    // Spawn Serene Pond ripple feedback
+    const rootEl = document.getElementById("malee-chat-root");
+    const container = rootEl?.querySelector(".loader-grid-container");
+    const btn = (e as CustomEvent).target as HTMLElement;
+    if (container && btn && btn.getBoundingClientRect) {
+      const rect = btn.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const xPos = ((rect.left + rect.width / 2 - containerRect.left) / containerRect.width) * 100;
+      const yPos = ((rect.top + rect.height / 2 - containerRect.top) / containerRect.height) * 100;
+
+      const pond = document.createElement("span");
+      pond.className = "loader-skeleton-pond loader-skeleton-effect";
+      pond.style.setProperty("--pond-x", `${xPos}%`);
+      pond.style.setProperty("--pond-y", `${yPos}%`);
+      container.appendChild(pond);
+      setTimeout(() => pond.remove(), 5000);
+    }
+
     root.dispatchEvent(
       new CustomEvent("action:send_chat", {
         bubbles: true,
@@ -467,7 +491,7 @@ function setupEventDelegation(root: HTMLElement) {
     root.dispatchEvent(
       new CustomEvent("action:send_chat", {
         bubbles: true,
-        detail: { text: "I want to cancel the order", silent: true },
+        detail: { text: "UIEVENT: User clicked cancel checkout button. Please cancel the checkout process and acknowledge.", silent: true },
       })
     );
   });
@@ -483,30 +507,18 @@ function setupEventDelegation(root: HTMLElement) {
     }
   });
 
-  root.addEventListener("action:set_city", async (e: Event) => {
+  root.addEventListener("action:set_city", (e: Event) => {
     const ev = e as CustomEvent;
     const city = ev.detail.city;
-    const sid = maleeStore.get().sessionId;
-    if (!client || !renderer || !sid) return;
 
-    try {
-      renderer.appendUserMessage(`Set city to ${city}`);
-      const res = await client.sendAction({
-        session_id: sid,
-        action: "set_delivery_city",
-        payload: { city },
-      });
-
-      if (res && res.session) {
-        maleeStore.update({ checkoutDraft: res.session.checkout_draft });
-      } else {
-        const session = await client.getSession(sid);
-        if (session && session.checkout_draft) {
-          maleeStore.update({ checkoutDraft: session.checkout_draft });
-        }
-      }
-    } catch (err: any) {
-      renderer.appendSystemNotice(`Set city failed: ${err.message}`, "error");
-    }
+    root.dispatchEvent(
+      new CustomEvent("action:send_chat", {
+        bubbles: true,
+        detail: {
+          text: `UIEVENT: User selected delivery city: "${city}". Please update the checkout city and acknowledge.`,
+          silent: true,
+        },
+      })
+    );
   });
 }
