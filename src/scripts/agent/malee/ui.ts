@@ -470,24 +470,18 @@ function setupEventDelegation(chatContainer: HTMLElement) {
     }
   });
 
-  chatContainer.addEventListener("action:set_city", async (e: Event) => {
+  chatContainer.addEventListener("action:set_city", (e: Event) => {
     const ev = e as CustomEvent;
     const city = ev.detail.city;
-    const sid = maleeStore.get().sessionId;
-    if (!client || !renderer || !sid) return;
-    try {
-      renderer.appendUserMessage(`Set city to ${city}`);
-      const res = await client.sendAction({
-        session_id: sid,
-        action: "set_delivery_city",
-        payload: { city },
-      });
-      if (res.session)
-        maleeStore.update({ checkoutDraft: res.session.checkout_draft });
-    } catch (err: unknown) {
-      const error = err instanceof Error ? err : new Error(String(err));
-      renderer.appendNotice(`Set city failed: ${error.message}`, "error");
-    }
+    chatContainer.dispatchEvent(
+      new CustomEvent("action:send_chat", {
+        bubbles: true,
+        detail: {
+          text: `UIEVENT: User selected delivery city: "${city}". Please update the checkout city and acknowledge.`,
+          silent: true,
+        },
+      })
+    );
   });
 
   chatContainer.addEventListener("action:send_message", (e: Event) => {
