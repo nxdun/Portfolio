@@ -1,5 +1,6 @@
 /* ─── Core Layout ─── */
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100% !important;
@@ -36,7 +37,7 @@ html, body {
   position: relative;
 }
 .connection-dot::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: 50%;
@@ -44,7 +45,8 @@ html, body {
   animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 @keyframes ping {
-  75%, 100% {
+  75%,
+  100% {
     transform: scale(2.5);
     opacity: 0;
   }
@@ -61,13 +63,13 @@ html, body {
   gap: 24px;
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.06) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
 }
 .conversation-canvas::-webkit-scrollbar {
   width: 4px;
 }
 .conversation-canvas::-webkit-scrollbar-thumb {
-  background-color: rgba(255,255,255,0.06);
+  background-color: rgba(255, 255, 255, 0.06);
   border-radius: 10px;
 }
 
@@ -96,8 +98,8 @@ html, body {
   width: 320px;
   min-height: 180px;
   max-height: 400px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 28px;
   display: flex;
   align-items: center;
@@ -105,8 +107,11 @@ html, body {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: 40;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease, opacity 0.6s ease;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.6s ease,
+    opacity 0.6s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 /* Expand hover area below the dock to prevent glitching when mouse moves down after it translates up */
@@ -123,7 +128,7 @@ html, body {
 .gravity-dock-placeholder:not(.is-empty):hover,
 .gravity-dock-placeholder.is-empty:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
 }
 
 .gravity-dock-placeholder.is-empty {
@@ -149,7 +154,12 @@ html, body {
   background: transparent !important;
 }
 .malee-chat-loader {
-  --loader-highlight-color: rgba(249, 168, 212, 0.45); /* Soft pink hover glow */
+  --loader-highlight-color: rgba(
+    249,
+    168,
+    212,
+    0.45
+  ); /* Soft pink hover glow */
   --loader-dot-color: rgba(255, 255, 255, 0.04); /* Very faint white dots */
   --loader-spotlight-size: 350px !important; /* Large, soft spotlight radius */
   --loader-grid-size: 24px; /* Slightly larger grid spacing for a clean look */
@@ -157,8 +167,14 @@ html, body {
 
 /* --- Flip Animation --- */
 @keyframes flipInY {
-  from { transform: perspective(800px) rotateY(90deg); opacity: 0; }
-  to { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+  from {
+    transform: perspective(800px) rotateY(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(800px) rotateY(0deg);
+    opacity: 1;
+  }
 }
 .animate-flip-in-y {
   animation: flipInY 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;

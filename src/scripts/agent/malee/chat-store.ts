@@ -22,8 +22,10 @@ class ChatUIStore {
   private state: ChatUIState = { ...initialUIState };
   private listeners: Set<UIListener> = new Set();
 
-  get(): Readonly<ChatUIState> { return this.state; }
-  
+  get(): Readonly<ChatUIState> {
+    return this.state;
+  }
+
   update(partial: Partial<ChatUIState>) {
     this.state = { ...this.state, ...partial };
     this.notify();

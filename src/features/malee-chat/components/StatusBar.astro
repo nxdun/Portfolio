@@ -2,29 +2,67 @@
 import maleeAvatar from "../../../assets/malee/malee-avatar.png";
 import kaprukaLogo from "../../../assets/malee/kapruka-logo.png";
 ---
-<header class="status-bar relative flex justify-between items-center px-6 py-3 z-50">
+
+<header
+  class="status-bar relative z-50 flex items-center justify-between px-6 py-3"
+>
   <!-- Left: Brand mark -->
-  <a href="/chat" class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-    <div class="w-7 h-7 animate-[spin_20s_linear_infinite]">
-      <img src={maleeAvatar.src} alt="Malee" class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(168,130,255,0.3)]" />
+  <a
+    href="/chat"
+    class="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-80"
+  >
+    <div class="h-7 w-7 animate-[spin_20s_linear_infinite]">
+      <img
+        src={maleeAvatar.src}
+        alt="Malee"
+        class="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(168,130,255,0.3)]"
+      />
     </div>
     <div class="flex items-center gap-2">
-      <span class="text-[11px] font-mono uppercase tracking-[0.3em] font-bold text-white/70">Malee</span>
-      <span class="text-[11px] font-mono font-bold text-white/40 lowercase">x</span>
-      <img src={kaprukaLogo.src} alt="Kapruka" class="h-[11px] object-contain" />
+      <span
+        class="font-mono text-[11px] font-bold tracking-[0.3em] text-white/70 uppercase"
+        >Malee</span
+      >
+      <span class="font-mono text-[11px] font-bold text-white/40 lowercase"
+        >x</span
+      >
+      <img
+        src={kaprukaLogo.src}
+        alt="Kapruka"
+        class="h-[11px] object-contain"
+      />
     </div>
   </a>
 
   <!-- Center: Connection status -->
-  <div class="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-md">
+  <div
+    class="flex items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-4 py-1.5 backdrop-blur-md"
+  >
     <span class="connection-dot"></span>
-    <span class="connection-text text-[10px] font-mono uppercase tracking-[0.2em] font-bold text-white/40">Connected</span>
+    <span
+      class="connection-text font-mono text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase"
+      >Connected</span
+    >
   </div>
 
   <!-- Right: Minimal actions -->
   <div class="flex items-center gap-1">
-    <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/5 transition-colors text-white/30 hover:text-white/70">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    <button
+      class="flex h-8 w-8 items-center justify-center rounded-full text-white/30 transition-colors hover:bg-white/5 hover:text-white/70"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        ><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+        ></path><path d="M3 3v5h5"></path></svg
+      >
     </button>
   </div>
 </header>

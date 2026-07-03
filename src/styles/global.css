@@ -38,6 +38,30 @@ html[data-theme="dark"] {
   html {
     @apply overflow-y-scroll scroll-smooth bg-background;
   }
+
+  /* Malee Themed Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-accent) 50%, transparent),
+      color-mix(in srgb, var(--color-accent) 80%, pink)
+    );
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+    border: 0;
+  }
   body {
     @apply flex min-h-svh flex-col bg-transparent font-app text-foreground selection:bg-accent/75 selection:text-background;
   }

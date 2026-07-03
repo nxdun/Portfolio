@@ -1,10 +1,22 @@
-import type { MaleeStore, ProductCard, ProductDetailView, CartView, CartItem, CheckoutDraft, TrackingResult, TrackingTimeline } from "./store";
+import type {
+  MaleeStore,
+  ProductCard,
+  ProductDetailView,
+  CartView,
+  CartItem,
+  CheckoutDraft,
+  TrackingResult,
+  TrackingTimeline,
+} from "./store";
 import { marked } from "marked";
 
 export class MaleeRenderer {
   private currentStreamBuffer: string = "";
 
-  constructor(private container: HTMLElement, private store: MaleeStore) {}
+  constructor(
+    private container: HTMLElement,
+    private store: MaleeStore
+  ) {}
 
   handleEvent(event: { type: string; [key: string]: unknown }): void {
     switch (event.type) {
@@ -22,7 +34,11 @@ export class MaleeRenderer {
         break;
 
       case "product_carousel":
-        this.renderProductCarousel(event.title as string, event.subtitle as string | undefined, event.items as ProductCard[]);
+        this.renderProductCarousel(
+          event.title as string,
+          event.subtitle as string | undefined,
+          event.items as ProductCard[]
+        );
         break;
 
       case "product_detail":
@@ -35,7 +51,10 @@ export class MaleeRenderer {
 
       case "cart_updated":
         this.store.update({ cart: event.cart as CartView });
-        this.appendNotice(`🛒 Cart updated: ${(event.cart as CartView).item_count} items`, "info");
+        this.appendNotice(
+          `🛒 Cart updated: ${(event.cart as CartView).item_count} items`,
+          "info"
+        );
         break;
 
       case "city_suggestions":
@@ -44,9 +63,9 @@ export class MaleeRenderer {
 
       case "delivery_quote":
         this.renderDeliveryQuote(
-          event.city as string, 
-          event.date as string, 
-          event.rate_lkr as number, 
+          event.city as string,
+          event.date as string,
+          event.rate_lkr as number,
           event.deliverable as boolean,
           event.perishable_warning as boolean,
           event.next_available_date as string | null
@@ -54,7 +73,10 @@ export class MaleeRenderer {
         break;
 
       case "checkout_form":
-        this.renderCheckoutForm(event.draft as CheckoutDraft, event.missing_fields as string[]);
+        this.renderCheckoutForm(
+          event.draft as CheckoutDraft,
+          event.missing_fields as string[]
+        );
         break;
 
       case "checkout_progress":
@@ -67,7 +89,12 @@ export class MaleeRenderer {
         break;
 
       case "checkout_ready":
-        this.renderCheckoutReady(event.pay_url as string, event.order_ref as string, event.expires_in_minutes as number, event.cart_summary as CartItem[]);
+        this.renderCheckoutReady(
+          event.pay_url as string,
+          event.order_ref as string,
+          event.expires_in_minutes as number,
+          event.cart_summary as CartItem[]
+        );
         break;
 
       case "question_prompt":
@@ -75,7 +102,9 @@ export class MaleeRenderer {
         break;
 
       case "language_changed":
-        this.store.update({ languageMode: event.mode as "auto" | "english" | "sinhala" | "mixed" });
+        this.store.update({
+          languageMode: event.mode as "auto" | "english" | "sinhala" | "mixed",
+        });
         this.appendNotice(`Language mode changed to: ${event.mode}`, "info");
         break;
 
@@ -84,7 +113,11 @@ export class MaleeRenderer {
         break;
 
       case "error":
-        this.renderError(event.code as string, event.message as string, event.recoverable as boolean);
+        this.renderError(
+          event.code as string,
+          event.message as string,
+          event.recoverable as boolean
+        );
         break;
 
       case "thinking":
@@ -98,33 +131,42 @@ export class MaleeRenderer {
 
   appendUserMessage(text: string): void {
     const bubble = document.createElement("div");
-    bubble.className = "self-end max-w-[85%] rounded-2xl px-4 py-2.5 text-sm mb-3";
-    bubble.style.backgroundColor = "color-mix(in oklab, var(--accent) 12%, var(--muted))";
+    bubble.className =
+      "self-end max-w-[85%] rounded-2xl px-4 py-2.5 text-sm mb-3";
+    bubble.style.backgroundColor =
+      "color-mix(in oklab, var(--accent) 12%, var(--muted))";
     bubble.style.color = "var(--foreground)";
     bubble.textContent = text;
     this.container.appendChild(bubble);
     this.scrollToBottom();
   }
 
-  appendNotice(text: string, variant: "info" | "success" | "error" | "warning"): void {
+  appendNotice(
+    text: string,
+    variant: "info" | "success" | "error" | "warning"
+  ): void {
     const notice = document.createElement("div");
     notice.className = "text-xs text-center py-2 mb-3 tracking-wide rounded-lg";
-    
+
     if (variant === "error") {
-      notice.style.backgroundColor = "color-mix(in oklab, #f43f5e 10%, transparent)";
+      notice.style.backgroundColor =
+        "color-mix(in oklab, #f43f5e 10%, transparent)";
       notice.style.color = "#f43f5e";
     } else if (variant === "success") {
-      notice.style.backgroundColor = "color-mix(in oklab, #10b981 10%, transparent)";
+      notice.style.backgroundColor =
+        "color-mix(in oklab, #10b981 10%, transparent)";
       notice.style.color = "#10b981";
     } else if (variant === "warning") {
-      notice.style.backgroundColor = "color-mix(in oklab, #f59e0b 10%, transparent)";
+      notice.style.backgroundColor =
+        "color-mix(in oklab, #f59e0b 10%, transparent)";
       notice.style.color = "#f59e0b";
     } else {
-      notice.style.backgroundColor = "color-mix(in oklab, var(--muted) 30%, transparent)";
+      notice.style.backgroundColor =
+        "color-mix(in oklab, var(--muted) 30%, transparent)";
       notice.style.color = "var(--foreground)";
       notice.style.opacity = "0.8";
     }
-    
+
     notice.textContent = text;
     this.container.appendChild(notice);
     this.scrollToBottom();
@@ -138,7 +180,8 @@ export class MaleeRenderer {
     this.container.innerHTML = "";
     // If empty, we can show the "Start chatting" centered text, handled by CSS or an empty state div
     const emptyState = document.createElement("div");
-    emptyState.className = "flex h-full items-center justify-center text-sm opacity-50 italic";
+    emptyState.className =
+      "flex h-full items-center justify-center text-sm opacity-50 italic";
     emptyState.id = "chat-empty-state";
     emptyState.textContent = "Start chatting";
     this.container.appendChild(emptyState);
@@ -156,8 +199,10 @@ export class MaleeRenderer {
     let bubble = this.container.querySelector(".msg-streaming") as HTMLElement;
     if (!bubble) {
       bubble = document.createElement("div");
-      bubble.className = "msg-assistant msg-streaming self-start max-w-[85%] w-full rounded-2xl px-4 py-2.5 text-sm mb-3 app-prose dark:prose-invert prose-p:my-1 prose-pre:my-2";
-      bubble.style.backgroundColor = "color-mix(in oklab, var(--muted) 30%, transparent)";
+      bubble.className =
+        "msg-assistant msg-streaming self-start max-w-[85%] w-full rounded-2xl px-4 py-2.5 text-sm mb-3 app-prose dark:prose-invert prose-p:my-1 prose-pre:my-2";
+      bubble.style.backgroundColor =
+        "color-mix(in oklab, var(--muted) 30%, transparent)";
       bubble.style.color = "var(--foreground)";
       this.container.appendChild(bubble);
       this.currentStreamBuffer = "";
@@ -195,11 +240,15 @@ export class MaleeRenderer {
     this.scrollToBottom();
   }
 
-  private renderProductCarousel(title: string, subtitle: string | undefined, items: ProductCard[]): void {
+  private renderProductCarousel(
+    title: string,
+    subtitle: string | undefined,
+    items: ProductCard[]
+  ): void {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
     wrapper.className = "mb-4";
-    
+
     if (title) {
       const h4 = document.createElement("h4");
       h4.className = "text-sm font-semibold mb-1";
@@ -215,7 +264,7 @@ export class MaleeRenderer {
 
     const scrollArea = document.createElement("div");
     scrollArea.className = "flex gap-3 overflow-x-auto pb-2 snap-x";
-    
+
     items.forEach(item => {
       const card = this.createProductCard(item, false);
       scrollArea.appendChild(card);
@@ -230,15 +279,17 @@ export class MaleeRenderer {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
     wrapper.className = "mb-4 w-full";
-    
+
     const card = document.createElement("div");
     card.className = `border border-border/70 rounded-xl overflow-hidden shrink-0 flex flex-col snap-start w-full max-w-[320px]`;
-    card.style.backgroundColor = "color-mix(in oklab, var(--muted) 10%, transparent)";
+    card.style.backgroundColor =
+      "color-mix(in oklab, var(--muted) 10%, transparent)";
     card.dataset.productId = item.id;
 
     const imgWrap = document.createElement("div");
-    imgWrap.className = "aspect-square w-full bg-muted/20 flex items-center justify-center overflow-x-auto snap-x";
-    
+    imgWrap.className =
+      "aspect-square w-full bg-muted/20 flex items-center justify-center overflow-x-auto snap-x";
+
     if (item.image_urls && item.image_urls.length > 0) {
       item.image_urls.forEach(url => {
         const img = document.createElement("img");
@@ -260,7 +311,7 @@ export class MaleeRenderer {
     const name = document.createElement("div");
     name.className = "text-base font-semibold line-clamp-2 mb-1";
     name.textContent = item.name;
-    
+
     if (item.vendor_name) {
       const vendor = document.createElement("div");
       vendor.className = "text-xs text-accent mb-2";
@@ -277,7 +328,7 @@ export class MaleeRenderer {
 
     const priceRow = document.createElement("div");
     priceRow.className = "flex items-center justify-between mt-auto pt-2";
-    
+
     const price = document.createElement("span");
     price.className = "text-sm font-mono text-accent font-bold";
     price.textContent = `Rs. ${item.price_lkr.toLocaleString()}`;
@@ -287,36 +338,45 @@ export class MaleeRenderer {
 
     if (item.is_perishable) {
       const pTag = document.createElement("span");
-      pTag.className = "text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider font-bold bg-amber-500/20 text-amber-500";
+      pTag.className =
+        "text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider font-bold bg-amber-500/20 text-amber-500";
       pTag.textContent = "Perishable";
       stockTags.appendChild(pTag);
     }
 
     const stock = document.createElement("span");
-    stock.className = `text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider font-bold ${item.in_stock ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`;
-    stock.textContent = item.in_stock ? 'In Stock' : 'Out';
+    stock.className = `text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider font-bold ${item.in_stock ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-500"}`;
+    stock.textContent = item.in_stock ? "In Stock" : "Out";
     stockTags.appendChild(stock);
 
     priceRow.appendChild(price);
     priceRow.appendChild(stockTags);
 
     const addBtn = document.createElement("button");
-    addBtn.className = "mt-3 w-full rounded-lg py-1.5 text-xs font-semibold bg-accent text-background transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100";
+    addBtn.className =
+      "mt-3 w-full rounded-lg py-1.5 text-xs font-semibold bg-accent text-background transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100";
     addBtn.textContent = "🛒 Add to Cart";
     addBtn.disabled = !item.in_stock;
-    
+
     addBtn.onclick = () => {
       addBtn.textContent = "⏳ Adding...";
-      card.dispatchEvent(new CustomEvent("action:add_to_cart", { 
-        bubbles: true, 
-        detail: { 
-          product_id: item.id,
-          name: item.name,
-          price_lkr: item.price_lkr,
-          image_url: (item.image_urls && item.image_urls.length > 0) ? item.image_urls[0] : null
-        } 
-      }));
-      setTimeout(() => { addBtn.textContent = "🛒 Add to Cart"; }, 1000);
+      card.dispatchEvent(
+        new CustomEvent("action:add_to_cart", {
+          bubbles: true,
+          detail: {
+            product_id: item.id,
+            name: item.name,
+            price_lkr: item.price_lkr,
+            image_url:
+              item.image_urls && item.image_urls.length > 0
+                ? item.image_urls[0]
+                : null,
+          },
+        })
+      );
+      setTimeout(() => {
+        addBtn.textContent = "🛒 Add to Cart";
+      }, 1000);
     };
 
     infoWrap.appendChild(name);
@@ -326,19 +386,24 @@ export class MaleeRenderer {
     card.appendChild(imgWrap);
     card.appendChild(infoWrap);
     wrapper.appendChild(card);
-    
+
     this.container.appendChild(wrapper);
     this.scrollToBottom();
   }
 
-  private createProductCard(item: ProductCard, fullWidth: boolean): HTMLElement {
+  private createProductCard(
+    item: ProductCard,
+    fullWidth: boolean
+  ): HTMLElement {
     const card = document.createElement("div");
-    card.className = `border border-border/70 rounded-xl overflow-hidden shrink-0 flex flex-col snap-start ${fullWidth ? 'w-full max-w-[320px]' : 'w-48'}`;
-    card.style.backgroundColor = "color-mix(in oklab, var(--muted) 10%, transparent)";
+    card.className = `border border-border/70 rounded-xl overflow-hidden shrink-0 flex flex-col snap-start ${fullWidth ? "w-full max-w-[320px]" : "w-48"}`;
+    card.style.backgroundColor =
+      "color-mix(in oklab, var(--muted) 10%, transparent)";
     card.dataset.productId = item.id;
 
     const imgWrap = document.createElement("div");
-    imgWrap.className = "aspect-square w-full bg-muted/20 flex items-center justify-center overflow-hidden";
+    imgWrap.className =
+      "aspect-square w-full bg-muted/20 flex items-center justify-center overflow-hidden";
     if (item.image_url) {
       const img = document.createElement("img");
       img.src = item.image_url;
@@ -361,38 +426,43 @@ export class MaleeRenderer {
 
     const priceRow = document.createElement("div");
     priceRow.className = "flex items-center justify-between mt-auto pt-2";
-    
+
     const price = document.createElement("span");
     price.className = "text-sm font-mono text-accent";
     price.textContent = `Rs. ${item.price_lkr.toLocaleString()}`;
 
     const stock = document.createElement("span");
-    stock.className = `text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider font-bold ${item.in_stock ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`;
-    stock.textContent = item.in_stock ? 'In Stock' : 'Out';
+    stock.className = `text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider font-bold ${item.in_stock ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-500"}`;
+    stock.textContent = item.in_stock ? "In Stock" : "Out";
 
     priceRow.appendChild(price);
     priceRow.appendChild(stock);
 
     const addBtn = document.createElement("button");
-    addBtn.className = "mt-3 w-full rounded-lg py-1.5 text-xs font-semibold bg-accent text-background transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100";
+    addBtn.className =
+      "mt-3 w-full rounded-lg py-1.5 text-xs font-semibold bg-accent text-background transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100";
     addBtn.textContent = "🛒 Add to Cart";
     addBtn.disabled = !item.in_stock;
-    
+
     // The actual POST /action add_to_cart will be wired up via event delegation in ui.ts or directly here.
     // For simplicity, we can dispatch a custom event that ui.ts listens to.
     addBtn.onclick = () => {
       addBtn.textContent = "⏳ Adding...";
-      card.dispatchEvent(new CustomEvent("action:add_to_cart", { 
-        bubbles: true, 
-        detail: { 
-          product_id: item.id,
-          name: item.name,
-          price_lkr: item.price_lkr,
-          image_url: item.image_url
-        } 
-      }));
+      card.dispatchEvent(
+        new CustomEvent("action:add_to_cart", {
+          bubbles: true,
+          detail: {
+            product_id: item.id,
+            name: item.name,
+            price_lkr: item.price_lkr,
+            image_url: item.image_url,
+          },
+        })
+      );
       // Re-enable text will be handled when cart_updated arrives or by ui.ts
-      setTimeout(() => { addBtn.textContent = "🛒 Add to Cart"; }, 1000);
+      setTimeout(() => {
+        addBtn.textContent = "🛒 Add to Cart";
+      }, 1000);
     };
 
     infoWrap.appendChild(name);
@@ -405,21 +475,26 @@ export class MaleeRenderer {
     return card;
   }
 
-  private renderCategoryGrid(categories: string[]): void {
+  private renderCategoryGrid(categories: any[]): void {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
     wrapper.className = "flex flex-wrap gap-2 mb-4";
 
-    categories.forEach(cat => {
+    const displayCategories = categories.slice(0, 8);
+    displayCategories.forEach(cat => {
+      const catName = typeof cat === "string" ? cat : cat.name;
       const btn = document.createElement("button");
-      btn.className = "px-3 py-1.5 rounded-full text-xs font-medium border border-border/70 hover:border-accent hover:text-accent transition-colors bg-background";
-      btn.textContent = cat;
-      btn.dataset.category = cat;
+      btn.className =
+        "px-3 py-1.5 rounded-full text-xs font-medium border border-border/70 hover:border-accent hover:text-accent transition-colors bg-background";
+      btn.textContent = catName;
+      btn.dataset.category = catName;
       btn.onclick = () => {
-        btn.dispatchEvent(new CustomEvent("action:send_message", {
-          bubbles: true,
-          detail: { text: `show me ${cat}` }
-        }));
+        btn.dispatchEvent(
+          new CustomEvent("action:send_message", {
+            bubbles: true,
+            detail: { text: `show me ${catName}` },
+          })
+        );
       };
       wrapper.appendChild(btn);
     });
@@ -435,13 +510,16 @@ export class MaleeRenderer {
 
     cities.forEach(city => {
       const btn = document.createElement("button");
-      btn.className = "px-3 py-1.5 rounded-full text-xs font-medium border border-border/70 hover:border-accent hover:text-accent transition-colors bg-background";
+      btn.className =
+        "px-3 py-1.5 rounded-full text-xs font-medium border border-border/70 hover:border-accent hover:text-accent transition-colors bg-background";
       btn.textContent = city;
       btn.onclick = () => {
-        btn.dispatchEvent(new CustomEvent("action:set_city", {
-          bubbles: true,
-          detail: { city }
-        }));
+        btn.dispatchEvent(
+          new CustomEvent("action:set_city", {
+            bubbles: true,
+            detail: { city },
+          })
+        );
       };
       wrapper.appendChild(btn);
     });
@@ -450,60 +528,73 @@ export class MaleeRenderer {
     this.scrollToBottom();
   }
 
-  private renderDeliveryQuote(city: string, date: string, rateLkr: number, deliverable: boolean, perishableWarning: boolean, nextAvailable: string | null): void {
+  private renderDeliveryQuote(
+    city: string,
+    date: string,
+    rateLkr: number,
+    deliverable: boolean,
+    perishableWarning: boolean,
+    nextAvailable: string | null
+  ): void {
     this.removeEmptyState();
     const card = document.createElement("div");
-    card.className = `p-3 rounded-xl border mb-4 text-sm ${deliverable && !perishableWarning ? 'border-green-500/30 bg-green-500/5 text-green-600' : (!deliverable ? 'border-red-500/30 bg-red-500/5 text-red-600' : 'border-amber-500/30 bg-amber-500/5 text-amber-600')}`;
-    
+    card.className = `p-3 rounded-xl border mb-4 text-sm ${deliverable && !perishableWarning ? "border-green-500/30 bg-green-500/5 text-green-600" : !deliverable ? "border-red-500/30 bg-red-500/5 text-red-600" : "border-amber-500/30 bg-amber-500/5 text-amber-600"}`;
+
     card.innerHTML = `
       <div class="flex items-center gap-2 font-semibold">
-        <span>${deliverable ? (perishableWarning ? '⚠️' : '✅') : '❌'}</span>
-        <span>Delivery to ${city} on ${date || 'TBD'}</span>
+        <span>${deliverable ? (perishableWarning ? "⚠️" : "✅") : "❌"}</span>
+        <span>Delivery to ${city} on ${date || "TBD"}</span>
       </div>
       <div class="mt-1 opacity-90">
-        ${deliverable ? `Rate: Rs. ${rateLkr.toLocaleString()}` : 'Sorry, we do not deliver to this city on the selected date.'}
+        ${deliverable ? `Rate: Rs. ${rateLkr.toLocaleString()}` : "Sorry, we do not deliver to this city on the selected date."}
       </div>
-      ${perishableWarning ? `<div class="mt-1 text-xs font-medium">Note: Perishable items require special handling.</div>` : ''}
-      ${nextAvailable ? `<div class="mt-1 text-xs">Next available date: ${nextAvailable}</div>` : ''}
+      ${perishableWarning ? `<div class="mt-1 text-xs font-medium">Note: Perishable items require special handling.</div>` : ""}
+      ${nextAvailable ? `<div class="mt-1 text-xs">Next available date: ${nextAvailable}</div>` : ""}
     `;
 
     this.container.appendChild(card);
     this.scrollToBottom();
   }
 
-  private renderCheckoutForm(draft: CheckoutDraft, missingFields: string[]): void {
+  private renderCheckoutForm(
+    draft: CheckoutDraft,
+    missingFields: string[]
+  ): void {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
-    wrapper.className = "p-4 rounded-xl border border-border/70 bg-background mb-4";
-    
+    wrapper.className =
+      "p-4 rounded-xl border border-border/70 bg-background mb-4";
+
     const h4 = document.createElement("h4");
-    h4.className = "text-sm font-semibold mb-3 border-b border-border/50 pb-2 text-accent";
+    h4.className =
+      "text-sm font-semibold mb-3 border-b border-border/50 pb-2 text-accent";
     h4.textContent = "Checkout Draft";
     wrapper.appendChild(h4);
 
     const grid = document.createElement("div");
     grid.className = "grid grid-cols-1 gap-2 text-sm";
 
-    const fields: Array<{key: keyof CheckoutDraft, label: string}> = [
-      { key: 'recipient_name', label: 'Recipient' },
-      { key: 'delivery_city', label: 'City' },
-      { key: 'delivery_date', label: 'Date' },
-      { key: 'sender_name', label: 'Sender Name' },
-      { key: 'gift_message', label: 'Gift Note' },
+    const fields: Array<{ key: keyof CheckoutDraft; label: string }> = [
+      { key: "recipient_name", label: "Recipient" },
+      { key: "delivery_city", label: "City" },
+      { key: "delivery_date", label: "Date" },
+      { key: "sender_name", label: "Sender Name" },
+      { key: "gift_message", label: "Gift Note" },
     ];
 
     fields.forEach(f => {
       const row = document.createElement("div");
       row.className = "flex flex-col sm:flex-row sm:items-center py-1";
-      
+
       const label = document.createElement("span");
-      label.className = "w-24 text-xs opacity-70 font-medium uppercase tracking-wide";
+      label.className =
+        "w-24 text-xs opacity-70 font-medium uppercase tracking-wide";
       label.textContent = f.label;
-      
+
       const val = document.createElement("span");
       const isMissing = missingFields.includes(f.key);
-      val.className = `font-medium ${isMissing ? 'text-red-500 italic text-xs' : ''}`;
-      val.textContent = draft[f.key] || (isMissing ? 'Required' : 'None');
+      val.className = `font-medium ${isMissing ? "text-red-500 italic text-xs" : ""}`;
+      val.textContent = draft[f.key] || (isMissing ? "Required" : "None");
 
       row.appendChild(label);
       row.appendChild(val);
@@ -515,11 +606,16 @@ export class MaleeRenderer {
     this.scrollToBottom();
   }
 
-  private renderCheckoutProgress(currentStep: number, totalSteps: number, stepName: string, missingFields: string[]): void {
+  private renderCheckoutProgress(
+    currentStep: number,
+    totalSteps: number,
+    stepName: string,
+    missingFields: string[]
+  ): void {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
     wrapper.className = "mb-4 w-full";
-    
+
     wrapper.innerHTML = `
       <div class="p-3 rounded-xl border border-accent/30 bg-accent/5 text-sm">
         <div class="flex items-center justify-between mb-2">
@@ -532,9 +628,11 @@ export class MaleeRenderer {
         </div>
         
         <div class="font-medium mb-1">${stepName}</div>
-        ${missingFields && missingFields.length > 0 ? 
-          `<div class="text-xs opacity-70 mt-2">Missing: <span class="text-amber-500">${missingFields.join(", ")}</span></div>` 
-          : '<div class="text-xs opacity-70 mt-2 text-green-500">All fields complete</div>'}
+        ${
+          missingFields && missingFields.length > 0
+            ? `<div class="text-xs opacity-70 mt-2">Missing: <span class="text-amber-500">${missingFields.join(", ")}</span></div>`
+            : '<div class="text-xs opacity-70 mt-2 text-green-500">All fields complete</div>'
+        }
       </div>
     `;
 
@@ -542,17 +640,23 @@ export class MaleeRenderer {
     this.scrollToBottom();
   }
 
-  private renderCheckoutReady(payUrl: string, orderRef: string, expiresMins: number, cartSummary: CartItem[]): void {
+  private renderCheckoutReady(
+    payUrl: string,
+    orderRef: string,
+    expiresMins: number,
+    cartSummary: CartItem[]
+  ): void {
     this.removeEmptyState();
     const card = document.createElement("div");
-    card.className = "p-5 rounded-xl border border-green-500/50 bg-green-500/10 mb-4 text-center";
-    
+    card.className =
+      "p-5 rounded-xl border border-green-500/50 bg-green-500/10 mb-4 text-center";
+
     let itemsHtml = "";
     if (cartSummary && cartSummary.length > 0) {
       itemsHtml = `<div class="mt-3 text-xs text-left bg-background/50 p-2 rounded-lg text-foreground/80">
         <div class="font-semibold mb-1">Order Items:</div>
         <ul class="list-disc pl-4">
-          ${cartSummary.map(item => `<li>${item.quantity}x ${item.name}</li>`).join('')}
+          ${cartSummary.map(item => `<li>${item.quantity}x ${item.name}</li>`).join("")}
         </ul>
       </div>`;
     }
@@ -576,21 +680,34 @@ export class MaleeRenderer {
     this.scrollToBottom();
   }
 
-  private renderQuestionPrompt(questions: Array<{field: string, label: string, input_type: string, placeholder?: string}>): void {
+  private renderQuestionPrompt(
+    questions: Array<{
+      field: string;
+      label: string;
+      input_type: string;
+      placeholder?: string;
+    }>
+  ): void {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
     wrapper.className = "mb-4 w-full max-w-[85%] self-start";
-    
+
     let fieldsHtml = "";
     questions.forEach(q => {
-      const commonClasses = "w-full bg-muted/50 border border-border/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-accent min-w-0";
+      const commonClasses =
+        "w-full bg-muted/50 border border-border/70 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-accent min-w-0";
       const ph = q.placeholder ? `placeholder="${q.placeholder}"` : "";
       let inputHtml = "";
-      
-      if (q.input_type === 'textarea') {
+
+      if (q.input_type === "textarea") {
         inputHtml = `<textarea name="${q.field}" class="${commonClasses} min-h-[80px]" ${ph} required></textarea>`;
       } else {
-        const type = q.input_type === 'date' ? 'date' : (q.input_type === 'tel' ? 'tel' : 'text');
+        const type =
+          q.input_type === "date"
+            ? "date"
+            : q.input_type === "tel"
+              ? "tel"
+              : "text";
         inputHtml = `<input type="${type}" name="${q.field}" class="${commonClasses}" ${ph} required />`;
       }
 
@@ -613,19 +730,23 @@ export class MaleeRenderer {
 
     const form = wrapper.querySelector("form");
     if (form) {
-      form.onsubmit = (e) => {
+      form.onsubmit = e => {
         e.preventDefault();
-        const inputs = Array.from(form.querySelectorAll("input, textarea")) as Array<HTMLInputElement | HTMLTextAreaElement>;
+        const inputs = Array.from(
+          form.querySelectorAll("input, textarea")
+        ) as Array<HTMLInputElement | HTMLTextAreaElement>;
         const allFilled = inputs.every(input => input.value.trim() !== "");
         if (allFilled) {
           const answers = inputs.map(input => input.value).join(", ");
-          wrapper.dispatchEvent(new CustomEvent("action:send_message", {
-            bubbles: true,
-            detail: { text: answers }
-          }));
-          
+          wrapper.dispatchEvent(
+            new CustomEvent("action:send_message", {
+              bubbles: true,
+              detail: { text: answers },
+            })
+          );
+
           // Disable form after send
-          inputs.forEach(input => input.disabled = true);
+          inputs.forEach(input => (input.disabled = true));
           const btn = form.querySelector("button");
           if (btn) btn.disabled = true;
         }
@@ -639,8 +760,9 @@ export class MaleeRenderer {
   private renderTrackingResult(result: TrackingResult): void {
     this.removeEmptyState();
     const wrapper = document.createElement("div");
-    wrapper.className = "p-4 rounded-xl border border-border/70 bg-background mb-4";
-    
+    wrapper.className =
+      "p-4 rounded-xl border border-border/70 bg-background mb-4";
+
     const header = document.createElement("div");
     header.className = "mb-4 border-b border-border/50 pb-3";
     header.innerHTML = `
@@ -656,10 +778,10 @@ export class MaleeRenderer {
     result.timeline.forEach((t, i) => {
       const item = document.createElement("div");
       item.className = "flex gap-3 relative";
-      
+
       const lineWrap = document.createElement("div");
       lineWrap.className = "flex flex-col items-center";
-      
+
       const dot = document.createElement("div");
       dot.className = "w-2.5 h-2.5 rounded-full bg-accent mt-1.5";
       lineWrap.appendChild(dot);
@@ -676,11 +798,11 @@ export class MaleeRenderer {
 
       const content = document.createElement("div");
       content.className = "pb-4";
-      
+
       const time = document.createElement("div");
       time.className = "text-xs font-mono opacity-60";
       time.textContent = new Date(t.timestamp).toLocaleString();
-      
+
       const desc = document.createElement("div");
       desc.className = "text-sm mt-0.5";
       desc.textContent = t.description;
@@ -698,22 +820,29 @@ export class MaleeRenderer {
     this.scrollToBottom();
   }
 
-  private renderError(code: string, message: string, recoverable: boolean): void {
+  private renderError(
+    code: string,
+    message: string,
+    recoverable: boolean
+  ): void {
     this.removeEmptyState();
     const card = document.createElement("div");
-    card.className = "p-4 rounded-xl border border-red-500/50 bg-red-500/10 mb-4";
-    
+    card.className =
+      "p-4 rounded-xl border border-red-500/50 bg-red-500/10 mb-4";
+
     card.innerHTML = `
       <div class="text-red-500 font-bold mb-1">Error: ${code}</div>
       <div class="text-sm text-red-400 mb-3">${message}</div>
-      ${recoverable ? `<button class="retry-btn text-xs bg-red-500/20 text-red-500 px-3 py-1.5 rounded hover:bg-red-500/30 transition-colors">Retry</button>` : ''}
+      ${recoverable ? `<button class="retry-btn text-xs bg-red-500/20 text-red-500 px-3 py-1.5 rounded hover:bg-red-500/30 transition-colors">Retry</button>` : ""}
     `;
 
     if (recoverable) {
       const btn = card.querySelector(".retry-btn");
       if (btn) {
         btn.addEventListener("click", () => {
-          card.dispatchEvent(new CustomEvent("action:retry", { bubbles: true }));
+          card.dispatchEvent(
+            new CustomEvent("action:retry", { bubbles: true })
+          );
         });
       }
     }

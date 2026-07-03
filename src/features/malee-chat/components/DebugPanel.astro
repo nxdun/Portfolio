@@ -1,28 +1,113 @@
 ---
-const btnClasses = "w-full text-left px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-muted/30 transition-colors";
+const btnClasses =
+  "w-full text-left px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-muted/30 transition-colors";
 ---
+
 <!-- Floating Debug Menu -->
-<div id="malee-debug-menu" class="fixed top-24 right-4 z-[100] flex flex-col gap-2 items-end group">
-  
-  <button id="debug-toggle-btn" class="w-10 h-10 rounded-full bg-accent text-background shadow-lg shadow-accent/30 flex items-center justify-center hover:scale-110 transition-transform">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+<div
+  id="malee-debug-menu"
+  class="group fixed top-24 right-4 z-[100] flex hidden flex-col items-end gap-2"
+>
+  <button
+    id="debug-toggle-btn"
+    class="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-background shadow-lg shadow-accent/30 transition-transform hover:scale-110"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      ><path
+        d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+      ></path></svg
+    >
   </button>
 
-  <div id="debug-panel" class="hidden glass-panel w-64 p-3 rounded-2xl shadow-xl flex-col gap-2 scale-95 opacity-0 transition-all origin-top-right">
-    <div class="text-xs font-bold uppercase tracking-wider opacity-60 px-1 mb-1">Inject Mock Cards</div>
-    
-    <button class={`debug-action-btn ${btnClasses}`} data-action="product_carousel">Product Carousel</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="product_detail">Product Detail</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="category_grid">Category Grid</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="city_suggestions">City Suggestions</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="delivery_quote">Delivery Quote</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="checkout_form">Checkout Draft</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="checkout_progress">Checkout Progress</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="question_prompt">Question Form</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="checkout_ready">Order Ready</button>
-    <button class={`debug-action-btn ${btnClasses}`} data-action="tracking_result">Tracking Result</button>
-    <div class="h-px w-full bg-border/50 my-1"></div>
-    <button class={`debug-action-btn !text-red-500 ${btnClasses}`} data-action="clear_chat">Clear Chat</button>
+  <div
+    id="debug-panel"
+    class="glass-panel hidden w-64 origin-top-right scale-95 flex-col gap-2 rounded-2xl p-3 opacity-0 shadow-xl transition-all"
+  >
+    <div
+      class="mb-1 px-1 text-xs font-bold tracking-wider uppercase opacity-60"
+    >
+      Inject Mock Cards
+    </div>
+
+    <button class={`debug-action-btn ${btnClasses}`} data-action="water_drop"
+      >💧 Water Drop Effect</button
+    >
+    <div class="my-1 h-px w-full bg-border/50"></div>
+    <div class="px-1 text-[10px] font-bold tracking-wider uppercase opacity-60">
+      Lotus Skeleton Modes
+    </div>
+    <button class={`debug-action-btn ${btnClasses}`} data-action="skel_bloom"
+      >1. Lotus Bloom (Main)</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="skel_pond"
+      >2. Serene Pond</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="skel_water"
+      >3. 3D Water Physics</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="skel_zen"
+      >4. Zen Sand</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="skel_firefly"
+      >5. Lotus Firefly</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="skel_aurora"
+      >6. Aurora Flow</button
+    >
+    <div class="my-1 h-px w-full bg-border/50"></div>
+
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="product_carousel">Product Carousel</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="product_detail">Product Detail</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="category_grid"
+      >Category Grid</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="city_suggestions">City Suggestions</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="delivery_quote">Delivery Quote</button
+    >
+    <button class={`debug-action-btn ${btnClasses}`} data-action="checkout_form"
+      >Checkout Draft</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="checkout_progress">Checkout Progress</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="question_prompt">Question Form</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="checkout_ready">Order Ready</button
+    >
+    <button
+      class={`debug-action-btn ${btnClasses}`}
+      data-action="tracking_result">Tracking Result</button
+    >
+    <div class="my-1 h-px w-full bg-border/50"></div>
+    <button
+      class={`debug-action-btn !text-red-500 ${btnClasses}`}
+      data-action="clear_chat">Clear Chat</button
+    >
   </div>
 </div>
 

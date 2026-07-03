@@ -12,7 +12,7 @@ export function initMaleeChatUI(): void {
   const root = document.getElementById("malee-chat-root");
   if (!root) return;
 
-  const apiUrl = import.meta.env.PUBLIC_MALEE_API_URL;
+  const apiUrl = root.dataset.apiUrl;
   const apiKey = import.meta.env.PUBLIC_MALEE_API_KEY;
 
   if (!apiUrl || !apiKey) {
@@ -26,6 +26,27 @@ export function initMaleeChatUI(): void {
   setupInputHandlers(root);
   setupEventDelegation(root);
   setupStoreSubscriptions(root);
+
+  // Spawn Zen Sand for 20 seconds immediately
+  setTimeout(() => {
+    const container = root.querySelector(".loader-grid-container");
+    const welcomeHero = root.querySelector(".welcome-hero");
+    if (container && welcomeHero && !welcomeHero.classList.contains("hidden")) {
+      const zen = document.createElement("span");
+      zen.className =
+        "loader-skeleton-zen loader-skeleton-effect zen-landing-loop";
+      zen.style.transition = "opacity 1s ease-out";
+      container.appendChild(zen);
+
+      // Go away after 20 seconds
+      setTimeout(() => {
+        if (zen.parentNode) {
+          zen.style.opacity = "0";
+          setTimeout(() => zen.remove(), 1500);
+        }
+      }, 20000);
+    }
+  }, 0);
 }
 
 function setupStoreSubscriptions(root: HTMLElement) {
@@ -37,29 +58,55 @@ function setupStoreSubscriptions(root: HTMLElement) {
 }
 
 function updateStatusIndicator(status: string) {
-  const dot = document.querySelector('.connection-dot') as HTMLElement;
-  const text = document.querySelector('.connection-text') as HTMLElement;
+  const dot = document.querySelector(".connection-dot") as HTMLElement;
+  const text = document.querySelector(".connection-text") as HTMLElement;
   if (!dot || !text) return;
 
-  dot.style.backgroundColor = status === 'connected' ? '#10b981' : (status === 'connecting' ? '#f59e0b' : '#ef4444');
-  dot.style.animation = status === 'connected' ? 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' : 'none';
+  dot.style.backgroundColor =
+    status === "connected"
+      ? "#10b981"
+      : status === "connecting"
+        ? "#f59e0b"
+        : "#ef4444";
+  dot.style.animation =
+    status === "connected"
+      ? "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite"
+      : "none";
   text.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+
+  // Manage global dot skeleton effect
+  const root = document.getElementById("malee-chat-root");
+  const container = root?.querySelector(".loader-grid-container");
+  if (container) {
+    if (status === "connecting") {
+      // The user requested to remove the skeleton for now.
+      // We will not append loader-skeleton-bloom during 'connecting' state.
+    } else {
+      const activeEffects = container.querySelectorAll(".connecting-skeleton");
+      activeEffects.forEach(el => el.remove());
+    }
+  }
 }
 
 function updateGravityDock(state: any, root: HTMLElement) {
-  const dock = root.querySelector('.gravity-dock-placeholder') as HTMLElement;
+  const dock = root.querySelector(".gravity-dock-placeholder") as HTMLElement;
   if (!dock) return;
 
   if (state.checkoutProgress) {
-    dock.classList.remove('is-empty');
-    dock.classList.add('has-items');
-    
-    const { currentStep, totalSteps, stepName, missingFields } = state.checkoutProgress;
-    const segments = Array.from({length: totalSteps}).map((_, i) => {
-       if (i + 1 < currentStep) return `<div class="h-1.5 flex-grow rounded-full bg-accent"></div>`;
-       if (i + 1 === currentStep) return `<div class="h-1.5 flex-grow rounded-full bg-accent shadow-[0_0_12px_rgba(var(--color-accent),0.6)] animate-pulse"></div>`;
-       return `<div class="h-1.5 flex-grow rounded-full bg-white/10"></div>`;
-    }).join("");
+    dock.classList.remove("is-empty");
+    dock.classList.add("has-items");
+
+    const { currentStep, totalSteps, stepName, missingFields } =
+      state.checkoutProgress;
+    const segments = Array.from({ length: totalSteps })
+      .map((_, i) => {
+        if (i + 1 < currentStep)
+          return `<div class="h-1.5 flex-grow rounded-full bg-accent"></div>`;
+        if (i + 1 === currentStep)
+          return `<div class="h-1.5 flex-grow rounded-full bg-accent shadow-[0_0_12px_rgba(var(--color-accent),0.6)] animate-pulse"></div>`;
+        return `<div class="h-1.5 flex-grow rounded-full bg-white/10"></div>`;
+      })
+      .join("");
 
     dock.innerHTML = `
       <div class="flex flex-col w-full h-full min-h-[240px] p-6 relative overflow-hidden group/full bg-background/70 backdrop-blur-2xl border border-white/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] rounded-[28px] animate-flip-in-y">
@@ -99,8 +146,8 @@ function updateGravityDock(state: any, root: HTMLElement) {
 
   const cart = state.cart;
   if (cart && cart.item_count > 0) {
-    dock.classList.remove('is-empty');
-    dock.classList.add('has-items');
+    dock.classList.remove("is-empty");
+    dock.classList.add("has-items");
     dock.innerHTML = `
       <div class="flex flex-col w-full h-full p-6 relative overflow-hidden group/full">
         <!-- Abstract Glow -->
@@ -115,7 +162,11 @@ function updateGravityDock(state: any, root: HTMLElement) {
 
         <!-- Cart Items List -->
         <div class="flex-grow overflow-y-auto max-h-[200px] flex flex-col gap-2.5 relative z-10 w-full mb-3" style="scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;">
-          ${cart.items ? cart.items.map((item: any) => `
+          ${
+            cart.items
+              ? cart.items
+                  .map(
+                    (item: any) => `
             <div class="group/item relative rounded-2xl border border-white/10 bg-white/[0.04] overflow-hidden shrink-0 hover:border-white/20 transition-colors duration-300">
                <!-- Content Row -->
                <div class="flex items-center justify-between px-4 py-3.5">
@@ -145,7 +196,11 @@ function updateGravityDock(state: any, root: HTMLElement) {
                  </button>
                </div>
             </div>
-          `).join('') : '<div class="text-white/50 text-xs italic text-center w-full mt-4">Loading items...</div>'}
+          `
+                  )
+                  .join("")
+              : '<div class="text-white/50 text-xs italic text-center w-full mt-4">Loading items...</div>'
+          }
         </div>
 
         <div class="flex justify-between items-center w-full border-t border-white/10 pt-4 mt-auto relative z-10 transition-all duration-[600ms] shrink-0">
@@ -160,8 +215,8 @@ function updateGravityDock(state: any, root: HTMLElement) {
       </div>
     `;
   } else {
-    dock.classList.add('is-empty');
-    dock.classList.remove('has-items');
+    dock.classList.add("is-empty");
+    dock.classList.remove("has-items");
     dock.innerHTML = `
       <div class="flex flex-col items-center justify-start text-white/50 w-full h-full pt-4 pb-4 px-4 relative overflow-hidden group/empty">
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-0 group-hover/empty:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
@@ -173,23 +228,23 @@ function updateGravityDock(state: any, root: HTMLElement) {
 }
 
 function setupInputHandlers(root: HTMLElement) {
-  const input = root.querySelector('.chat-input') as HTMLTextAreaElement;
-  const sendBtn = root.querySelector('.send-btn') as HTMLButtonElement;
-  const langToggle = root.querySelector('.lang-toggle') as HTMLButtonElement;
+  const input = root.querySelector(".chat-input") as HTMLTextAreaElement;
+  const sendBtn = root.querySelector(".send-btn") as HTMLButtonElement;
+  const langToggle = root.querySelector(".lang-toggle") as HTMLButtonElement;
 
   if (!input || !sendBtn) return;
 
-  let currentLang = 'english';
-  langToggle?.addEventListener('click', () => {
-    if (currentLang === 'english') {
-       currentLang = 'sinhala';
-       langToggle.textContent = 'SI';
-    } else if (currentLang === 'sinhala') {
-       currentLang = 'auto';
-       langToggle.textContent = 'AU';
+  let currentLang = "english";
+  langToggle?.addEventListener("click", () => {
+    if (currentLang === "english") {
+      currentLang = "sinhala";
+      langToggle.textContent = "SI";
+    } else if (currentLang === "sinhala") {
+      currentLang = "auto";
+      langToggle.textContent = "AU";
     } else {
-       currentLang = 'english';
-       langToggle.textContent = 'EN';
+      currentLang = "english";
+      langToggle.textContent = "EN";
     }
     maleeStore.update({ languageMode: currentLang as any });
   });
@@ -202,61 +257,105 @@ function setupInputHandlers(root: HTMLElement) {
       input.value = "";
       input.style.height = "auto";
     }
-    
+
     if (activeStream) {
       activeStream.abort();
     }
 
     if (!silent) {
       renderer.appendUserMessage(text);
+
+      // Spawn Serene Pond ripple from send button location
+      const container = root.querySelector(".loader-grid-container");
+      if (container && sendBtn) {
+        const rect = sendBtn.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const xPos =
+          ((rect.left + rect.width / 2 - containerRect.left) /
+            containerRect.width) *
+          100;
+        const yPos =
+          ((rect.top + rect.height / 2 - containerRect.top) /
+            containerRect.height) *
+          100;
+
+        const pond = document.createElement("span");
+        pond.className = "loader-skeleton-pond loader-skeleton-effect";
+        pond.style.setProperty("--pond-x", `${xPos}%`);
+        pond.style.setProperty("--pond-y", `${yPos}%`);
+        container.appendChild(pond);
+
+        // Remove it after the animation completes (5s)
+        setTimeout(() => pond.remove(), 5000);
+      }
     }
+
+    // Clear landing page zen loop if it exists
+    const zenLoop = root.querySelector(".zen-landing-loop");
+    if (zenLoop) {
+      (zenLoop as HTMLElement).style.opacity = "0";
+      setTimeout(() => zenLoop.remove(), 1000);
+    }
+
+    renderer.renderConnecting();
     maleeStore.update({ connectionStatus: "connecting" });
+    const canvas = root.querySelector(".conversation-canvas");
+    if (canvas) canvas.classList.add("locked-scroll");
 
     try {
       activeStream = await client.streamChat(
         {
           message: text,
           session_id: maleeStore.get().sessionId,
-          language_mode: maleeStore.get().languageMode
+          language_mode: maleeStore.get().languageMode,
         },
-        (event) => {
-          maleeStore.update({ connectionStatus: "connected", lastActivity: new Date() });
+        event => {
+          maleeStore.update({
+            connectionStatus: "connected",
+            lastActivity: new Date(),
+          });
           renderer!.handleEvent(event);
         },
         () => {
           maleeStore.update({ connectionStatus: "connected" });
+          if (canvas) canvas.classList.remove("locked-scroll");
+          renderer!.finalizeStream();
           input.focus();
           activeStream = null;
         },
-        (err) => {
+        err => {
           maleeStore.update({ connectionStatus: "error" });
+          if (canvas) canvas.classList.remove("locked-scroll");
+          renderer!.finalizeStream();
           renderer!.handleEvent({ type: "error", message: err.message });
           activeStream = null;
         }
       );
     } catch (err) {
+      if (canvas) canvas.classList.remove("locked-scroll");
+      renderer!.finalizeStream();
       // Ignored
     }
   };
 
-  sendBtn.addEventListener('click', () => send());
-  
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  sendBtn.addEventListener("click", () => send());
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       send();
     }
   });
 
-  input.addEventListener('input', () => {
+  input.addEventListener("input", () => {
     input.style.height = "auto";
     input.style.height = Math.min(input.scrollHeight, 120) + "px";
   });
 
   // Suggestion pills
-  root.querySelectorAll('.suggestion-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      input.value = pill.textContent?.replace(/[^\w\s]/g, '').trim() || "";
+  root.querySelectorAll(".suggestion-pill").forEach(pill => {
+    pill.addEventListener("click", () => {
+      input.value = pill.textContent?.replace(/[^\w\s]/g, "").trim() || "";
       send();
     });
   });
@@ -270,33 +369,39 @@ function setupInputHandlers(root: HTMLElement) {
 
 function setupEventDelegation(root: HTMLElement) {
   // Global double-click guard for all buttons
-  root.addEventListener('click', (e) => {
-    const target = (e.target as HTMLElement).closest('button, .suggestion-pill');
-    if (target) {
-      if (target.hasAttribute('data-clicked')) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        return;
+  root.addEventListener(
+    "click",
+    e => {
+      const target = (e.target as HTMLElement).closest(
+        "button, .suggestion-pill"
+      );
+      if (target) {
+        if (target.hasAttribute("data-clicked")) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          return;
+        }
+        target.setAttribute("data-clicked", "true");
+        setTimeout(() => target.removeAttribute("data-clicked"), 1000);
       }
-      target.setAttribute('data-clicked', 'true');
-      setTimeout(() => target.removeAttribute('data-clicked'), 1000);
-    }
-  }, true);
+    },
+    true
+  );
 
   root.addEventListener("action:add_to_cart", async (e: Event) => {
     const ev = e as CustomEvent;
     const { product_id, name, price_lkr, image_url } = ev.detail;
     const sid = maleeStore.get().sessionId;
     if (!client || !renderer || !sid) return;
-    
+
     try {
       const res = await client.sendAction({
         session_id: sid,
         action: "add_to_cart",
-        payload: { product_id, name, price_lkr, image_url, quantity: 1 }
+        payload: { product_id, name, price_lkr, image_url, quantity: 1 },
       });
-      
+
       if (res && res.cart) {
         maleeStore.update({ cart: res.cart });
       } else if (res && res.session && res.session.cart) {
@@ -309,7 +414,10 @@ function setupEventDelegation(root: HTMLElement) {
         }
       }
     } catch (err: any) {
-      renderer.appendSystemNotice(`Add to cart failed: ${err.message}`, 'error');
+      renderer.appendSystemNotice(
+        `Add to cart failed: ${err.message}`,
+        "error"
+      );
     }
   });
 
@@ -323,7 +431,7 @@ function setupEventDelegation(root: HTMLElement) {
       const res = await client.sendAction({
         session_id: sid,
         action: "remove_from_cart",
-        payload: { product_id }
+        payload: { product_id },
       });
 
       if (res && res.cart) {
@@ -337,25 +445,38 @@ function setupEventDelegation(root: HTMLElement) {
         }
       }
     } catch (err: any) {
-      renderer.appendSystemNotice(`Remove from cart failed: ${err.message}`, 'error');
+      renderer.appendSystemNotice(
+        `Remove from cart failed: ${err.message}`,
+        "error"
+      );
     }
   });
 
   root.addEventListener("action:checkout", () => {
-    root.dispatchEvent(new CustomEvent("action:send_chat", { bubbles: true, detail: { text: "I want to checkout my cart", silent: true } }));
+    root.dispatchEvent(
+      new CustomEvent("action:send_chat", {
+        bubbles: true,
+        detail: { text: "I want to checkout my cart", silent: true },
+      })
+    );
   });
 
   root.addEventListener("action:cancel_checkout", () => {
     // Hide the checkout progress dock and return to cart
     maleeStore.update({ checkoutProgress: null });
-    root.dispatchEvent(new CustomEvent("action:send_chat", { bubbles: true, detail: { text: "I want to cancel the order", silent: true } }));
+    root.dispatchEvent(
+      new CustomEvent("action:send_chat", {
+        bubbles: true,
+        detail: { text: "I want to cancel the order", silent: true },
+      })
+    );
   });
 
   root.addEventListener("action:send_message", (e: Event) => {
     const ev = e as CustomEvent;
     const text = ev.detail.text;
-    const input = root.querySelector('.chat-input') as HTMLTextAreaElement;
-    const sendBtn = root.querySelector('.send-btn') as HTMLButtonElement;
+    const input = root.querySelector(".chat-input") as HTMLTextAreaElement;
+    const sendBtn = root.querySelector(".send-btn") as HTMLButtonElement;
     if (input && sendBtn && !input.disabled) {
       input.value = text;
       sendBtn.click();
@@ -367,15 +488,15 @@ function setupEventDelegation(root: HTMLElement) {
     const city = ev.detail.city;
     const sid = maleeStore.get().sessionId;
     if (!client || !renderer || !sid) return;
-    
+
     try {
       renderer.appendUserMessage(`Set city to ${city}`);
       const res = await client.sendAction({
         session_id: sid,
         action: "set_delivery_city",
-        payload: { city }
+        payload: { city },
       });
-      
+
       if (res && res.session) {
         maleeStore.update({ checkoutDraft: res.session.checkout_draft });
       } else {
@@ -385,7 +506,7 @@ function setupEventDelegation(root: HTMLElement) {
         }
       }
     } catch (err: any) {
-      renderer.appendSystemNotice(`Set city failed: ${err.message}`, 'error');
+      renderer.appendSystemNotice(`Set city failed: ${err.message}`, "error");
     }
   });
 }

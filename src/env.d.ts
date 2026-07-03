@@ -28,6 +28,5 @@ declare module "cloudflare:workers" {
 }
 
 interface ImportMetaEnv {
-  readonly PUBLIC_MALEE_API_URL: string;
   readonly PUBLIC_MALEE_API_KEY: string;
 }

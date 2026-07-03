@@ -733,3 +733,393 @@ html:has(.loader-container[data-loader-skeleton="true"]:hover)
     transform: translateX(110%);
   }
 }
+
+.loader-water-drop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle,
+    var(--loader-dot-color) calc(var(--loader-dot-size) * 3),
+    transparent calc(var(--loader-dot-blur) * 1.5)
+  );
+  background-position: 0 0;
+  background-size: var(--loader-grid-size) var(--loader-grid-size);
+  z-index: 10;
+
+  --drop-x: 50%;
+  --drop-y: 50%;
+  --drop-radius: 0%;
+  --drop-ring-width: 5%;
+
+  -webkit-mask-image: radial-gradient(
+    circle at var(--drop-x) var(--drop-y),
+    transparent calc(var(--drop-radius) - var(--drop-ring-width)),
+    #000 var(--drop-radius),
+    transparent calc(var(--drop-radius) + var(--drop-ring-width))
+  );
+  mask-image: radial-gradient(
+    circle at var(--drop-x) var(--drop-y),
+    transparent calc(var(--drop-radius) - var(--drop-ring-width)),
+    #000 var(--drop-radius),
+    transparent calc(var(--drop-radius) + var(--drop-ring-width))
+  );
+}
+
+/* SKELETON ANIMATIONS ON GLOBAL DOTS */
+@property --cross-x {
+  syntax: "<percentage>";
+  initial-value: 50%;
+  inherits: false;
+}
+
+@property --cross-y {
+  syntax: "<percentage>";
+  initial-value: 50%;
+  inherits: false;
+}
+
+@property --implosion-r {
+  syntax: "<percentage>";
+  initial-value: 100%;
+  inherits: false;
+}
+
+@property --bloom-r {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+@property --pond-r {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+.loader-skeleton-effect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-position: 0 0;
+  background-size: var(--loader-grid-size) var(--loader-grid-size);
+  z-index: 5;
+}
+
+/* SKELETON ANIMATIONS ON GLOBAL DOTS (Mallee/Lotus Theme) */
+@property --bloom-r {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+@property --pond-r {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+@property --water-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --wave-phase {
+  syntax: "<length>";
+  initial-value: 0px;
+  inherits: false;
+}
+
+.loader-skeleton-effect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-position: 0 0;
+  background-size: var(--loader-grid-size) var(--loader-grid-size);
+  z-index: 5;
+}
+
+@property --bloom-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+/* 1. Lotus Bloom (Main Component) */
+.loader-skeleton-bloom {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 70%, pink)
+      calc(var(--loader-dot-size) * 1.5),
+    transparent calc(var(--loader-dot-blur) * 1.5)
+  );
+  -webkit-mask-image:
+    radial-gradient(
+      circle at 50% 50%,
+      #000 var(--bloom-r),
+      transparent calc(var(--bloom-r) + 8%)
+    ),
+    repeating-conic-gradient(
+      from var(--bloom-angle) at 50% 50%,
+      transparent 0deg,
+      #000 15deg,
+      transparent 30deg
+    );
+  mask-image:
+    radial-gradient(
+      circle at 50% 50%,
+      #000 var(--bloom-r),
+      transparent calc(var(--bloom-r) + 8%)
+    ),
+    repeating-conic-gradient(
+      from var(--bloom-angle) at 50% 50%,
+      transparent 0deg,
+      #000 15deg,
+      transparent 30deg
+    );
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  animation:
+    skel-bloom 5s infinite cubic-bezier(0.2, 0.8, 0.2, 1),
+    skel-bloom-rotate 12s infinite linear;
+}
+@keyframes skel-bloom {
+  0% {
+    --bloom-r: 0%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    --bloom-r: 35%;
+    opacity: 0;
+  }
+}
+@keyframes skel-bloom-rotate {
+  0% {
+    --bloom-angle: 0deg;
+  }
+  100% {
+    --bloom-angle: 360deg;
+  }
+}
+
+.locked-scroll {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+
+/* 2. Serene Pond */
+.loader-skeleton-pond {
+  --pond-x: 50%;
+  --pond-y: 50%;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 60%, cyan)
+      calc(var(--loader-dot-size) * 1.5),
+    transparent calc(var(--loader-dot-blur) * 1.5)
+  );
+  -webkit-mask-image: radial-gradient(
+    circle at var(--pond-x) var(--pond-y),
+    transparent calc(var(--pond-r) - 2%),
+    #000 var(--pond-r),
+    transparent calc(var(--pond-r) + 2%)
+  );
+  mask-image: radial-gradient(
+    circle at var(--pond-x) var(--pond-y),
+    transparent calc(var(--pond-r) - 2%),
+    #000 var(--pond-r),
+    transparent calc(var(--pond-r) + 2%)
+  );
+  animation: skel-pond 5s infinite cubic-bezier(0.2, 0.6, 0.4, 1);
+}
+@keyframes skel-pond {
+  0% {
+    --pond-r: 0%;
+    opacity: 0.8;
+  }
+  100% {
+    --pond-r: 100%;
+    opacity: 0;
+  }
+}
+
+/* 3. Lotus Water (3D Physics Panel Shape) */
+.loader-skeleton-water {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 70%, cyan)
+      calc(var(--loader-dot-size) * 1.5),
+    transparent calc(var(--loader-dot-blur) * 1.5)
+  );
+  -webkit-mask-image:
+    linear-gradient(to top, #000 0%, #000 20%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, #000 0%, transparent 80%),
+    repeating-conic-gradient(
+      from var(--water-angle) at 50% 150%,
+      #000 0deg,
+      transparent 8deg,
+      #000 16deg
+    ),
+    repeating-radial-gradient(
+      ellipse at 50% 150%,
+      transparent var(--wave-phase),
+      #000 calc(var(--wave-phase) + 12px),
+      transparent calc(var(--wave-phase) + 24px)
+    );
+  mask-image:
+    linear-gradient(to top, #000 0%, #000 20%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, #000 0%, transparent 80%),
+    repeating-conic-gradient(
+      from var(--water-angle) at 50% 150%,
+      #000 0deg,
+      transparent 8deg,
+      #000 16deg
+    ),
+    repeating-radial-gradient(
+      ellipse at 50% 150%,
+      transparent var(--wave-phase),
+      #000 calc(var(--wave-phase) + 12px),
+      transparent calc(var(--wave-phase) + 24px)
+    );
+  -webkit-mask-composite: source-in, source-in, source-in;
+  mask-composite: intersect;
+  animation:
+    skel-water-sway 6s infinite alternate ease-in-out,
+    skel-water-flow 2.5s infinite linear;
+}
+@keyframes skel-water-sway {
+  0% {
+    --water-angle: -10deg;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    --water-angle: 10deg;
+    opacity: 0.3;
+  }
+}
+@keyframes skel-water-flow {
+  0% {
+    --wave-phase: 0px;
+  }
+  100% {
+    --wave-phase: 24px;
+  }
+}
+
+@keyframes skel-zen-flow {
+  0% {
+    --wave-phase: 0px;
+  }
+  100% {
+    --wave-phase: 30px;
+  }
+}
+
+/* 4. Zen Sand */
+.loader-skeleton-zen {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 70%, transparent)
+      calc(var(--loader-dot-size) * 1.3),
+    transparent calc(var(--loader-dot-blur) * 1.3)
+  );
+  opacity: 0.75;
+  -webkit-mask-image:
+    radial-gradient(circle at 50% 50%, #000 0%, transparent 50%),
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent var(--wave-phase),
+      #000 calc(var(--wave-phase) + 15px),
+      transparent calc(var(--wave-phase) + 30px)
+    );
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  animation: skel-zen-flow 8s infinite linear;
+}
+
+/* 5. Lotus Firefly */
+.loader-skeleton-firefly {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 80%, yellow)
+      calc(var(--loader-dot-size) * 2),
+    transparent calc(var(--loader-dot-blur) * 2)
+  );
+  -webkit-mask-image:
+    radial-gradient(circle at 20% 30%, #000 0%, transparent 10%),
+    radial-gradient(circle at 70% 80%, #000 0%, transparent 10%),
+    radial-gradient(circle at 80% 20%, #000 0%, transparent 10%);
+  -webkit-mask-size: 150% 150%;
+  animation: skel-firefly 8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+@keyframes skel-firefly {
+  0% {
+    -webkit-mask-position:
+      0% 0%,
+      0% 0%,
+      0% 0%;
+    opacity: 0.2;
+  }
+  50% {
+    -webkit-mask-position:
+      20% 10%,
+      -20% -10%,
+      10% -20%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-mask-position:
+      -10% -20%,
+      30% 20%,
+      -20% 10%;
+    opacity: 0.2;
+  }
+}
+
+/* 6. Aurora Flow */
+.loader-skeleton-aurora {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 60%, pink) calc(var(--loader-dot-size) * 2),
+    transparent calc(var(--loader-dot-blur) * 2)
+  );
+  -webkit-mask-image: linear-gradient(
+    45deg,
+    transparent 20%,
+    #000 50%,
+    transparent 80%
+  );
+  -webkit-mask-size: 300% 300%;
+  animation: skel-aurora 5s infinite ease-in-out alternate;
+}
+@keyframes skel-aurora {
+  0% {
+    -webkit-mask-position: 0% 0%;
+    opacity: 0.3;
+  }
+  100% {
+    -webkit-mask-position: 100% 100%;
+    opacity: 0.9;
+  }
+}
+
+/* Post animation effect for responses */
+@keyframes msg-finish-bloom {
+  0% {
+    text-shadow: 0 0 10px var(--accent);
+    transform: scale(1.01);
+  }
+  100% {
+    text-shadow: none;
+    transform: scale(1);
+  }
+}

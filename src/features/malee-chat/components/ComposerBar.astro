@@ -1,17 +1,32 @@
 ---
 import chatSendImg from "../../../assets/malee/chat-send.png";
 ---
-<footer class="composer-bar w-full shrink-0 flex justify-center pointer-events-none z-50 px-4 pb-6 pt-2">
-  <div class="composer-inner relative w-full max-w-[750px] flex items-end bg-background/80 backdrop-blur-3xl border border-white/15 rounded-[32px] p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.6)] pointer-events-auto group focus-within:border-white/30 focus-within:bg-background/90 transition-all duration-[600ms]">
-    
-    <button class="lang-toggle shrink-0 w-[52px] h-[52px] rounded-full bg-white/5 hover:bg-white/10 text-white/70 text-[11px] font-mono uppercase tracking-widest font-bold outline-none transition-colors border border-white/10 mb-0.5 ml-0.5 shadow-inner flex items-center justify-center">
+
+<footer
+  class="composer-bar pointer-events-none z-50 flex w-full shrink-0 justify-center px-4 pt-2 pb-6"
+>
+  <div
+    class="composer-inner group pointer-events-auto relative flex w-full max-w-[750px] items-end rounded-[32px] border border-white/15 bg-background/80 p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur-3xl transition-all duration-[600ms] focus-within:border-white/30 focus-within:bg-background/90"
+  >
+    <button
+      class="lang-toggle mb-0.5 ml-0.5 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 font-mono text-[11px] font-bold tracking-widest text-white/70 uppercase shadow-inner transition-colors outline-none hover:bg-white/10"
+    >
       EN
     </button>
-    
-    <textarea class="chat-input flex-grow bg-transparent text-white/95 font-light text-lg sm:text-xl px-5 py-3 outline-none resize-none placeholder-white/20 italic tracking-wide" rows="1" placeholder="What are you looking for today?"></textarea>
-    
-    <button class="send-btn shrink-0 w-16 h-16 flex items-center justify-center transition-transform duration-[600ms] hover:scale-105 active:scale-95 group -mr-1">
-      <img src={chatSendImg.src} alt="Send" class="w-full h-full object-contain drop-shadow-sm group-hover:drop-shadow-[0_0_12px_rgba(249,168,212,0.65)] transition-all duration-500" />
+
+    <textarea
+      class="chat-input flex-grow resize-none bg-transparent px-5 py-3 text-lg font-light tracking-wide text-white/95 italic placeholder-white/20 outline-none sm:text-xl"
+      rows="1"
+      placeholder="What are you looking for today?"></textarea>
+
+    <button
+      class="send-btn group -mr-1 flex h-16 w-16 shrink-0 items-center justify-center transition-transform duration-[600ms] hover:scale-105 active:scale-95"
+    >
+      <img
+        src={chatSendImg.src}
+        alt="Send"
+        class="h-full w-full object-contain drop-shadow-sm transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(249,168,212,0.65)]"
+      />
     </button>
   </div>
 </footer>
