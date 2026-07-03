@@ -154,9 +154,9 @@ function updateGravityDock(state: any, root: HTMLElement) {
         <!-- Abstract Glow -->
         <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-accent/20 rounded-full blur-[40px] opacity-50 pointer-events-none transition-opacity duration-[800ms] group-hover/full:opacity-100"></div>
         
-        <button class="relative overflow-hidden w-full bg-white text-black rounded-[20px] py-3.5 mb-4 font-semibold tracking-wide hover:scale-[1.02] shadow-[0_15px_40px_rgba(255,255,255,0.2)] transition-all duration-[600ms] group/btn z-10 shrink-0 ${state.connectionStatus === 'connecting' ? 'opacity-80 pointer-events-none' : ''}" ${state.connectionStatus === 'connecting' ? 'disabled' : ''} onclick="this.dispatchEvent(new CustomEvent('action:checkout', { bubbles: true }))">
+        <button class="relative overflow-hidden w-full bg-white text-black rounded-[20px] py-3.5 mb-4 font-semibold tracking-wide hover:scale-[1.02] shadow-[0_15px_40px_rgba(255,255,255,0.2)] transition-all duration-[600ms] group/btn z-10 shrink-0 ${state.connectionStatus === "connecting" ? "opacity-80 pointer-events-none" : ""}" ${state.connectionStatus === "connecting" ? "disabled" : ""} onclick="this.dispatchEvent(new CustomEvent('action:checkout', { bubbles: true }))">
           <span class="relative z-10 flex items-center justify-center gap-2">
-             ${state.connectionStatus === 'connecting' ? 'Processing... <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>' : 'Checkout Now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>'}
+             ${state.connectionStatus === "connecting" ? 'Processing... <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>' : 'Checkout Now <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>'}
           </span>
         </button>
 
@@ -235,7 +235,7 @@ function setupInputHandlers(root: HTMLElement) {
   if (!input || !sendBtn) return;
 
   let currentLang = "english";
-  
+
   const sinhalaInstance = initSinglishToSinhala(false);
 
   langToggle?.addEventListener("click", () => {
@@ -466,8 +466,14 @@ function setupEventDelegation(root: HTMLElement) {
     if (container && btn && btn.getBoundingClientRect) {
       const rect = btn.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
-      const xPos = ((rect.left + rect.width / 2 - containerRect.left) / containerRect.width) * 100;
-      const yPos = ((rect.top + rect.height / 2 - containerRect.top) / containerRect.height) * 100;
+      const xPos =
+        ((rect.left + rect.width / 2 - containerRect.left) /
+          containerRect.width) *
+        100;
+      const yPos =
+        ((rect.top + rect.height / 2 - containerRect.top) /
+          containerRect.height) *
+        100;
 
       const pond = document.createElement("span");
       pond.className = "loader-skeleton-pond loader-skeleton-effect";
@@ -491,7 +497,10 @@ function setupEventDelegation(root: HTMLElement) {
     root.dispatchEvent(
       new CustomEvent("action:send_chat", {
         bubbles: true,
-        detail: { text: "UIEVENT: User clicked cancel checkout button. Please cancel the checkout process and acknowledge.", silent: true },
+        detail: {
+          text: "UIEVENT: User clicked cancel checkout button. Please cancel the checkout process and acknowledge.",
+          silent: true,
+        },
       })
     );
   });

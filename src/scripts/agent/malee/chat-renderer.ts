@@ -100,7 +100,10 @@ export class ChatRenderer {
     ) as HTMLElement | null;
     if (!bubble) return;
 
-    if (bubble.querySelector(".inline-lotus-skeleton") || !this.currentStreamBuffer.trim()) {
+    if (
+      bubble.querySelector(".inline-lotus-skeleton") ||
+      !this.currentStreamBuffer.trim()
+    ) {
       const container = bubble.closest(".msg-streaming");
       if (container) container.remove();
       this.currentStreamBuffer = "";
