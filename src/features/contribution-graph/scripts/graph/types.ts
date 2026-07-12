@@ -78,9 +78,4 @@ export type ContributionGraphResponse = {
 };
 
 export type ContributionGraphState =
-  | "idle"
-  | "loading"
-  | "resolving"
-  | "resolved"
-  | "empty"
-  | "error";
+  "idle" | "loading" | "resolving" | "resolved" | "empty" | "error";

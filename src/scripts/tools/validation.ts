@@ -4,8 +4,7 @@ export type QueryTextOptions = {
 };
 
 export type ToolValidationResult =
-  | { isValid: true }
-  | { isValid: false; message: string };
+  { isValid: true } | { isValid: false; message: string };
 
 export type ToolTextValidationOptions = {
   label?: string;

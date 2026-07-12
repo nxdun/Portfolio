@@ -1,10 +1,8 @@
 export type ClipboardReadResult =
-  | { ok: true; text: string }
-  | { ok: false; reason: "unavailable" | "failed" };
+  { ok: true; text: string } | { ok: false; reason: "unavailable" | "failed" };
 
 export type ClipboardWriteResult =
-  | { ok: true }
-  | { ok: false; reason: "unavailable" | "failed" };
+  { ok: true } | { ok: false; reason: "unavailable" | "failed" };
 
 export async function readClipboardText(): Promise<ClipboardReadResult> {
   if (!navigator.clipboard || !window.isSecureContext) {
