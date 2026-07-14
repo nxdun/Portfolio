@@ -18,11 +18,7 @@ const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 60;
 
 export type StreamMonitorResult =
-  | "success"
-  | "fail"
-  | "fallback"
-  | "handled-error"
-  | "timeout";
+  "success" | "fail" | "fallback" | "handled-error" | "timeout";
 
 export class AioJobMonitor {
   private activeStream: AioStreamSubscription | null = null;
