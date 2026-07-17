@@ -1,0 +1,182 @@
+/* ─── Core Layout ─── */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100% !important;
+  overflow: hidden !important;
+  background-color: var(--color-background);
+}
+
+.chat-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-google-sans-code), sans-serif;
+}
+
+/* ─── Status Bar ─── */
+.status-bar {
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+/* Connection indicator */
+.connection-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  position: relative;
+}
+.connection-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: #10b981;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* ─── Conversation Canvas ─── */
+.conversation-canvas {
+  flex-grow: 1;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  overflow-x: hidden;
+  padding: 0 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
+}
+.conversation-canvas::-webkit-scrollbar {
+  width: 4px;
+}
+.conversation-canvas::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+/* ─── Messages ─── */
+.messages-area {
+  gap: 16px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 24px;
+  min-height: 100%;
+}
+
+.msg-constrained {
+  width: 100%;
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── Gravity Dock (Cart) ─── */
+.gravity-dock-placeholder {
+  position: absolute;
+  bottom: 100px;
+  right: 24px;
+  width: 320px;
+  min-height: 180px;
+  max-height: 400px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 40;
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.6s ease,
+    opacity 0.6s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Expand hover area below the dock to prevent glitching when mouse moves down after it translates up */
+.gravity-dock-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  background: transparent;
+}
+
+.gravity-dock-placeholder:not(.is-empty):hover,
+.gravity-dock-placeholder.is-empty:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.gravity-dock-placeholder.is-empty {
+  transform: translateY(145px);
+  opacity: 0.8;
+}
+
+.gravity-dock-placeholder.has-items {
+  transform: translateY(calc(100% - 84px));
+}
+
+.gravity-dock-placeholder.is-empty:hover {
+  transform: translateY(-4px);
+  opacity: 1;
+}
+
+/* --- Loader Background Overrides --- */
+.malee-chat-loader.loader-container--background {
+  background: transparent !important; /* Let the #09090b chat shell show through */
+  z-index: 0; /* Keep it behind text but inside the chat shell */
+}
+.malee-chat-loader .loader-frame {
+  background: transparent !important;
+}
+.malee-chat-loader {
+  --loader-highlight-color: rgba(
+    249,
+    168,
+    212,
+    0.45
+  ); /* Soft pink hover glow */
+  --loader-dot-color: rgba(255, 255, 255, 0.04); /* Very faint white dots */
+  --loader-spotlight-size: 350px !important; /* Large, soft spotlight radius */
+  --loader-grid-size: 24px; /* Slightly larger grid spacing for a clean look */
+}
+
+/* --- Flip Animation --- */
+@keyframes flipInY {
+  from {
+    transform: perspective(800px) rotateY(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(800px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+.animate-flip-in-y {
+  animation: flipInY 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}

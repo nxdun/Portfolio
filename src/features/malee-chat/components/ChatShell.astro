@@ -1,0 +1,32 @@
+---
+import StatusBar from "./StatusBar.astro";
+import ConversationCanvas from "./ConversationCanvas.astro";
+import ComposerBar from "./ComposerBar.astro";
+import Loader from "@/components/core/Loader.astro";
+import { BACKEND_SERVER_URL } from "astro:env/server";
+
+const apiUrl = `${BACKEND_SERVER_URL}/api/v1/malee`;
+---
+
+<div
+  id="malee-chat-root"
+  data-api-url={apiUrl}
+  class="chat-shell relative selection:bg-accent/30"
+>
+  <!-- Interactive Dotted Background with Spotlight -->
+  <Loader
+    mode="background"
+    spotlight="hover"
+    globalHover={true}
+    class="malee-chat-loader"
+  />
+
+  <StatusBar />
+  <ConversationCanvas />
+
+  <div class="gravity-dock-placeholder is-empty group">
+    <!-- JS will hydrate this -->
+  </div>
+
+  <ComposerBar />
+</div>

@@ -23,6 +23,7 @@
     "concurrently": "^9.2.4",
     "dayjs": "^1.11.21",
     "lodash.kebabcase": "^4.1.1",
+    "marked": "^18.0.5",
     "minimatch": "10.2.4",
     "remark-collapse": "^0.1.2",
     "remark-toc": "^9.0.0",

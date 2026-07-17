@@ -81,6 +81,11 @@ export default defineConfig({
         context: "server",
         optional: true,
       }),
+      PUBLIC_MALEE_API_KEY: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
     },
   },
 

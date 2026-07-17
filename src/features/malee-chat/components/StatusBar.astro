@@ -1,0 +1,80 @@
+---
+import maleeAvatar from "../../../assets/malee/malee-avatar.png";
+import kaprukaLogo from "../../../assets/malee/kapruka-logo.png";
+---
+
+<header
+  class="status-bar relative z-50 flex items-center justify-between px-6 py-3"
+>
+  <!-- Left: Brand mark -->
+  <a
+    href="/chat"
+    class="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-80"
+  >
+    <div class="h-7 w-7 animate-[spin_20s_linear_infinite]">
+      <img
+        src={maleeAvatar.src}
+        alt="Malee"
+        class="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(168,130,255,0.3)]"
+      />
+    </div>
+    <div class="flex items-center gap-2">
+      <span
+        class="font-mono text-[11px] font-bold tracking-[0.3em] text-white/70 uppercase"
+        >Malee</span
+      >
+      <span class="font-mono text-[11px] font-bold text-white/40 lowercase"
+        >x</span
+      >
+      <img
+        src={kaprukaLogo.src}
+        alt="Kapruka"
+        class="h-[11px] object-contain"
+      />
+    </div>
+  </a>
+
+  <!-- Right: Connection & Actions -->
+  <div
+    class="flex items-center rounded-full bg-gradient-to-b from-white/10 to-white/0 p-[1px] shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:shadow-[0_4px_25px_rgba(255,255,255,0.05)]"
+  >
+    <div
+      class="flex items-center rounded-full bg-[#09090b]/90 backdrop-blur-xl"
+    >
+      <!-- Connection Status -->
+      <div class="flex cursor-default items-center gap-2.5 px-4 py-1.5">
+        <span class="connection-dot"></span>
+        <span
+          class="connection-text mt-px font-mono text-[10px] font-bold tracking-[0.2em] text-white/50 uppercase"
+          >Connected</span
+        >
+      </div>
+
+      <!-- Divider -->
+      <div class="h-3.5 w-px bg-white/10"></div>
+
+      <!-- Refresh Action -->
+      <button
+        class="group flex h-8 w-11 items-center justify-center rounded-r-full text-white/30 transition-all hover:bg-white/10 hover:text-white/90 active:bg-white/20"
+        onclick="window.location.reload()"
+        title="Refresh Chat"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 group-active:scale-75"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
