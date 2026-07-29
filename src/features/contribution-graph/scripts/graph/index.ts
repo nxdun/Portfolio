@@ -457,7 +457,8 @@ const resolveHost = async (host: HTMLElement) => {
     host.getAttribute("data-contribution-graph-url") ?? ""
   ).trim();
 
-  if (!configuredBaseUrl || !isHttpUrl(configuredBaseUrl)) {
+  // Allow empty base url (relative fetch)
+  if (configuredBaseUrl && !isHttpUrl(configuredBaseUrl)) {
     setState(host, "error");
     settleLoaderMotion(host);
     setStatusMessage(host, "Contribution service is unavailable right now.");

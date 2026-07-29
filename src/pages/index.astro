@@ -36,9 +36,7 @@ const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 
 // --- Config: Environment & APIs ---
 const backendUrl = import.meta.env.BACKEND_SERVER_URL;
-const contributionsUrl = backendUrl
-  ? `${backendUrl.replace(/\/+$/, "")}/api/v1/contributions`
-  : null;
+const contributionsUrl = "/api/v1/contributions";
 ---
 
 <Layout>
@@ -141,7 +139,7 @@ const contributionsUrl = backendUrl
           <div
             class="hero-contribution-shell h-full min-h-40 w-full"
             data-contribution-graph
-            data-contribution-graph-url={backendUrl}
+            data-contribution-graph-url={""}
             data-contribution-graph-state="loading"
             aria-label="GitHub contribution activity"
           >
