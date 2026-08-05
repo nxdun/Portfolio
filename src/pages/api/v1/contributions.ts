@@ -2,6 +2,20 @@ import type { APIRoute } from "astro";
 
 export const prerender = false;
 
+const corsHeaders = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export const OPTIONS: APIRoute = async () => {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+};
+
 export const GET: APIRoute = async ({ locals }) => {
   // Cloudflare runtime bindings access via Astro locals
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +25,7 @@ export const GET: APIRoute = async ({ locals }) => {
   if (!kv) {
     return new Response(JSON.stringify({ error: "KV Namespace not bound" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
     });
   }
 
@@ -24,7 +38,7 @@ export const GET: APIRoute = async ({ locals }) => {
         {
           status: 503,
           headers: {
-            "Content-Type": "application/json",
+            ...corsHeaders,
             "Cache-Control": "no-store",
           },
         }
@@ -34,7 +48,7 @@ export const GET: APIRoute = async ({ locals }) => {
     return new Response(data, {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
+        ...corsHeaders,
         // 1 hour cache - background refresh runs every 3h
         "Cache-Control": "public, max-age=3600, s-maxage=3600",
       },
@@ -42,7 +56,7 @@ export const GET: APIRoute = async ({ locals }) => {
   } catch {
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: corsHeaders,
     });
   }
 };
