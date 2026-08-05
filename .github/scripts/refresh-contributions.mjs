@@ -6,24 +6,42 @@ const PROVIDER = "github";
 const CACHE_TTL_SECONDS = 10800; // 3 hours
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const LEGEND_LABELS = ["No contributions", "Low", "Medium", "High", "Very high"];
+const MONTH_LABELS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const LEGEND_LABELS = [
+  "No contributions",
+  "Low",
+  "Medium",
+  "High",
+  "Very high",
+];
 
 // Colors match Rust backend exactly
 // Note: Level 0 uses 8-char hex with alpha (#2b2c3494)
 const CONTRIBUTION_COLORS = [
-  "#2b2c3494",  // Level 0 (None)
-  "#9be9a8",    // Level 1 (Low)
-  "#40c463",    // Level 2 (Medium)
-  "#30a14e",    // Level 3 (High)
-  "#216e39",    // Level 4 (Very High)
+  "#2b2c3494", // Level 0 (None)
+  "#9be9a8", // Level 1 (Low)
+  "#40c463", // Level 2 (Medium)
+  "#30a14e", // Level 3 (High)
+  "#216e39", // Level 4 (Very High)
 ];
 
 const LEVEL_MAP = {
-  FIRST_QUARTILE:  1,
+  FIRST_QUARTILE: 1,
   SECOND_QUARTILE: 2,
-  THIRD_QUARTILE:  3,
+  THIRD_QUARTILE: 3,
   FOURTH_QUARTILE: 4,
 };
 
@@ -73,7 +91,8 @@ async function fetchContributions(username, pat) {
     throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
   }
 
-  const calendar = json.data?.user?.contributionsCollection?.contributionCalendar;
+  const calendar =
+    json.data?.user?.contributionsCollection?.contributionCalendar;
   if (!calendar) {
     throw new Error("User not found or missing contributionCalendar");
   }
@@ -94,9 +113,9 @@ function transformCalendar(username, calendar, fetchedAt) {
 
   // "Today" in UTC for isFuture / isInCurrentMonth
   const now = new Date();
-  const currentYear  = now.getUTCFullYear();
+  const currentYear = now.getUTCFullYear();
   const currentMonth = now.getUTCMonth() + 1; // 1-based
-  const currentDay   = now.getUTCDate();
+  const currentDay = now.getUTCDate();
   const currentDateStr = `${String(currentYear).padStart(4, "0")}-${String(currentMonth).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`;
 
   const totalContributions = calendar.totalContributions;
@@ -177,7 +196,7 @@ function transformCalendar(username, calendar, fetchedAt) {
     cells,
     meta: {
       provider: PROVIDER,
-      cached: true,  // Always "cached" since it's served from KV
+      cached: true, // Always "cached" since it's served from KV
       cacheTtlSeconds: CACHE_TTL_SECONDS,
       fetchedAt: fetchedAt.toISOString().replace(/\.\d{3}Z$/, "Z"),
       schemaVersion: SCHEMA_VERSION,
@@ -211,10 +230,22 @@ async function writeToKV(data, accountId, namespaceId, apiToken) {
 
 // ─── Main ────────────────────────────────────────────────────────────
 async function main() {
-  const { GITHUB_PAT, GITHUB_USERNAME, CF_ACCOUNT_ID, CF_KV_NAMESPACE_ID, CF_API_TOKEN } = process.env;
+  const {
+    GITHUB_PAT,
+    GITHUB_USERNAME,
+    CF_ACCOUNT_ID,
+    CF_KV_NAMESPACE_ID,
+    CF_API_TOKEN,
+  } = process.env;
 
   // Validate all required env vars
-  const required = { GITHUB_PAT, GITHUB_USERNAME, CF_ACCOUNT_ID, CF_KV_NAMESPACE_ID, CF_API_TOKEN };
+  const required = {
+    GITHUB_PAT,
+    GITHUB_USERNAME,
+    CF_ACCOUNT_ID,
+    CF_KV_NAMESPACE_ID,
+    CF_API_TOKEN,
+  };
   for (const [key, val] of Object.entries(required)) {
     if (!val?.trim()) {
       console.error(`Missing required env var: ${key}`);
@@ -223,7 +254,9 @@ async function main() {
   }
 
   const fetchedAt = new Date();
-  console.log(`[${fetchedAt.toISOString()}] Fetching contributions for ${GITHUB_USERNAME}...`);
+  console.log(
+    `[${fetchedAt.toISOString()}] Fetching contributions for ${GITHUB_USERNAME}...`
+  );
 
   // 1. Fetch
   const calendar = await fetchContributions(GITHUB_USERNAME, GITHUB_PAT);
@@ -242,7 +275,7 @@ async function main() {
   console.log(`[${new Date().toISOString()}] Done.`);
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error("FATAL:", err.message);
   process.exit(1);
 });

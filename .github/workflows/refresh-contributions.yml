@@ -2,8 +2,8 @@ name: Refresh Contribution Graph
 
 on:
   schedule:
-    - cron: '0 */3 * * *'  # Every 3 hours (00:00, 03:00, 06:00, ...)
-  workflow_dispatch:         # Manual trigger via GitHub UI
+    - cron: "0 */3 * * *" # Every 3 hours (00:00, 03:00, 06:00, ...)
+  workflow_dispatch: # Manual trigger via GitHub UI
 
 permissions:
   contents: read
@@ -17,13 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          sparse-checkout: '.github/scripts'
+          sparse-checkout: ".github/scripts"
           sparse-checkout-cone-mode: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Fetch, Transform & Push to CF KV
         env:
