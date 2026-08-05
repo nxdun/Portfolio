@@ -30,7 +30,7 @@ jobs:
 
       - name: Fetch, Transform & Push to CF KV
         env:
-          GITHUB_PAT: ${{ secrets.GH_CONTRIBUTIONS_PAT }}
+          GITHUB_PAT: ${{ secrets.GH_CONTRIBUTIONS_PAT || secrets.GITHUB_PAT || github.token }}
           GITHUB_USERNAME: nxdun
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CF_KV_NAMESPACE_ID: ${{ secrets.CF_KV_NAMESPACE_ID }}

@@ -230,7 +230,10 @@ async function writeToKV(data, accountId, namespaceId, apiToken) {
 
 // ─── Main ────────────────────────────────────────────────────────────
 async function main() {
-  const GITHUB_PAT = process.env.GITHUB_PAT;
+  const GITHUB_PAT =
+    process.env.GITHUB_PAT ||
+    process.env.GH_CONTRIBUTIONS_PAT ||
+    process.env.GITHUB_TOKEN;
   const GITHUB_USERNAME = process.env.GITHUB_USERNAME || "nxdun";
   const CF_ACCOUNT_ID =
     process.env.CLOUDFLARE_ACCOUNT_ID || process.env.CF_ACCOUNT_ID;
