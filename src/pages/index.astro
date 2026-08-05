@@ -35,24 +35,9 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const featuredProjects = getFeaturedProjects(3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
 
-// --- Config: Environment & APIs ---
-const contributionsUrl = "/api/v1/contributions";
 ---
 
 <Layout>
-  {/* --- Head: Resource Hints --- */}
-  {
-    contributionsUrl && (
-      <link
-        rel="preload"
-        href={contributionsUrl}
-        as="fetch"
-        fetchpriority="low"
-        media="(min-width:1280px)"
-        slot="head"
-      />
-    )
-  }
 
   <Header />
 

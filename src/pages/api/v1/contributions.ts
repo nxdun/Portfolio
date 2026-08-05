@@ -53,7 +53,8 @@ export const GET: APIRoute = async () => {
       status: 200,
       headers: {
         ...corsHeaders,
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        // 1 hour cache; stale-while-revalidate allows serving stale during background refresh
+        "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=7200",
       },
     });
   } catch (err: unknown) {
