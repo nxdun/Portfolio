@@ -1,4 +1,12 @@
-export async function onRequest(context) {
+interface EventContext {
+  env: {
+    CONTRIBUTIONS_KV?: {
+      get(key: string, type: string): Promise<string | null>;
+    };
+  };
+}
+
+export async function onRequest(context: EventContext) {
   // context.env contains bound KV namespaces and other environment variables
   const kv = context.env.CONTRIBUTIONS_KV;
   
