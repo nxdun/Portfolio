@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 export const prerender = false;
 
@@ -16,25 +17,28 @@ export const OPTIONS: APIRoute = async () => {
   });
 };
 
-export const GET: APIRoute = async ({ locals }) => {
-  // Cloudflare runtime bindings access via Astro locals
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const runtime = (locals as any)?.runtime;
-  const kv = runtime?.env?.CONTRIBUTIONS_KV;
-
-  if (!kv) {
-    return new Response(JSON.stringify({ error: "KV Namespace not bound" }), {
-      status: 500,
-      headers: corsHeaders,
-    });
-  }
-
+export const GET: APIRoute = async () => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const kv = (env as any)?.CONTRIBUTIONS_KV;
+
+    if (!kv) {
+      return new Response(
+        JSON.stringify({
+          error: "KV Namespace CONTRIBUTIONS_KV not bound",
+        }),
+        {
+          status: 500,
+          headers: corsHeaders,
+        }
+      );
+    }
+
     const data = await kv.get("contributions", "text");
 
     if (!data) {
       return new Response(
-        JSON.stringify({ error: "No contribution data available" }),
+        JSON.stringify({ error: "No contribution data available in KV" }),
         {
           status: 503,
           headers: {
@@ -49,14 +53,17 @@ export const GET: APIRoute = async ({ locals }) => {
       status: 200,
       headers: {
         ...corsHeaders,
-        // 1 hour cache - background refresh runs every 3h
         "Cache-Control": "public, max-age=3600, s-maxage=3600",
       },
     });
-  } catch {
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: corsHeaders,
-    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return new Response(
+      JSON.stringify({ error: "Internal Server Error", details: message }),
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
   }
 };

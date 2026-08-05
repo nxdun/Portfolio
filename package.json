@@ -7,7 +7,7 @@
     "dev": "astro dev --host",
     "build": "astro check && astro build && pagefind --site dist/client && cp -r dist/client/pagefind public/",
     "preview": "astro preview",
-    "deploy": "pnpm build && wrangler deploy",
+    "deploy": "pnpm build && wrangler deploy -e production",
     "sync": "astro sync",
     "astro": "astro",
     "format:check": "prettier --check .",
