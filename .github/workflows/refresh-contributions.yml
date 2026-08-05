@@ -1,6 +1,9 @@
 name: Refresh Contribution Graph
 
 on:
+  push:
+    branches:
+      - nadun/feat/gh-contribution-cf-pages
   schedule:
     - cron: "0 */3 * * *" # Every 3 hours (00:00, 03:00, 06:00, ...)
   workflow_dispatch: # Manual trigger via GitHub UI
