@@ -33,7 +33,7 @@ export async function onRequest(context) {
         "Cache-Control": "public, max-age=3600, s-maxage=3600"
       },
     });
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
