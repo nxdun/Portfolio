@@ -58,6 +58,7 @@ export const GET: APIRoute = async () => {
       },
     });
   } catch (err: unknown) {
+    // eslint-disable-next-line no-console
     console.error("[contributions] Unhandled error:", err);
     return new Response(
       JSON.stringify({ error: "Internal Server Error" }),
