@@ -13,6 +13,12 @@
 	"observability": {
 		"enabled": true
 	},
+	"kv_namespaces": [
+		{
+			"binding": "CONTRIBUTIONS_KV",
+			"id": "649ca44ca248451881b1169612035c76"
+		}
+	],
 	"env": {
 		"preview": {
 			"vars": {
@@ -30,6 +36,12 @@
 					"binding": "portfolio_db",
 					"database_name": "portfolio-db",
 					"database_id": "8aa69ba1-1199-49d8-ad8c-2369631b0ed4"
+				}
+			],
+			"kv_namespaces": [
+				{
+					"binding": "CONTRIBUTIONS_KV",
+					"id": "649ca44ca248451881b1169612035c76"
 				}
 			]
 		}
