@@ -1,5 +1,5 @@
 {
-	"name": "nuus-portfolio-production",
+	"name": "nuus-portfolio",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
 		"binding": "ASSETS",
@@ -30,7 +30,13 @@
 			"vars": {
 				"ASTRO_TELEMETRY_DISABLED": "true",
 				"NODE_ENV": "development"
-			}
+			},
+			"kv_namespaces": [
+				{
+					"binding": "CONTRIBUTIONS_KV",
+					"id": "649ca44ca248451881b1169612035c76"
+				}
+			]
 		},
 		"production": {
 			"vars": {

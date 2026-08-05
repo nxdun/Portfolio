@@ -58,9 +58,9 @@ export const GET: APIRoute = async () => {
       },
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
+    console.error("[contributions] Unhandled error:", err);
     return new Response(
-      JSON.stringify({ error: "Internal Server Error", details: message }),
+      JSON.stringify({ error: "Internal Server Error" }),
       {
         status: 500,
         headers: corsHeaders,
