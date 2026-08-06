@@ -2,6 +2,7 @@
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
 pubDatetime: 2026-05-21T11:21:39+05:30
+modDatetime: 2026-08-05T18:57:00+05:30
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -14,6 +15,20 @@ description: Changelog and updates for the portfolio interface.
 ## Future updates - Backlog
 
 - _Loader Component and Skeleton Enhancement_
+
+## v3.1.0 - 2026-08-05
+
+- <a href="https://github.com/nxdun/Portfolio/pull/44" target="_blank" rel="noopener noreferrer"><code>#44</code></a> [feat(cf)] Migrate contribution graph to Cloudflare KV + native Astro endpoint
+  - **Breaking change:** Removed dependency on external Rust backend (`BACKEND_SERVER_URL`) for the GitHub contribution graph. Contribution data is now fetched from Cloudflare KV and served via a native Astro server endpoint at `/api/v1/contributions`.
+  - Switched Astro output from `static` to `server` mode; all existing pages now opt-in to prerendering via `export const prerender = true` to retain CDN-edge static delivery.
+  - Added `CONTRIBUTIONS_KV` KV namespace binding in `wrangler.jsonc` for both top-level and per-environment (preview, production) configurations.
+  - Added GitHub Actions workflow (`refresh-contributions.yml`) that runs every 6 hours to fetch the latest contribution data from the GitHub GraphQL API and push it to Cloudflare KV.
+  - Added CF Pages Functions fallback at `functions/api/v1/contributions.ts` alongside the Astro server endpoint.
+  - Removed `crossorigin` attribute from the contributions preload link; dropped the preload hint entirely to prevent non-critical API fetch from competing with critical rendering resources and regressing FCP.
+  - Set `run_worker_first: ["/api/*"]` in `wrangler.jsonc` so prerendered static assets are served directly from Cloudflare Assets without Worker overhead, restoring peak PageSpeed performance.
+  - Improved `Cache-Control` headers on the contributions endpoint: added `stale-while-revalidate=7200` so CDN edges serve cached data while refreshing in the background.
+  - Fixed contribution graph client script to allow empty base URL (relative fetch to same-origin), enabling the graph to function without an absolute backend URL.
+  - Renamed the Worker from `nuus-portfolio` to `nuus-portfolio-production` to avoid name collisions across environments.
 
 ## v.3.0.0 - 2026-06-08
 

@@ -1,0 +1,35 @@
+name: Refresh Contribution Graph
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # Every 6 hours (00:00, 06:00, 12:00, 18:00)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: ".github/scripts"
+          sparse-checkout-cone-mode: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch, Transform & Push to CF KV
+        env:
+          GITHUB_PAT: ${{ secrets.GH_CONTRIBUTIONS_PAT || secrets.GITHUB_PAT || github.token }}
+          GITHUB_USERNAME: nxdun
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_KV_NAMESPACE_ID: ${{ secrets.CF_KV_NAMESPACE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CLOUDFLARE_TOKEN }}
+        run: node .github/scripts/refresh-contributions.mjs
