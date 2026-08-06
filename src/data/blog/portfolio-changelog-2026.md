@@ -22,7 +22,7 @@ description: Changelog and updates for the portfolio interface.
   - **Breaking change:** Removed dependency on external Rust backend (`BACKEND_SERVER_URL`) for the GitHub contribution graph. Contribution data is now fetched from Cloudflare KV and served via a native Astro server endpoint at `/api/v1/contributions`.
   - Switched Astro output from `static` to `server` mode; all existing pages now opt-in to prerendering via `export const prerender = true` to retain CDN-edge static delivery.
   - Added `CONTRIBUTIONS_KV` KV namespace binding in `wrangler.jsonc` for both top-level and per-environment (preview, production) configurations.
-  - Added GitHub Actions workflow (`refresh-contributions.yml`) that runs every 3 hours to fetch the latest contribution data from the GitHub GraphQL API and push it to Cloudflare KV.
+  - Added GitHub Actions workflow (`refresh-contributions.yml`) that runs every 6 hours to fetch the latest contribution data from the GitHub GraphQL API and push it to Cloudflare KV.
   - Added CF Pages Functions fallback at `functions/api/v1/contributions.ts` alongside the Astro server endpoint.
   - Removed `crossorigin` attribute from the contributions preload link; dropped the preload hint entirely to prevent non-critical API fetch from competing with critical rendering resources and regressing FCP.
   - Set `run_worker_first: ["/api/*"]` in `wrangler.jsonc` so prerendered static assets are served directly from Cloudflare Assets without Worker overhead, restoring peak PageSpeed performance.
