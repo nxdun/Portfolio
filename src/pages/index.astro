@@ -34,11 +34,9 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 // --- Data: Projects ---
 const featuredProjects = getFeaturedProjects(3);
 const emptyFeaturedProjectCount = Math.max(0, 3 - featuredProjects.length);
-
 ---
 
 <Layout>
-
   <Header />
 
   <main id="main-content" data-layout="index" class="app-layout">

@@ -54,18 +54,16 @@ export const GET: APIRoute = async () => {
       headers: {
         ...corsHeaders,
         // 1 hour cache; stale-while-revalidate allows serving stale during background refresh
-        "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=7200",
+        "Cache-Control":
+          "public, max-age=3600, s-maxage=3600, stale-while-revalidate=7200",
       },
     });
   } catch (err: unknown) {
     // eslint-disable-next-line no-console
     console.error("[contributions] Unhandled error:", err);
-    return new Response(
-      JSON.stringify({ error: "Internal Server Error" }),
-      {
-        status: 500,
-        headers: corsHeaders,
-      }
-    );
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
 };
