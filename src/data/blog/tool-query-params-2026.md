@@ -9,10 +9,10 @@ draft: false
 tags:
   - Tools
   - Docs
-description: "Complete reference for launching nadzu.me tools through query parameters, including exact names and examples for Base64 and AIO."
+description: "Complete reference for launching nadzu.tech tools through query parameters, including exact names and examples for Base64 and AIO."
 ---
 
-This guide documents the exact URL query parameters supported by the `nadzu.me` toolkit.
+This guide documents the exact URL query parameters supported by the `nadzu.tech` toolkit.
 It is intended for developers, documentation writers, and power users who want to launch tools directly with prefilled values.
 
 ## Overview
@@ -45,22 +45,22 @@ The Base64 tool can encode, decode, or clear its fields on load.
 
 ### Examples
 
-<a href="https://nadzu.me/tools/?tool=base64&action=encode&input=Hello%20World" target="_blank" rel="noreferrer noopener">Launch the Base64 tool with text to encode</a>
+<a href="https://nadzu.tech/tools/?tool=base64&action=encode&input=Hello%20World" target="_blank" rel="noreferrer noopener">Launch the Base64 tool with text to encode</a>
 
 ```text
-https://nadzu.me/tools/?tool=base64&action=encode&input=Hello%20World
+https://nadzu.tech/tools/?tool=base64&action=encode&input=Hello%20World
 ```
 
-<a href="https://nadzu.me/tools/?t=base64&act=decode&in=SGVsbG8gV29ybGQ%3D" target="_blank" rel="noreferrer noopener">Decode a Base64 payload directly</a>
+<a href="https://nadzu.tech/tools/?t=base64&act=decode&in=SGVsbG8gV29ybGQ%3D" target="_blank" rel="noreferrer noopener">Decode a Base64 payload directly</a>
 
 ```text
-https://nadzu.me/tools/?t=base64&act=decode&in=SGVsbG8gV29ybGQ%3D
+https://nadzu.tech/tools/?t=base64&act=decode&in=SGVsbG8gV29ybGQ%3D
 ```
 
-<a href="https://nadzu.me/tools/?tool=base64&action=clear" target="_blank" rel="noreferrer noopener">Load Base64 with cleared fields</a>
+<a href="https://nadzu.tech/tools/?tool=base64&action=clear" target="_blank" rel="noreferrer noopener">Load Base64 with cleared fields</a>
 
 ```text
-https://nadzu.me/tools/?tool=base64&action=clear
+https://nadzu.tech/tools/?tool=base64&action=clear
 ```
 
 ## AIO downloader
@@ -74,16 +74,16 @@ The AIO tool accepts a single media URL and opens the downloader with that targe
 
 ### Examples
 
-<a href="https://nadzu.me/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the AIO downloader with a YouTube URL</a>
+<a href="https://nadzu.tech/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the AIO downloader with a YouTube URL</a>
 
 ```text
-https://nadzu.me/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
+https://nadzu.tech/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
 ```
 
-<a href="https://nadzu.me/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the downloader using short alias parameters</a>
+<a href="https://nadzu.tech/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the downloader using short alias parameters</a>
 
 ```text
-https://nadzu.me/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
+https://nadzu.tech/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
 ```
 
 ## Best practices

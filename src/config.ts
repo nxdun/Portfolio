@@ -1,11 +1,11 @@
 export const BLOG_PATH = "src/data/blog";
 
 export const SITE = {
-  website: "https://nadzu.me/", // deployed domain
+  website: "https://nadzu.tech/", // deployed domain
   author: "Nadun Lakshan", //me
   email: "inbox.nadun@gmail.com",
   githubUsername: "nxdun",
-  profile: "https://nadzu.me/",
+  profile: "https://nadzu.tech/",
   desc: "i am nadun Lakshan, a software engineer with Exceptional DevOps skills i write Blogs about software development, DevOps, and cloud computing.",
   title: "~/nadzu",
   ogImage: "nadzu-og.jpg",

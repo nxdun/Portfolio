@@ -2,7 +2,7 @@
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
 pubDatetime: 2026-05-21T11:21:39+05:30
-modDatetime: 2026-08-05T18:57:00+05:30
+modDatetime: 2026-09-13T08:21:54+05:30
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -15,6 +15,15 @@ description: Changelog and updates for the portfolio interface.
 ## Future updates - Backlog
 
 - _Loader Component and Skeleton Enhancement_
+
+## v4.0.0 - 2026-09-13
+
+- **Breaking change:** Migrated primary domain from `nadzu.me` to `nadzu.tech`. All canonical URLs, RSS feed, Open Graph metadata, and Cloudflare Workers routes updated accordingly. Old `.me` domain will no longer be the primary endpoint.
+  - Updated `SITE.website` and `SITE.profile` in `src/config.ts`.
+  - Updated Cloudflare Workers custom domain routes in `wrangler.jsonc`.
+  - Updated `api.nadzu.me` backend reference to `api.nadzu.tech` in `.env.example`.
+  - Updated all blog post URLs, project data links, and README references.
+  - Updated GitHub issue template contact link.
 
 ## v3.1.0 - 2026-08-05
 
