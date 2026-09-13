@@ -15,8 +15,8 @@
 		"enabled": true
 	},
 	"routes": [
-		{ "pattern": "nadzu.me", "custom_domain": true },
-		{ "pattern": "www.nadzu.me", "custom_domain": true },
+		{ "pattern": "nadzu.tech", "custom_domain": true },
+		{ "pattern": "www.nadzu.tech", "custom_domain": true },
 		{ "pattern": "nadun.eu.cc", "custom_domain": true }
 	],
 	"kv_namespaces": [

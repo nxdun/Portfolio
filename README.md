@@ -1,9 +1,9 @@
 <div align="center">
   <img src="./public/favicon.svg" alt="Portfolio Logo" width="130" />
-  <h1><code>~/nadzu.me</code></h1>
+  <h1><code>~/nadzu.tech</code></h1>
   <p><em>Fast by default. Useful by design.</em></p>
 
-[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.me/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase)
+[![Old Release](https://img.shields.io/badge/Old%20Release-grey.svg)](https://github.com/nxdun/Portfolio/tree/release/1.0.0) [![Changelog](https://img.shields.io/badge/Changelog-grey.svg)](https://nadzu.tech/changelog) [![Backend Repo Rust](https://img.shields.io/badge/Backend%20Repo-Rust-orange.svg)](https://github.com/nxdun/rust-codebase)
 
 </div>
 
@@ -17,8 +17,8 @@
 <div align="center">
   <p><strong>Achieves a perfect PageSpeed scores (100/100).</strong></p>
   <p>
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/sbon6lqkx2?form_factor=mobile">Mobile score</a> ·
-    <a href="https://pagespeed.web.dev/analysis/https-nadzu-me/sbon6lqkx2?form_factor=desktop">Desktop score</a>
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-tech/zy1nwcyivm?form_factor=mobile">Mobile score</a> ·
+    <a href="https://pagespeed.web.dev/analysis/https-nadzu-tech/zy1nwcyivm?form_factor=desktop">Desktop score</a>
   </p>
   <img src="./public/PageSpeed%20Insights.png" alt="PageSpeed Insights" style="max-width: 100%; height: auto; display: block; margin: 1rem 0;" />
 </div>
@@ -35,7 +35,7 @@ A personal site that doubles as a blog platform and Additional Awesome tools. Bu
 - Auto-generated Open Graph images for each post and site-wide
 - Backend services provided by [nxdun/rust-codebase](https://github.com/nxdun/rust-codebase) (Live)
 - Blog archive
-- RSS feed [`/rss.xml`](https://nadzu.me/rss.xml) (used for live post automation [`nxdun/nxdun`](https://github.com/nxdun/nxdun))
+- RSS feed [`/rss.xml`](https://nadzu.tech/rss.xml) (used for live post automation [`nxdun/nxdun`](https://github.com/nxdun/nxdun))
 - Theme toggle
 - Interconnected background loader/skeleton with hover effects
 
@@ -48,10 +48,10 @@ Quickly launch browser tools directly via URL query parameters — no install or
 
 Refer Developer Documentation at:
 
-| Tool           | URL                                                          | Description                                                    |
-| -------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Base64         | [`/tools/?tool=base64`](https://nadzu.me/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI             |
-| AIO Downloader | [`/tools/?tool=aio`](https://nadzu.me/tools/?tool=aio)       | Download from 1,700+ supported sites with reCAPTCHA protection |
+| Tool           | URL                                                            | Description                                                    |
+| -------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
+| Base64         | [`/tools/?tool=base64`](https://nadzu.tech/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI             |
+| AIO Downloader | [`/tools/?tool=aio`](https://nadzu.tech/tools/?tool=aio)       | Download from 1,700+ supported sites with reCAPTCHA protection |
 
 ---
 
