@@ -2,7 +2,7 @@
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
 pubDatetime: 2026-05-21T11:21:39+05:30
-modDatetime: 2026-09-13T08:21:54+05:30
+modDatetime: 2026-09-27T12:09:00+05:30
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -15,6 +15,11 @@ description: Changelog and updates for the portfolio interface.
 ## Future updates - Backlog
 
 - _Loader Component and Skeleton Enhancement_
+
+## v4.1.0 - 2026-09-27
+
+- [fix(rss)] Enable static prerendering for RSS feed
+  - Set `prerender = true` in `rss.xml.ts` for static build output.
 
 ## v4.0.0 - 2026-09-13
 
