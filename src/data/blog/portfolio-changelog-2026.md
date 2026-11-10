@@ -2,7 +2,7 @@
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
 pubDatetime: 2026-05-21T11:21:39+05:30
-modDatetime: 2026-09-27T12:09:00+05:30
+modDatetime: 2026-11-10T10:25:00+05:30
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -15,6 +15,10 @@ description: Changelog and updates for the portfolio interface.
 ## Future updates - Backlog
 
 - _Loader Component and Skeleton Enhancement_
+
+## v4.1.1 - 2026-11-10
+
+- [chore(deps)] Update dependencies
 
 ## v4.1.0 - 2026-09-27
 
