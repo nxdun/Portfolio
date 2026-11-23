@@ -16,8 +16,9 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
       data-site-key={RECAPTCHA_SITE_KEY}
     >
       <div>
-        <label for="name" class="mb-1 block text-sm font-medium text-foreground"
-          >Name</label
+        <label
+          for="contact-name"
+          class="mb-1 block text-sm font-medium text-foreground">Name</label
         >
         <input
           type="text"
@@ -31,7 +32,7 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 
       <div>
         <label
-          for="email"
+          for="contact-email"
           class="mb-1 block text-sm font-medium text-foreground">Email</label
         >
         <input
@@ -46,7 +47,7 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 
       <div>
         <label
-          for="purpose"
+          for="contact-purpose"
           class="mb-1 block text-sm font-medium text-foreground"
           >Inquiry Type</label
         >
@@ -62,7 +63,7 @@ import { RECAPTCHA_SITE_KEY } from "astro:env/server";
 
       <div>
         <label
-          for="message"
+          for="contact-message"
           class="mb-1 block text-sm font-medium text-foreground">Message</label
         >
         <textarea
