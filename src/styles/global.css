@@ -15,7 +15,7 @@ html[data-theme="light"] {
 html[data-theme="dark"] {
   --background: #16161a;
   --foreground: #fffffe;
-  --accent: #8663f7;
+  --accent: #8e70f8;
   --muted: #242629;
   --border: #72757e;
 }
@@ -39,7 +39,7 @@ html[data-theme="dark"] {
     @apply overflow-y-scroll scroll-smooth bg-background;
   }
   body {
-    @apply flex min-h-svh flex-col bg-transparent font-app text-foreground selection:bg-accent/75 selection:text-white;
+    @apply flex min-h-svh flex-col bg-transparent font-app text-foreground selection:bg-accent selection:text-white dark:selection:bg-accent/75;
   }
   a,
   button {

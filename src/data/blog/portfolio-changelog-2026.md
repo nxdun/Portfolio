@@ -20,8 +20,9 @@ description: Changelog and updates for the portfolio interface.
 
 - <a href="https://github.com/nxdun/Portfolio/pull/50" target="_blank" rel="noopener noreferrer"><code>#50</code></a> [fix(ui)] Contrast improvements, dark mode default, and layout polish
   - Set default theme color scheme to `dark` across all entrypoints.
-  - Fixed contact form submit button rendering black text on dark purple background in dark mode.
-  - Brightened dark mode `--accent` color to `#8663f7` to achieve WCAG AA contrast ratio (> 4.8:1) against `#16161a`.
+  - Fixed contact form submit button contrast by using solid ultraviolet (`#5c40e6`) with white text (6.3:1 contrast ratio across both themes).
+  - Brightened dark mode `--accent` color to `#8e70f8` to achieve a 5.0:1 contrast ratio against `#16161a` (exceeding WCAG AA 4.5:1).
+  - Fixed light theme text selection contrast by using solid accent background (`selection:bg-accent`) with white text (6.3:1 contrast ratio).
   - Added spacing around breadcrumb separators (`Home » Posts`).
   - Fixed missing whitespace in footer reCAPTCHA legal notice.
   - Kept "View Details" button direct-clickable on all project cards with separate expand toggle for overflowing cards.
