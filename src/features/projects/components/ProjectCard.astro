@@ -99,24 +99,28 @@ const dialogId = `dialog-${projectId}`;
 
       // Small delay to ensure layouts are calculated
       setTimeout(() => {
+        // Always allow opening modal directly
+        actionBtn.addEventListener("click", e => {
+          e.preventDefault();
+          const dialog = document.getElementById(dialogId) as HTMLDialogElement;
+          if (dialog) dialog.showModal();
+        });
+
         // Detect if content is taller than max-height
         const isOverflowing = content.scrollHeight > content.clientHeight;
 
         if (isOverflowing) {
-          actionBtn.innerHTML = "Show More &darr;";
-
-          const collapseBtn = document.createElement("button");
-          collapseBtn.className = actionBtn.className;
-          collapseBtn.innerHTML = "Show Less &uarr;";
-          collapseBtn.style.display = "none";
+          const expandBtn = document.createElement("button");
+          expandBtn.className = actionBtn.className;
+          expandBtn.innerHTML = "Show More &darr;";
 
           const btnContainer = actionBtn.parentElement;
           if (btnContainer) {
-            btnContainer.classList.add("gap-3");
-            btnContainer.appendChild(collapseBtn);
+            btnContainer.classList.add("gap-2");
+            btnContainer.appendChild(expandBtn);
           }
 
-          actionBtn.addEventListener("click", e => {
+          expandBtn.addEventListener("click", e => {
             e.preventDefault();
             const isExpanded = content.classList.contains("expanded");
 
@@ -124,33 +128,13 @@ const dialogId = `dialog-${projectId}`;
               // Expand
               content.style.maxHeight = content.scrollHeight + "px";
               content.classList.add("expanded");
-              actionBtn.innerHTML = "View Details &rarr;";
-              collapseBtn.style.display = "inline-flex";
+              expandBtn.innerHTML = "Show Less &uarr;";
             } else {
-              // Open modal if already expanded
-              const dialog = document.getElementById(
-                dialogId
-              ) as HTMLDialogElement;
-              if (dialog) dialog.showModal();
+              // Collapse
+              content.style.maxHeight = "180px";
+              content.classList.remove("expanded");
+              expandBtn.innerHTML = "Show More &darr;";
             }
-          });
-
-          collapseBtn.addEventListener("click", e => {
-            e.preventDefault();
-            // Collapse
-            content.style.maxHeight = "180px";
-            content.classList.remove("expanded");
-            actionBtn.innerHTML = "Show More &darr;";
-            collapseBtn.style.display = "none";
-          });
-        } else {
-          // If no overflow, default to opening the modal directly
-          actionBtn.addEventListener("click", e => {
-            e.preventDefault();
-            const dialog = document.getElementById(
-              dialogId
-            ) as HTMLDialogElement;
-            if (dialog) dialog.showModal();
           });
         }
       }, 50);

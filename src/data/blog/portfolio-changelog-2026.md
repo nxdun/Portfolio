@@ -2,7 +2,7 @@
 title: Portfolio Changelog - 2026 Updates
 author: nadzu
 pubDatetime: 2026-05-21T11:21:39+05:30
-modDatetime: 2026-11-10T10:25:00+05:30
+modDatetime: 2026-11-23T17:12:00+05:30
 slug: portfolio-changelog
 featured: true
 draft: false
@@ -15,6 +15,18 @@ description: Changelog and updates for the portfolio interface.
 ## Future updates - Backlog
 
 - _Loader Component and Skeleton Enhancement_
+
+## v4.1.2 - 2026-11-23
+
+- <a href="https://github.com/nxdun/Portfolio/pull/50" target="_blank" rel="noopener noreferrer"><code>#50</code></a> [fix(ui)] Contrast improvements, dark mode default, and layout polish
+  - Set default theme color scheme to `dark` across all entrypoints.
+  - Fixed contact form submit button contrast by using solid ultraviolet (`#5c40e6`) with white text (6.3:1 contrast ratio across both themes).
+  - Brightened dark mode `--accent` color to `#8e70f8` to achieve a 5.0:1 contrast ratio against `#16161a` (exceeding WCAG AA 4.5:1).
+  - Fixed light theme text selection contrast by using solid accent background (`selection:bg-accent`) with white text (6.3:1 contrast ratio).
+  - Added spacing around breadcrumb separators (`Home » Posts`).
+  - Fixed missing whitespace in footer reCAPTCHA legal notice.
+  - Kept "View Details" button direct-clickable on all project cards with separate expand toggle for overflowing cards.
+  - Replaced empty `src=""` on image viewer with transparent SVG data URI to prevent redundant root document requests.
 
 ## v4.1.1 - 2026-11-10
 
