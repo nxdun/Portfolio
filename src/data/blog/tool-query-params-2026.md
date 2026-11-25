@@ -9,7 +9,7 @@ draft: false
 tags:
   - Tools
   - Docs
-description: "Complete reference for launching nadzu.tech tools through query parameters, including exact names and examples for Base64 and AIO."
+description: "Complete reference for launching nadzu.tech tools through query parameters, including exact names and examples for Base64."
 ---
 
 This guide documents the exact URL query parameters supported by the `nadzu.tech` toolkit.
@@ -28,7 +28,6 @@ The toolkit supports both long and short query names:
 - `input` / `in`
 - `output` / `out`
 - `action` / `act`
-- `url` / `u`
 
 Use the short form for compact share links and the long form for written documentation.
 
@@ -63,34 +62,11 @@ https://nadzu.tech/tools/?t=base64&act=decode&in=SGVsbG8gV29ybGQ%3D
 https://nadzu.tech/tools/?tool=base64&action=clear
 ```
 
-## AIO downloader
-
-The AIO tool accepts a single media URL and opens the downloader with that target prefilled.
-
-### Supported parameters
-
-- `tool=aio` or `t=aio`
-- `url=<video-url>` or `u=<video-url>`
-
-### Examples
-
-<a href="https://nadzu.tech/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the AIO downloader with a YouTube URL</a>
-
-```text
-https://nadzu.tech/tools/?tool=aio&url=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
-```
-
-<a href="https://nadzu.tech/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ" target="_blank" rel="noreferrer noopener">Launch the downloader using short alias parameters</a>
-
-```text
-https://nadzu.tech/tools/?t=aio&u=https%3A%2F%2Fyoutu.be%2FdQw4w9WgXcQ
-```
-
 ## Best practices
 
 - Always URL-encode values that contain spaces, symbols, or special characters.
-- Use the alias form (`t`, `in`, `out`, `act`, `u`) for compact share links.
-- Use the long form (`tool`, `input`, `output`, `action`, `url`) for documentation clarity.
+- Use the alias form (`t`, `in`, `out`, `act`) for compact share links.
+- Use the long form (`tool`, `input`, `output`, `action`) for documentation clarity.
 - Use `action=clear` to ensure a fresh Base64 session on load.
 
 ## Implementation details
@@ -108,8 +84,6 @@ This ensures the requested tool is selected safely and the supplied values are a
 | Base64 | `action=encode` | `act=encode` | Prepare encode mode       |
 | Base64 | `action=decode` | `act=decode` | Prepare decode mode       |
 | Base64 | `action=clear`  | `act=clear`  | Clear fields on load      |
-| AIO    | `tool=aio`      | `t=aio`      | Select the downloader     |
-| AIO    | `url=...`       | `u=...`      | Prefill the media URL     |
 
 ## When to use query params
 

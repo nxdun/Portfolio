@@ -4,7 +4,7 @@ This project uses a feature based modular architecture. This document explains w
 
 ## Core Structure
 
-- src/features/: Code for specific features like aio-downloader or blog.
+- src/features/: Code for specific features like base64 or blog.
 - src/components/: Shared UI parts and page shells.
 - src/scripts/: Global scripts that manage the whole site.
 - src/utils/: Generic helper functions.
@@ -34,7 +34,7 @@ Features must expose their public API through a root index.ts file.
 The /tools section uses a shared workbench model.
 
 1. Workbench Core (src/scripts/tools/): Shared logic for tool registration and common UI.
-2. Tool Features (src/features/aio-downloader, src/features/base64): Specific tools that register themselves into the workbench.
+2. Tool Features (src/features/base64): Specific tools that register themselves into the workbench.
 
 ## Homepage Orchestration
 

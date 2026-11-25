@@ -28,7 +28,7 @@ A personal site that doubles as a blog platform and Additional Awesome tools. Bu
 - Real-Time GitHub Contribution Graph (GitHub API) + Custom UI
 - Search powered by Pagefind (100% client-side, no external dependencies)
 - Blog System (Markdown-based, Syntax Highlighting, Tags, Featured Posts)
-- Toolkit (Base64 Encoder/Decoder, AIO Downloader)
+- Toolkit (Base64 Encoder/Decoder)
 - Contact Form (Serverless form handling via Cloudflare Workers + Cloudflare D1 SQLite)
 - Projects Showcase (Shareable project links, images, URLs, tags, and descriptions all managed via JSON)
 
@@ -48,10 +48,9 @@ Quickly launch browser tools directly via URL query parameters — no install or
 
 Refer Developer Documentation at:
 
-| Tool           | URL                                                            | Description                                                    |
-| -------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
-| Base64         | [`/tools/?tool=base64`](https://nadzu.tech/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI             |
-| AIO Downloader | [`/tools/?tool=aio`](https://nadzu.tech/tools/?tool=aio)       | Download from 1,700+ supported sites with reCAPTCHA protection |
+| Tool   | URL                                                            | Description                                        |
+| ------ | -------------------------------------------------------------- | -------------------------------------------------- |
+| Base64 | [`/tools/?tool=base64`](https://nadzu.tech/tools/?tool=base64) | Offline Base64 encoder and decoder with a clean UI |
 
 ---
 
@@ -159,7 +158,7 @@ cp .env.example .env
 |   |-- assets/          # SVG icons (ui + tech tags)
 |   |-- components/      # Shared components (core, ui)
 |   |-- data/            # Static data (blog)
-|   |-- features/        # Modular feature domains (aio, blog, projects, etc.)
+|   |-- features/        # Modular feature domains (base64, blog, projects, etc.)
 |   |-- layouts/         # Page layout wrappers
 |   |-- pages/           # File-based routing
 |   |-- scripts/         # Global scripts and tools workbench

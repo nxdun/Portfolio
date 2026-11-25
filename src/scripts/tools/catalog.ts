@@ -5,12 +5,6 @@ export const TOOL_CATALOG = [
     description: "Encode / Decode",
     subtitle: "Encode plain text or decode Base64 values.",
   },
-  {
-    key: "aio",
-    title: "AIO Downloader",
-    description: "Multi-site video downloader",
-    subtitle: "Submit a video URL from one of 2000+ supported sites.",
-  },
 ] as const;
 
 export type ToolCatalogItem = (typeof TOOL_CATALOG)[number];

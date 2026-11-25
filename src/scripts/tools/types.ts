@@ -6,13 +6,7 @@ export type Base64ToolOptions = {
   action?: Base64ToolAction;
 };
 
-export type AioToolAction = "verify-captcha" | "enqueue";
-
-export type AioToolOptions = {
-  url?: string;
-};
-
-export type ToolMountOptions = Base64ToolOptions | AioToolOptions | undefined;
+export type ToolMountOptions = Base64ToolOptions | undefined;
 
 export type ToolMountUiSlots = {
   responseHost?: HTMLElement | null;
